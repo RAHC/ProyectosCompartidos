@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:f="http://java.sun.com/jsf/core" >
+    <h:head>
+        <title>SISE-Autenticar</title>
+    </h:head>
+    <h:body>
+        <h:form id="frmLogin">
+            <h:message for="btnLogin" />
+            <h:panelGrid columns="2">
+                <h:outputText value="Usuario" /><h:inputText value="#{loginBean.username}" style="width: 106px;" />
+                <h:outputText value="Contraseña" /><h:inputSecret value="#{loginBean.password}" style="width: 108px;" />
+                <h:outputText value="" /><h:commandButton action="#{loginBean.login}" value="Iniciar Sesión" id="btnLogin" />
+            </h:panelGrid>
+        </h:form>
+
+    </h:body>
+</html>

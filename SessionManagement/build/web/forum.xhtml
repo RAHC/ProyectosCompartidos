@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <h:head>
+        <title>TODO supply a title</title>
+    </h:head>
+    <h:body>
+        <f:metadata>
+            <f:event listener="#{loginBean.verifyUseLogin}" type="preRenderView">
+            </f:event>
+        </f:metadata>
+
+        <p:idleMonitor timeout="10000"   
+                       onidle="idleDialog.show()"/>  
+
+        <p:dialog header="Tiempo de Sesión Expirado" resizable="false" widgetVar="idleDialog" modal="true" width="400">  
+            <h:outputText value="Inicia Sesión de nuevo" />  
+           <input id="reiniciar" type="button" value="Iniciar Nueva Sesión"
+                    onclick="window.location='#{facesContext.externalContext.requestContextPath}/login.xhtml';" />
+        </p:dialog> 
+
+        <h:form>
+            <h:panelGrid columns="1">
+                <h:outputLabel value="Welcome to the jungle"/> <h:outputLabel value="#{loginBean.username}"/>
+                <h:outputLink value="publico.xhtml">Ver cosas del publico</h:outputLink>
+                <h:commandLink value="Cerrar Sesión" action="#{loginBean.cerrarSesion}"/>
+            </h:panelGrid>
+        </h:form>
+
+    </h:body>
+</html>
