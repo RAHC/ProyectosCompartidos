@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core">>
+    <h:head>
+        <title>Probando Acordiones</title>
+    </h:head>
+    <h:body>
+        <h:form prependId="false">
+            <p:accordionPanel multiple="true" activeIndex="0,1">
+                <p:tab title="Identificación del Informante">
+                    <h:panelGrid columns="3">
+                        <h:outputLabel value="Nombres" for="nombres"/>
+                        <p:inputText id="nombres" label="Nombres" value="#{registroIncidente.nombres}"
+                                     required="true" requiredMessage="Ingrese el nombre del informante por favor"/>
+                        <h:message for="nombres"/>
+
+                        <h:outputLabel value="Apellidos" for="apellidos"/>
+                        <p:inputText id="apellidos" label="Apellidos" value="#{registroIncidente.apellidos}"
+                                     required="true" requiredMessage="Ingrese los apellidos del informante por favor"/>
+                        <h:message for="apellidos"/>
+
+
+                        <h:outputLabel value="Telefono" for="telefono"/>
+                        <p:inputText id="telefono" label="Telefono" value="#{registroIncidente.telefono}"
+                                     required="true" requiredMessage="El telefono es necesario"/>
+                        <h:message for="telefono"/>                             
+                    </h:panelGrid>
+                </p:tab>
+
+                <p:tab title="Identificación del Incidente">
+                    <p:accordionPanel multiple="true" activeIndex="0,1">
+                        <p:tab title="Ubicacion">
+                            <h:panelGrid columns="3">
+                                <h:outputLabel value="Departamento" for="departamento"/>
+
+                                <p:selectOneMenu id="departamento" label="Departamento" value="#{init.codDepartamento}">
+                                    <f:selectItem itemLabel="Seleccione el departamento" itemValue="" />
+                                    <f:selectItems value="#{init.departamentos}" var="dept" itemLabel="#{dept.nombreDepartamento}" itemValue="#{dept.idDepartamento}" />
+                                    <p:ajax update="municipio"/>
+                                </p:selectOneMenu>  
+
+                                <h:message for="departamento"/>
+
+                                <h:outputLabel value="Municipio" for="municipio"/>
+                                <p:selectOneMenu id="municipio" label="Municipio" value="#{registroIncidente.municipio}">
+                                    <f:selectItem itemLabel="Seleccione un Municipio" itemValue="=P" /> 
+                                    <f:selectItems value="#{init.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
+           
+                                </p:selectOneMenu>
+
+                                <h:message for="municipio" showDetail="true"/>   
+                                
+                                <!--<p:growl id="gw">
+                                   {init.municipio}
+                                </p:growl>-->
+                                    
+                           
+
+                                <h:outputLabel value="Cantón" for="canton"/>
+                                <p:selectOneMenu id="canton" label="Canton" >
+
+                                </p:selectOneMenu>
+                                <h:message for="canton"/>  
+
+                                <h:outputLabel value="Caserío" for="caserio"/>
+                                <p:selectOneMenu id="caserio" label="Caserío" >
+
+                                </p:selectOneMenu>
+                                <h:message for="caserio"/>
+
+                                <h:outputLabel value="Dirección Exacta" for="direccion"/>
+                                <p:inputText id="direccion" label="Dirección Exacta" />
+                                <h:message for="direccion"/>   
+
+                                <h:outputLabel value="Punto de Referencia" for="punto"/>
+                                <p:inputText id="punto" label="Punto de Referencia" />
+                                <h:message for="punto"/>                                  
+                            </h:panelGrid>
+                        </p:tab>
+
+                        <p:tab title="Descripción">
+                            <h:panelGrid columns="3">
+                                <h:outputLabel value="Categoría de Incidente" for="categoria"/>
+                                <p:selectOneMenu id="categoria" label="Categoría de Incidente" >
+
+                                </p:selectOneMenu>
+                                <h:message for="categoria"/>
+
+                                <h:outputLabel value="Tipo de Incidente" for="tipo"/>
+                                <p:selectOneMenu id="tipo" label="Tipo de Incidente" >
+
+                                </p:selectOneMenu>
+                                <h:message for="tipo"/>   
+
+                                <h:outputLabel value="Fecha y Hora" for="fecha"/>                                
+                                <p:calendar id="fecha" showOn="button" navigator="true"/>
+                                <h:message for="fecha"/>     
+
+                                <h:outputLabel value="Descripción de la situación" for="descripcion"/>
+                                <p:inputTextarea id="descripcion" label="Descripción de la Situación" />
+                                <h:message for="descripcion"/>          
+
+                                <h:outputLabel value="Acciones tomadas localmente" for="acciones"/>
+                                <p:inputTextarea id="acciones" label="Acciones tomadas localmente" />
+                                <h:message for="acciones"/>   
+
+                                <h:outputLabel value="Estado" for="estado"/>
+                                <p:selectOneMenu id="estado" label="Estado" value="#{registroIncidente.estado}">
+                                    <f:selectItems value="#{registroIncidente.estados}" var="est" itemLabel="#{est.nombreEstado}" itemValue="#{est.idEstado}" />
+                                </p:selectOneMenu>
+                                <h:message for="estado"/>
+
+                                <h:outputLabel value="Prioridad" for="prioridad"/>
+
+                                <p:selectOneMenu id="prioridad" label="Prioridad"  value="#{registroIncidente.prioridad}">
+                                    <f:selectItems value="#{registroIncidente.prioridades}" var="prior" itemLabel="#{prior.nombrePrioridad}" itemValue="#{prior.idPrioridad}"/>
+                                </p:selectOneMenu>
+
+                                <h:message for="prioridad"/>
+   
+                            </h:panelGrid>
+                        </p:tab>
+                    </p:accordionPanel>
+                </p:tab>
+            </p:accordionPanel>
+
+            <p:commandButton id="guardar" value="Guardar" action="#{registroIncidente.guardar}" ajax="false"/>
+            <p:commandButton id="cancelar" value="Cancelar" action="index.html"/>  
+            <p:commandButton id="limpiar" value="Limpiar" action="index.html" type="reset"/>                    
+        </h:form>
+
+        <p:dataTable id="dataTable" value="#{registroIncidente.estados}" var="pe" 
+                     paginator="true" rows="3"
+                     paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                     rowsPerPageTemplate="3,6,9">  
+
+            <p:column>
+                <f:facet name="header">Id</f:facet>
+                #{pe.idEstado}
+            </p:column>
+
+            <p:column>
+                <f:facet name="header">Nombre</f:facet>   
+                #{pe.nombreEstado}
+            </p:column>
+
+            <p:column>
+                <f:facet name="header">Color</f:facet>  
+                #{pe.colorEstado}
+            </p:column>
+
+        </p:dataTable>
+
+    </h:body>
+</html>

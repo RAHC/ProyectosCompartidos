@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./SisePlantilla.xhtml">
+
+            <ui:define name="content">
+               <h:form prependId="false">
+                    <p:panel> 
+                        <h:panelGrid class="tblListBack" cellpadding="10" cellspacing="10" columns="1">
+                            <h2 align="center">Cerrar Incidente</h2>
+                            <h:panelGroup>
+                                <h:outputLabel value="Fecha y Hora de Cierre: " for="fechaCierre"/>
+                                <p:calendar id="fechaCierre" effect="slide" showOn="button" navigator="true" pattern="dd/MM/yyyy HH:mm" value="#{registroCierre.fecha}" /> 
+                                <h:message for="fechaCierre" />
+                            </h:panelGroup>
+                            <h:outputLabel value="Observaciones sobre el cierre del incidente: " for="acciones" />
+                            <p:inputTextarea rows="5" id="acciones" cols="70" value="#{registroCierre.acciones}" />
+                            <h:panelGroup>
+                                <h:outputLabel value="Estado del Incidente: "/>
+                                <p:selectOneMenu id="estado" label="Estado" value="#{registroCierre.estado}" >
+                                    <f:selectItems value="#{init.estadoCierre}" var="estados" itemLabel="#{estados.nombreEstado}" itemValue="#{estados.idEstado}"/>
+                                </p:selectOneMenu>
+                            </h:panelGroup>
+                            <h:panelGroup >
+                                <p:commandButton id="guardar"  value="Guardar" action="#{registroCierre.guardar}" ajax="false" style=" left: 60%" />
+                                <p:commandButton id="cancel" value="Cancelar" style=" left: 60%" />
+                            </h:panelGroup>
+                        </h:panelGrid>
+                    </p:panel> 
+                </h:form> 
+                
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

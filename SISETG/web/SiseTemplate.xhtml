@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href="./resources/css/default.css" rel="stylesheet" type="text/css" />
+        <link href="./resources/css/estilos.css" rel="stylesheet" type="text/css" />
+        <link href="./resources/css/cssLayout.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="./resources/css/style.css" type="text/css" media="screen" />
+        <!--[if IE 6]><link rel="stylesheet" href="./resources/css/style.ie6.css" type="text/css" media="screen" /><![endif]-->
+        <!--[if IE 7]><link rel="stylesheet" href="./resources/css/style.ie7.css" type="text/css" media="screen" /><![endif]-->
+        <script type="text/javascript" src="./resources/javascript/jquery.js"></script>
+        <script type="text/javascript" src="./resources/javascript/script.js"></script>
+        <title>SISE</title>
+    </h:head>
+
+    <h:body>
+        <div id="art-main">
+            <div class="cleared reset-box"></div>
+            <div class="art-box art-sheet">
+                <div class="art-box-body art-sheet-body">
+                    <div class="art-header">
+                        <div class="art-logo">
+                            <h:dataTable cellspacing="0" cellpadding="0" width="900px">
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:graphicImage url="resources/images/PC.png" width="100px" height="100px" class="art-header-png"/>
+                                    </f:facet>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h1 class="art-logo-name"> Sistema Inform&aacute;tico para el Manejo de Servicios de Emergencia </h1>
+                                        <h2 class="art-logo-text"> Direcci&oacute;n General de Protecci&oacute;n Civil </h2>
+                                    </f:facet>
+                                </h:column>
+                            </h:dataTable>   
+
+                        </div>
+                        <div class="art-bar art-nav">
+                            <div class="art-nav-outer">
+                                <div class="art-nav-wrapper">
+                                    <div class="art-nav-inner">
+                                        <ul class="art-hmenu">
+                                            <li>
+                                                <a href="./new-page.html" class="active">Page 1</a>
+                                                <ul>
+                                                    <li>
+                                                        <a href="./new-page/new-page.html">Subpage 1</a>
+
+                                                    </li>
+                                                    <li>
+                                                        <a href="./new-page/new-page-2.html">Subpage 2</a>
+
+                                                    </li>
+                                                    <li>
+                                                        <a href="./new-page/new-page-3.html">Subpage 3</a>
+
+                                                    </li>
+                                                </ul>
+                                            </li>	
+                                            <li>
+                                                <a href="./new-page-2.html">Page 2</a>
+                                            </li>	
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cleared reset-box"></div>
+
+                    </div>
+                    <div class="cleared reset-box"></div>
+                    
+                        <div class="art-content-layout">
+                         
+
+                                <div class="art-layout-cell art-content">
+                                    <div class="art-box art-post">
+                                        <div class="art-box-body art-post-body">
+                                            
+
+                                                <h2 class="art-postheader">
+                                                    <div id="titles">
+                                                        <ui:insert name="titles">Title</ui:insert>
+                                                    </div>
+                                                </h2>
+
+                                                <div class="art-postcontent">
+                                                    <div id="content">
+                                                        <ui:insert name="content">Content</ui:insert>
+                                                    </div>
+
+                                                </div>
+                                                <div class="cleared"></div>
+                                           
+
+                                            <div class="cleared"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="cleared"></div>
+                                </div>
+                        
+                        </div>
+                  
+                    <div class="cleared"></div>
+                    <div class="art-footer">
+                        <div class="art-footer-body">
+                            <div class="art-footer-text">
+                                <p><a href="http://www.proteccioncivil.gob.sv/" target="_blank">www.proteccioncivil.gob.sv</a></p><p>Protecci&oacute;n Civil El Salvador Copyright © 2012. All Rights Reserved.</p>
+                            </div>
+                            <div class="cleared"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+
+
+        <!--<div id="top" class="top">
+            <ui:insert name="top">Top</ui:insert>
+        </div>
+
+        <div id="content" class="center_content">
+            <ui:insert name="content">Content</ui:insert>
+        </div> -->
+
+    </h:body>
+
+</html>
+

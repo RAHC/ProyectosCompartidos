@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./SisePlantilla.xhtml">
+            <ui:define name="titles">
+                INCIDENTES
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form prependId="false">
+                    <h:outputText value="Evento: " /><h:outputText value="Nombre Evento" /><br />
+                    <h:outputLabel value="Rango de fechas del incidente del: " for="fechaIni"/>
+                    <p:calendar id="fechaIni" effect="slide" showOn="button" navigator="true" pattern="dd/MM/yyyy" value="#{listadoIncidente.fechaIni}" /> 
+                    <h:message for="fechaIni"/>
+                    <h:outputLabel value="al: " for="fechaFin"/>
+                    <p:calendar id="fechaFin" effect="slide" showOn="button" navigator="true" pattern="dd/MM/yyyy" value="#{listadoIncidente.fechaFin}" /> 
+                    <h:message for="fechaFin"/>
+
+                    <p:panelGrid style=" font-size: 14px; font-family: calibri">
+                        <f:facet name="header">
+                            <p:row>
+                                <p:column width="10%"><h:outputLabel value="Filtrar por: " /></p:column>
+                                <p:column width="18%"><h:outputLabel value="Tipo de Incidente: " for="TpIncidente" /></p:column>
+                                <p:column width="18%"><h:outputLabel value="Prioridad: "  for="Prioridad" /></p:column>
+                                <p:column width="18%"><h:outputLabel value="Estado: " for="Estado" /></p:column>
+                                <p:column width="18%"><h:outputLabel value="Departamento: " for="Departamento" /></p:column>
+                                <p:column width="18%"><h:outputLabel value="Municipio: " for="Municipio" /></p:column>
+                            </p:row>
+                        </f:facet>
+                        <p:row>
+                            <p:column>
+                                <p:commandButton actionListener="#{listadoIncidente.loadIncidentes}" update="panel,display" icon="ui-icon-check" value="Generar" />
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="idTpIncidente" value="#{listadoIncidente.tpIncidente}" style=" font-size: 11px; font-family: calibri" >
+                                    <f:selectItem itemLabel="[TODOS]" itemValue="" />
+                                    <f:selectItems value="#{init.tpIncidentes}" var="tpInc" itemLabel="#{tpInc.nombreTpIncidente}" itemValue="#{tpInc.idTpIncidente}" />
+                                </p:selectOneMenu>
+                                <h:message for="TpIncidente"/>
+                            </p:column>
+                            <p:column> 
+                                <p:selectOneMenu id="idPrioridad" value="#{listadoIncidente.prioridad}" style=" font-size: 11px; font-family: calibri">
+                                    <f:selectItem itemLabel="[TODOS]" itemValue="0" />
+                                    <f:selectItems value="#{init.prioridades}" var="prioridad" itemLabel="#{prioridad.nombrePrioridad}" itemValue="#{prioridad.idPrioridad}" />
+                                </p:selectOneMenu>
+                                <h:message for="prioridad"/>
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="Estado" value="#{listadoIncidente.estado}" style=" font-size: 11px; font-family: calibri">
+                                    <f:selectItem itemLabel="[TODOS]" itemValue="0" />
+                                    <f:selectItems value="#{init.estados}" var="estado" itemLabel="#{estado.nombreEstado}" itemValue="#{estado.idEstado}" />
+                                </p:selectOneMenu>
+                                <h:message for="estado"/>
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="departamento" label="Departamento" value="#{listadoIncidente.departamento}" style=" font-size: 11px; font-family: calibri">
+                                    <f:selectItem itemLabel="[TODOS]" itemValue="" />
+                                    <f:selectItems value="#{init.departamentos}" var="depto" itemLabel="#{depto.nombreDepartamento}" itemValue="#{depto.idDepartamento}"/>
+                                    <p:ajax update="municipio" />
+                                </p:selectOneMenu>
+                                <h:message for="departamento" /> 
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="municipio" label="Municipio" value="#{listadoIncidente.municipio}" style=" font-size: 11px; font-family: calibri">
+                                    <f:selectItem itemLabel="[TODOS]" itemValue="" /> 
+                                    <f:selectItems value="#{listadoIncidente.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
+                                </p:selectOneMenu>
+                                <h:message for="municipio"/>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                    <p:panel id="display">
+                        <p:panelGrid columns="6" style=" font-size: 12px; font-family: calibri">
+                            <f:facet name="header2">
+                                <p:row>
+                                    <p:column colspan="2">Datos de Incidente</p:column>
+                                    <p:column colspan="2">Prioridad</p:column>
+                                    <p:column>Estado</p:column>
+                                    <p:column>Menu de Operaciones</p:column>
+                                </p:row>
+                            </f:facet>
+                            <p:row>
+                                <p:column>Tipo de Incidente: </p:column>
+                                <p:column></p:column>
+                                <p:column colspan="4">Fecha y Hora de Inicio: </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>Informante: </p:column>
+                                <p:column></p:column>
+                                <p:column colspan="4"><h:inputTextarea rows="3" cols="3" disabled="disabled"></h:inputTextarea></p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>Tel&eacute;fono: </p:column>
+                                <p:column></p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>Fecha de Notificaci&oacute;n</p:column>
+                                <p:column></p:column>
+                            </p:row> 
+                            <p:row>
+                                <p:column>Ubicaci&oacute;n: </p:column>
+                                <p:column><p:commandButton icon="ui-icon-pin-s" value="Mapa" /></p:column>
+                                <p:column>Acciones Tomadas: <h:inputTextarea rows="3" cols="3" disabled="disabled" ></h:inputTextarea></p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">Direcci&oacute;n: </p:column> 
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">Punto de referencia: </p:column>
+                            </p:row>
+                            
+                        </p:panelGrid>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
