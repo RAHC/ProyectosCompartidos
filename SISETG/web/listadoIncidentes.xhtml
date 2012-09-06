@@ -17,21 +17,21 @@
                 <h:form prependId="false">
                     <h:outputText value="Evento: " /><h:outputText value="Nombre Evento" /><br />
                     <h:outputLabel value="Rango de fechas del incidente del: " for="fechaIni"/>
-                    <p:calendar id="fechaIni" effect="slide" showOn="button" navigator="true" pattern="dd/MM/yyyy" value="#{listadoIncidente.fechaIni}" /> 
+                    <p:calendar id="fechaIni" effect="slide" showOn="button" navigator="true" pattern="dd/MM/yyyy" locale="es" value="#{listadoIncidente.fechaIni}" /> 
                     <h:message for="fechaIni"/>
                     <h:outputLabel value="al: " for="fechaFin"/>
-                    <p:calendar id="fechaFin" effect="slide" showOn="button" navigator="true" pattern="dd/MM/yyyy" value="#{listadoIncidente.fechaFin}" /> 
+                    <p:calendar id="fechaFin" effect="slide" showOn="button" navigator="true" pattern="dd/MM/yyyy" locale="es" value="#{listadoIncidente.fechaFin}" /> 
                     <h:message for="fechaFin"/>
 
                     <p:panelGrid style=" font-size: 14px; font-family: calibri">
                         <f:facet name="header">
                             <p:row>
-                                <p:column width="10%"><h:outputLabel value="Filtrar por: " /></p:column>
-                                <p:column width="18%"><h:outputLabel value="Tipo de Incidente: " for="TpIncidente" /></p:column>
-                                <p:column width="18%"><h:outputLabel value="Prioridad: "  for="Prioridad" /></p:column>
-                                <p:column width="18%"><h:outputLabel value="Estado: " for="Estado" /></p:column>
-                                <p:column width="18%"><h:outputLabel value="Departamento: " for="Departamento" /></p:column>
-                                <p:column width="18%"><h:outputLabel value="Municipio: " for="Municipio" /></p:column>
+                                <p:column><h:outputLabel value="Filtrar por: " /></p:column>
+                                <p:column><h:outputLabel value="Tipo de Incidente: " for="TpIncidente" /></p:column>
+                                <p:column><h:outputLabel value="Prioridad: "  for="Prioridad" /></p:column>
+                                <p:column><h:outputLabel value="Estado: " for="Estado" /></p:column>
+                                <p:column><h:outputLabel value="Departamento: " for="Departamento" /></p:column>
+                                <p:column><h:outputLabel value="Municipio: " for="Municipio" /></p:column>
                             </p:row>
                         </f:facet>
                         <p:row>
