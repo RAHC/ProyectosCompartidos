@@ -14,14 +14,15 @@ import javax.faces.bean.RequestScoped;
 @RequestScoped
 public class DateBean {
 
-    public DateBean() {
-    }
-
     public String getCurrentDate() {
         String dateString;
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
         Calendar calendar = Calendar.getInstance();
         Date date = calendar.getTime();
         dateString =sdf.format(date);
-        return dateString;  }
+        return dateString;  
+    }
 }
+
+
+
