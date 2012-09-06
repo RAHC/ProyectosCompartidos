@@ -526,4 +526,15 @@ BODY{
 {
     text-align: center;
     font-weight:bold;
+    font-family: calibri;
+    font-size: 16px;
 }
+.txt-content
+{
+   font-size: 12px; 
+   font-family: calibri;
+}
+table.innertable { border: 0; }
+table.innertable td { border: 0; }
+table.innertable tr { border: 0; }
+table.innertable { width: 100% }
