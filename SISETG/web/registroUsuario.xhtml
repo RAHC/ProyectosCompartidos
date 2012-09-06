@@ -22,7 +22,6 @@
             <ui:define name="content"> 
                 <h:form prependId="false">
 
-                    <!--Primefaces Password-->    
                     <p:panel header="Datos de Cuenta" > 
 
                         <h:panelGrid columns="3" id="datosUsuario" width="75%" >                   
@@ -47,8 +46,8 @@
                             <h:message for="nivel"/>
 
                             <h:panelGroup>
-                            <h:outputLabel value="Jurisdicci&oacute;n, " />
-                            <h:outputLabel value="Departamento: " for="departamento"/>
+                                <h:outputLabel value="Jurisdicci&oacute;n, " />
+                                <h:outputLabel value="Departamento: " for="departamento"/>
                             </h:panelGroup>
                             <p:selectOneMenu id="departamento" label="Departamento" value="#{init.codDepartamento}" >
                                 <f:selectItem itemLabel="Seleccione un Departamento" itemValue="" />
@@ -58,11 +57,11 @@
                             <h:message for="departamento" />
                             <h:outputLabel value="Municipio: " for="municipio"/>                           
                             <h:panelGroup>
-                            <p:selectOneMenu id="municipio" label="Municipio" value="#{registroUsuario.municipio}" >
-                                <f:selectItem itemLabel="Seleccione un Municipio" itemValue="" /> 
-                                <f:selectItems value="#{init.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
-                            </p:selectOneMenu>
-                            <h:message for="municipio"/>
+                                <p:selectOneMenu id="municipio" label="Municipio" value="#{registroUsuario.municipio}" >
+                                    <f:selectItem itemLabel="Seleccione un Municipio" itemValue="" /> 
+                                    <f:selectItems value="#{init.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
+                                </p:selectOneMenu>
+                                <h:message for="municipio"/>
                             </h:panelGroup>
                         </h:panelGrid>
                     </p:panel>
@@ -88,7 +87,7 @@
                                 <f:selectItems value="#{registroUsuario.contactos}" var="contacto" itemLabel="#{contacto.nombreContacto} #{contacto.apellidoContacto}" itemValue="#{contacto.idContacto}" />
                                 <p:ajax update="lyContacto" listener="#{registroUsuario.datosContacto()}" />
                             </p:selectOneMenu>
-                            
+
                         </h:panelGrid>
                     </p:panel>
                     <p:panel header="Datos de Contacto" id="lyContacto"> 
@@ -120,20 +119,20 @@
                             <h:outputLabel /><h:outputLabel />
                             <h:outputLabel /><h:outputLabel /><h:outputLabel />
                             <h:panelGroup>
-                            <p:commandButton id="guardar" value="Guardar" action="#{registroUsuario.guardar}" ajax="false" />
-                            <p:commandButton id="cancel" value="Cancelar" />
-                            <p:commandButton id="cleanContent" value="Limpiar" />
+                                <p:commandButton id="guardar" value="Guardar" action="#{registroUsuario.guardar}" ajax="false" />
+                                <p:commandButton id="cancel" value="Cancelar" />
+                                <p:commandButton id="cleanContent" value="Limpiar" />
                             </h:panelGroup>
                         </h:panelGrid>
                     </p:panel>
-                    
+
 
                 </h:form>
 
-                </ui:define>
-         
-                 </ui:composition> 
-                
-                </body>
+            </ui:define>
 
-                </html>
+        </ui:composition> 
+
+    </body>
+
+</html>
