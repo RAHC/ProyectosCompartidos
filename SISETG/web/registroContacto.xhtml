@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./SisePlantilla.xhtml">
+
+            <ui:define name="titles">
+                REGISTRO DE CONTACTO
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form prependId="false">
+                    <p:panel header="Informaci&oacute;n de Contacto" id="lyContacto"> 
+                        <p:panelGrid styleClass="innertable">
+                            <p:row>
+                                <p:column><h:outputLabel value="Nombres: " for="nombres" /></p:column>
+                                <p:column colspan="3"><p:inputText id="nombres" size="35" value="#{registroContacto.nombres}" 
+                                                       required="true" requiredMessage="Por favor Ingrese los nombres del contacto"/></p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column><h:outputLabel value="Apellidos: " for="apellidos"/></p:column>
+                                <p:column colspan="3"><p:inputText id="apellidos" size="35" value="#{registroContacto.apellidos}"
+                                                       required="true" requiredMessage="Por favor Ingrese los apellidos del contacto"/></p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="4">
+                                    <p:growl id="grow1" showDetail="true">
+                                        <p:fieldset legend="Instituci&oacute;n a la que pertenece" style=" font-size: 14px; font-family: calibri" >
+                                            <h:panelGrid columns="3">
+                                                <h:outputLabel value="Tipo de Instituci&oacute;n: " for="tpInstitucion" />
+                                                <p:selectOneMenu id="tpInstitucion" label="TpInstitucion" value="#{init.tpInstitucion}" required="true" requiredMessage="Por favor seleccione un tipo de instituci&oacute;n" >
+                                                    <f:selectItem itemLabel="Seleccione un Tipo de Instituci&oacute;n" itemValue="" />
+                                                    <f:selectItems value="#{init.tpInstituciones}" var="tpInstitucion" itemLabel="#{tpInstitucion.nombreTpInstitucion}" itemValue="#{tpInstitucion.idTpInstitucion}" />
+                                                    <p:ajax update="institucion" />
+                                                </p:selectOneMenu>
+                                                <h:outputLabel />
+                                                <h:outputLabel value="Nombre de Instituci&oacute;n: " for="institucion" />
+                                                <p:selectOneMenu id="institucion" label="Institucion" value="#{registroContacto.institucion}" required="true" requiredMessage="Por favor seleccione una instituci&oacute;n">
+                                                    <f:selectItem itemLabel="Seleccione una Instituci&oacute;n" itemValue="0" />
+                                                    <f:selectItems value="#{init.instituciones}" var="inst" itemLabel="#{inst.nombreInstitucion}" itemValue="#{inst.idInstitucion}" />
+                                                </p:selectOneMenu>
+                                            </h:panelGrid>
+                                        </p:fieldset>
+                                    </p:growl>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="4">
+                                    <p:growl id="grow2" showDetail="true">
+                                        <p:fieldset legend="Comunicaci&oacute;n">
+                                            <p:panelGrid styleClass="innertable">
+                                                <p:row>
+                                                    <p:column><h:outputLabel value="Telefono institucional: " for="telInst" /></p:column>
+                                                    <p:column><p:inputText id="telInst" size="25" value="#{registroContacto.telInst}"/></p:column>
+                                                    <p:column><h:outputLabel value="Telefono celular: " for="cel" /></p:column>
+                                                    <p:column><p:inputText id="cel" size="25" value="#{registroContacto.cel}" /></p:column>
+                                                </p:row>
+                                                <p:row>
+                                                    <p:column><h:outputLabel value="Telefono personal: " for="telPers" /></p:column>
+                                                    <p:column><p:inputText id="telPers" size="25" value="#{registroContacto.telPers}" /></p:column>
+                                                </p:row>
+                                                <p:row>    
+                                                    <p:column><h:outputLabel value="Fax: " for="fax"/></p:column>
+                                                    <p:column><p:inputText id="fax" size="25" value="#{registroContacto.fax}" /></p:column>
+                                                </p:row>
+                                                <p:row>
+                                                    <p:column><h:outputLabel value="Radio: " for="radio" /></p:column>
+                                                    <p:column><p:inputText id="radio" size="25" value="#{registroContacto.radio}" /></p:column>
+                                                </p:row>
+                                                <p:row>
+                                                    <p:column><h:outputLabel value="Correo institucional: " for="correoInst" /></p:column>
+                                                    <p:column><p:inputText id="correInst" size="35" value="#{registroContacto.correoInst}" /></p:column>
+                                                    <p:column><h:outputLabel value="Correo personal: " for="correoPers" /></p:column>
+                                                    <p:column><p:inputText id="correoPers" size="35" value="#{registroContacto.correoPers}" /></p:column>
+                                                </p:row>
+                                                <p:row>
+                                                    <p:column><h:outputLabel value="Cargo desempe&ntilde;ado: " for="cargo" /></p:column>
+                                                    <p:column><p:inputText id="cargo" size="35" value="#{registroContacto.cargo}" /></p:column>
+                                                </p:row>
+                                            </p:panelGrid>
+                                        </p:fieldset>
+                                    </p:growl>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="4" style=" text-align: right">
+                                    <p:commandButton id="guardar" value="Guardar" action="#{registroContacto.guardar}" ajax="false" />
+                                    <p:commandButton id="cancel" value="Cancelar" />
+                                    <p:commandButton id="cleanContent" value="Limpiar" />
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
