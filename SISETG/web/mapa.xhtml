@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./SisePlantilla.xhtml">
+
+            <ui:define name="titles">
+                Example Mapa
+            </ui:define>
+
+            <ui:define name="content">
+
+                <h:form prependId="false">
+                    <p:panelGrid styleClass="generalTable">
+                        <p:row>
+                            <p:column>
+                                <p:selectOneMenu id="departamento" onchange="movimiento()" value="#{mapa.codDepartamento}" >
+                                    <f:selectItem itemLabel="Seleccione un Departamento" itemValue="" />
+                                    <f:selectItems value="#{mapa.departamentos}" var="depto" itemLabel="#{depto.nombreDepartamento}" itemValue="#{depto.idDepartamento}"/>
+                                    <p:ajax update="municipio" />
+                                </p:selectOneMenu>
+                                <p:selectOneMenu id="municipio" onchange="movimiento()" value="#{mapa.codMunicipio}">
+                                    <f:selectItem itemLabel="Seleccione un Municipio" itemValue="" /> 
+                                    <f:selectItems value="#{mapa.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column>
+                                <f:view contentType="text/html">
+                                    <p:gmap center="13.70,-88.91" zoom="8" type="ROADMAP" streetView="false" style="width:450px; height:300px;" onPointClick="handlePointClick(event);" widgetVar="map">
+                                        <!-- para que muestre los mensajes -->
+                                        <!--<p:ajax event="stateChange" listener="{mapBean.onStateChange}" update="messages" />  
+                                        <p:ajax event="pointSelect" listener="{mapBean.onPointSelect}" update="messages" />  -->
+                                    </p:gmap>
+                                </f:view>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

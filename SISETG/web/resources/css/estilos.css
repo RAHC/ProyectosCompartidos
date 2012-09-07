@@ -534,7 +534,9 @@ BODY{
    font-size: 12px; 
    font-family: calibri;
 }
-table.innertable { border: 0; }
+table.innertable { border: 1; }
 table.innertable td { border: 0; }
 table.innertable tr { border: 0; }
 table.innertable { width: 100% }
+
+table.generalTable {width: 100%}

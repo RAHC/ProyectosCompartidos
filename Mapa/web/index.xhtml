@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Mapa</title>
+        <h:outputScript library="primefaces" name="gmap/gmap.js" />
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        
+        <script type="text/javascript">  
+            
+            var currentMarker = null;  
+            
+             function mover(lat,lng){
+                var centros = new google.maps.LatLng(lat,lng);
+                map.setCenter(centros);
+                map.setZoom(10);
+            }
+      
+            function handlePointClick(event) {  
+                if(currentMarker == null) {  
+                    document.getElementById('lat').value = event.latLng.lat();  
+                    document.getElementById('lng').value = event.latLng.lng();  
+  
+                    currentMarker = new google.maps.Marker({  
+                        position:new google.maps.LatLng(event.latLng.lat(), event.latLng.lng())  
+                    });  
+                              
+                    map.addOverlay(currentMarker);  
+                    dlg.show();  
+                }     
+            }  
+  
+            function markerAddComplete() {  
+                var fecha = new Date();
+                title.value = "Incidente Registrado  "+fecha.getDate()+"\n/"+(fecha.getMonth()+1)+"\n/"+fecha.getFullYear()+"; "+fecha.getHours()+"\n:"+fecha.getMinutes()+"\n:"+fecha.getSeconds();  
+                currentMarker.setTitle(title.value);  
+                // title.value = "Incidente Marcado";  
+  
+                currentMarker = null;  
+                dlg.hide();  
+            }  
+  
+            function cancel() {  
+                dlg.hide();  
+                currentMarker.setMap(null);  
+                currentMarker = null;  
+  
+                return false;  
+            }  
+        </script>
+    </h:head>
+    <h:body>
+
+        <h:form prependId="false">
+            <p:panel> 
+                <p:growl id="messages" showDetail="true" life="2000" /> 
+                <h:panelGrid columns="3" id="datosUsuario" width="75%" >   
+                    <h:panelGroup/>
+                    <p:gmap center="13.70,-88.91" zoom="8" type="ROADMAP" streetView="false" style="width:450px; height:300px;" onPointClick="handlePointClick(event);" widgetVar="map">
+                            <!-- para que muestre los mensajes -->
+                            <!--<p:ajax event="stateChange" listener="{mapBean.onStateChange}" update="messages" />  
+                            <p:ajax event="pointSelect" listener="{mapBean.onPointSelect}" update="messages" />  -->
+                        </p:gmap>
+                    <h:panelGroup/>
+                    <h:panelGroup>
+                        <h:outputLabel value="Departamento: " for="departamento"/>
+                    </h:panelGroup>
+                    <p:selectOneMenu id="departamento" label="Departamento" value="#{mapa.codDepartamento}" >
+                        <f:selectItem itemLabel="Seleccione un Departamento" itemValue="" />
+                        <f:selectItems value="#{mapa.departamentos}" var="depto" itemLabel="#{depto.nombreDepartamento}" itemValue="#{depto.idDepartamento}"/>
+                        <p:ajax update="municipio" />
+                    </p:selectOneMenu>
+                    <h:message for="departamento" />
+                    <h:outputLabel value="municipio: " for="municipio"/>                           
+                    <h:panelGroup>
+                        <p:selectOneMenu id="municipio" label="Municipio" value="#{mapa.municipio}" >
+                            <f:selectItem itemLabel="Seleccione un Municipio" itemValue="" /> 
+                            <f:selectItems value="#{mapa.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
+                        </p:selectOneMenu>
+                        <h:message for="municipio"/>
+                    </h:panelGroup>
+                    <h:panelGroup>
+                    <f:view contentType="text/html">
+                     <!-- agregar marcador -->
+                        <p:dialog widgetVar="dlg" effect="FADE" effectDuration="0.5" close="false" fixedCenter="true">  
+                            <h:outputLabel for="title" value="Ubicación de Incidente" />  
+                            <p:inputText id="title" value="#{mapBean.title}" style="visibility: hidden"/>  
+                            <f:facet name="footer">
+                                <p:commandButton value="Agregar Marcador" actionListener="#{mapBean.addMarker}"   
+                                                 update="messages" oncomplete="markerAddComplete()"/>  
+                                <p:commandButton value="Cancelar" onclick="return cancel()"/>  
+                            </f:facet>
+                            <h:inputHidden id="lat" value="#{mapBean.lat}" />  
+                            <h:inputHidden id="lng" value="#{mapBean.lng}" />
+                        </p:dialog>  
+                        <!-- fin agregar marcador -->
+                        <!-- -->
+                    </f:view>
+                    </h:panelGroup>
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+
+
+    </h:body>
+</html>
+

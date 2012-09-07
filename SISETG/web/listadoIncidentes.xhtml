@@ -23,7 +23,7 @@
                     <p:calendar id="fechaFin" effect="slide" showOn="button" navigator="true" pattern="dd/MM/yyyy" locale="es" value="#{listadoIncidente.fechaFin}" /> 
                     <h:message for="fechaFin"/>
 
-                    <p:panelGrid style=" font-size: 14px; font-family: calibri">
+                    <p:panelGrid style=" font-size: 14px; font-family: calibri" styleClass="generalTable" >
                         <f:facet name="header">
                             <p:row>
                                 <p:column><h:outputLabel value="Filtrar por: " /></p:column>
@@ -36,7 +36,7 @@
                         </f:facet>
                         <p:row>
                             <p:column>
-                                <p:commandButton actionListener="#{listadoIncidente.loadIncidentes}" update="display" icon="ui-icon-check" value="Generar" />
+                                <p:commandButton actionListener="#{listadoIncidente.loadIncidentes}" update="display"  icon="ui-icon-check" value="Generar" />
                             </p:column>
                             <p:column>
                                 <p:selectOneMenu id="idTpIncidente" value="#{listadoIncidente.tpIncidente}" style=" font-size: 11px; font-family: calibri" >
@@ -77,15 +77,17 @@
                         </p:row>
                     </p:panelGrid>
                     <p:panel id="display">
-                        <p:panelGrid columns="6" style=" font-size: 12px; font-family: calibri">
-                            <f:facet name="header2">
-                                <p:row>
-                                    <p:column colspan="2">Datos de Incidente</p:column>
-                                    <p:column colspan="2">Prioridad</p:column>
-                                    <p:column>Estado</p:column>
-                                    <p:column>Menu de Operaciones</p:column>
-                                </p:row>
-                            </f:facet>
+                    <p:panelGrid style=" font-size: 12px; font-family: calibri" styleClass="generalTable">
+                        <f:facet name="header">
+                            <p:row>
+                                <p:column colspan="2" width="100">Datos de Incidente</p:column>
+                                <p:column width="50">Prioridad</p:column>
+                                <p:column><h:outputText value="#{datosIncidente.prioridad}" /></p:column>
+                                <p:column width="50">Estado</p:column>
+                                <p:column width="200">Menu de Operaciones</p:column>
+                            </p:row>
+                        </f:facet>
+                        
                             <p:row>
                                 <p:column>Tipo de Incidente: </p:column>
                                 <p:column></p:column>
@@ -94,7 +96,8 @@
                             <p:row>
                                 <p:column>Informante: </p:column>
                                 <p:column></p:column>
-                                <p:column colspan="4"><h:inputTextarea rows="3" cols="3" disabled="disabled"></h:inputTextarea></p:column>
+                                <p:column rowspan="3">Descripci&oacute;n: </p:column>
+                                <p:column colspan="3" rowspan="3" style="margin-top:20px"><h:inputTextarea rows="3" cols="150" disabled="disabled"></h:inputTextarea></p:column>
                             </p:row>
                             <p:row>
                                 <p:column>Tel&eacute;fono: </p:column>
@@ -107,7 +110,8 @@
                             <p:row>
                                 <p:column>Ubicaci&oacute;n: </p:column>
                                 <p:column><p:commandButton icon="ui-icon-pin-s" value="Mapa" /></p:column>
-                                <p:column>Acciones Tomadas: <h:inputTextarea rows="3" cols="3" disabled="disabled" ></h:inputTextarea></p:column>
+                                <p:column rowspan="3" style="margin-top:20px" >Acciones Tomadas: </p:column>
+                                <p:column rowspan="3" colspan="3"><h:inputTextarea rows="4" cols="150" disabled="disabled" ></h:inputTextarea></p:column>
                             </p:row>
                             <p:row>
                                 <p:column colspan="2">Direcci&oacute;n: </p:column> 
@@ -115,9 +119,9 @@
                             <p:row>
                                 <p:column colspan="2">Punto de referencia: </p:column>
                             </p:row>
-                            
-                        </p:panelGrid>
-                    </p:panel>
+                       
+                    </p:panelGrid>
+                    </p:panel>            
                 </h:form>
             </ui:define>
 

@@ -1,7 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
 
     <body>
 
@@ -12,7 +14,17 @@
             </ui:define>
 
             <ui:define name="content">
-                
+                <h:form>
+                    <p:growl id="grow1" showDetail="true" escape="false" />
+                    <p:pickList id="instituciones" value="#{exampleInstituciones.instituciones}" 
+                                var="institucion" effect="bounce" itemValue="#{institucion.idInstitucion}" 
+                                itemLabel="#{institucion.nombreInstitucion}"/>
+                    <p:commandButton update="display" value="click"  />
+                    <p:panel id="display">
+                        <h:outputText value="#{exampleInstituciones.instituciones.target}" />
+                    </p:panel>
+                    
+                </h:form>
             </ui:define>
 
         </ui:composition>
