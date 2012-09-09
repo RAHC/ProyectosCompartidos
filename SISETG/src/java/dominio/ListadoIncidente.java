@@ -115,7 +115,7 @@ public class ListadoIncidente implements Serializable {
             connection.close();
         }
     }
-    public List<DatosIncidente> loadIncidentes() throws SQLException{
+    public List<DatosIncidente> getLoadIncidentes() throws SQLException{
         List<DatosIncidente> resultados = new ArrayList<DatosIncidente>();
         if (dataSource == null) {
             throw new SQLException("No se pudo tener acceso a la fuente de datos");
