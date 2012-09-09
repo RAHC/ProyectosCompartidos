@@ -20,24 +20,35 @@
                     <p:panelGrid styleClass="generalTable">
                         <p:row>
                             <p:column>
-                                <p:selectOneMenu id="departamento" onchange="movimiento()" value="#{mapa.codDepartamento}" >
+                                <h:panelGroup>
+                                    <h:outputLabel value="Departamento: " for="departamento"/>
+                                </h:panelGroup>
+                                <p:selectOneMenu id="departamento" label="Departamento" value="#{init.codDepartamento}" >
                                     <f:selectItem itemLabel="Seleccione un Departamento" itemValue="" />
-                                    <f:selectItems value="#{mapa.departamentos}" var="depto" itemLabel="#{depto.nombreDepartamento}" itemValue="#{depto.idDepartamento}"/>
+                                    <f:selectItems value="#{init.departamentos}" var="depto" itemLabel="#{depto.nombreDepartamento}" itemValue="#{depto.idDepartamento}"/>
                                     <p:ajax update="municipio" />
+                                    <p:ajax oncomplete="mover(#{mapa.obtenerLat(Seleccion)},#{mapa.obtenerLng(Seleccion)})" update="vermapa"/>
                                 </p:selectOneMenu>
-                                <p:selectOneMenu id="municipio" onchange="movimiento()" value="#{mapa.codMunicipio}">
-                                    <f:selectItem itemLabel="Seleccione un Municipio" itemValue="" /> 
-                                    <f:selectItems value="#{mapa.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
-                                </p:selectOneMenu>
+                                <h:message for="departamento" /><br/>
+                                <h:outputLabel value="municipio: " for="municipio"/>                           
+                                <h:panelGroup>
+                                    <p:selectOneMenu id="municipio" label="Municipio" value="#{registroUsuario.municipio}" >
+                                        <f:selectItem itemLabel="Seleccione un Municipio" itemValue="" /> 
+                                        <f:selectItems value="#{init.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
+                                    </p:selectOneMenu>
+                                    <h:message for="municipio"/>
+                                </h:panelGroup>
                             </p:column>
                             <p:column>
-                                <f:view contentType="text/html">
-                                    <p:gmap center="13.70,-88.91" zoom="8" type="ROADMAP" streetView="false" style="width:450px; height:300px;" onPointClick="handlePointClick(event);" widgetVar="map">
-                                        <!-- para que muestre los mensajes -->
-                                        <!--<p:ajax event="stateChange" listener="{mapBean.onStateChange}" update="messages" />  
-                                        <p:ajax event="pointSelect" listener="{mapBean.onPointSelect}" update="messages" />  -->
-                                    </p:gmap>
-                                </f:view>
+                                <p:panel id="vermapa">
+                                    <f:view contentType="text/html">
+                                        <p:gmap center="13.70,-88.91" zoom="8" type="ROADMAP" streetView="false" style="width:450px; height:300px;" onPointClick="handlePointClick(event);" widgetVar="map">
+                                            <!-- para que muestre los mensajes -->
+                                            <!--<p:ajax event="stateChange" listener="{mapBean.onStateChange}" update="messages" />  
+                                            <p:ajax event="pointSelect" listener="{mapBean.onPointSelect}" update="messages" />  -->
+                                        </p:gmap>
+                                    </f:view>
+                                </p:panel>
                             </p:column>
                         </p:row>
                     </p:panelGrid>
