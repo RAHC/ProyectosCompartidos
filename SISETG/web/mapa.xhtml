@@ -11,7 +11,7 @@
         <ui:composition template="./SisePlantilla.xhtml">
 
             <ui:define name="titles">
-                Example Mapa
+                Example Map
             </ui:define>
 
             <ui:define name="content">
@@ -23,26 +23,39 @@
                                 <h:panelGroup>
                                     <h:outputLabel value="Departamento: " for="departamento"/>
                                 </h:panelGroup>
-                                <p:selectOneMenu id="departamento" label="Departamento" value="#{init.codDepartamento}" >
+                                <p:selectOneMenu id="departamento" label="Departamento" value="#{datosMapa.codDepartamento}" >
                                     <f:selectItem itemLabel="Seleccione un Departamento" itemValue="" />
-                                    <f:selectItems value="#{init.departamentos}" var="depto" itemLabel="#{depto.nombreDepartamento}" itemValue="#{depto.idDepartamento}"/>
-                                    <p:ajax update="municipio" />
-                                    <p:ajax oncomplete="mover(#{mapa.obtenerLat(Seleccion)},#{mapa.obtenerLng(Seleccion)})" update="vermapa"/>
+                                    <f:selectItems value="#{datosMapa.departamentos}" var="depto" itemLabel="#{depto.nombreDepartamento}" itemValue="#{depto.idDepartamento}"/>
+                                    <p:ajax update="municipio, vermapa" />
                                 </p:selectOneMenu>
                                 <h:message for="departamento" /><br/>
                                 <h:outputLabel value="municipio: " for="municipio"/>                           
                                 <h:panelGroup>
-                                    <p:selectOneMenu id="municipio" label="Municipio" value="#{registroUsuario.municipio}" >
+                                    <p:selectOneMenu id="municipio" label="Municipio" value="#{datosMapa.codMunicipio}" >
                                         <f:selectItem itemLabel="Seleccione un Municipio" itemValue="" /> 
-                                        <f:selectItems value="#{init.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
+                                        <f:selectItems value="#{datosMapa.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
+                                        <p:ajax update="vermapa" />
                                     </p:selectOneMenu>
-                                    <h:message for="municipio"/>
+                                    <h:message for="municipio, vermapa"/>
                                 </h:panelGroup>
                             </p:column>
                             <p:column>
                                 <p:panel id="vermapa">
                                     <f:view contentType="text/html">
-                                        <p:gmap center="13.70,-88.91" zoom="8" type="ROADMAP" streetView="false" style="width:450px; height:300px;" onPointClick="handlePointClick(event);" widgetVar="map">
+                                        <p:gmap center="#{datosMapa.latitud},#{datosMapa.longitud}" zoom="#{datosMapa.zoomUbic}" 
+                                                type="ROADMAP" streetView="false" style="width:450px; height:300px;" onPointClick="handlePointClick(event);"
+                                                widgetVar="map">
+                                            <p:dialog widgetVar="dlg" showEffect="FADE" closable="false"> 
+                                                <f:facet name="point">
+                                                    <h:panelGrid columns="2">
+                                                        <p:commandButton value="Seleccionar" update="vermapa"
+                                                                         oncomplete="markerAddComplete()" actionListener="#{datosMapa.addMarker}"   />
+                                                        <p:commandButton value="Cancelar" onclick="return cancel()"/>
+                                                        <h:inputHidden id="lat" value="#{datosMapa.lat}" />
+                                                        <h:inputHidden id="lng" value="#{datosMapa.lng}" />
+                                                    </h:panelGrid>
+                                                </f:facet>
+                                            </p:dialog>
                                             <!-- para que muestre los mensajes -->
                                             <!--<p:ajax event="stateChange" listener="{mapBean.onStateChange}" update="messages" />  
                                             <p:ajax event="pointSelect" listener="{mapBean.onPointSelect}" update="messages" />  -->

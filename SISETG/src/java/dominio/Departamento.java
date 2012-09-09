@@ -12,6 +12,8 @@ public class Departamento {
     
     private String idDepartamento;
     private String nombreDepartamento;
+    private Float LongitudDepartamento;
+    private Float LatitudDepartamento;
 
     public String getNombreDepartamento() {
         return nombreDepartamento;
@@ -28,7 +30,24 @@ public class Departamento {
     public void setIdDepartamento(String IdDepartamento) {
         this.idDepartamento = IdDepartamento;
     }
-    public Departamento(String idDepartamento, String nombreDepartamento) {
+
+    public Float getLatitudDepartamento() {
+        return LatitudDepartamento;
+    }
+
+    public void setLatitudDepartamento(Float LatitudDepartamento) {
+        this.LatitudDepartamento = LatitudDepartamento;
+    }
+
+    public Float getLongitudDepartamento() {
+        return LongitudDepartamento;
+    }
+
+    public void setLongitudDepartamento(Float LongitudDepartamento) {
+        this.LongitudDepartamento = LongitudDepartamento;
+    }
+    
+    public Departamento(String idDepartamento, String nombreDepartamento, Float LongitudDepartamento, Float LatitudDepartamento) {
         this.idDepartamento = idDepartamento;
         this.nombreDepartamento = nombreDepartamento;
     }

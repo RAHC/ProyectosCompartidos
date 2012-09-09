@@ -29,9 +29,9 @@ function mover(lat,lng){
     map.setCenter(centros);
     map.setZoom(10);
 }
-      
+var currentMarker = null;     
 function handlePointClick(event) {  
-    if(currentMarker == null) {  
+    if(currentMarker == null) { 
         document.getElementById('lat').value = event.latLng.lat();  
         document.getElementById('lng').value = event.latLng.lng();  
   
