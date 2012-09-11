@@ -92,6 +92,7 @@ public class ListadoIncidente implements Serializable {
     public void setMunicipio(String Municipio) {
         this.Municipio = Municipio;
     }
+   
     public List<Municipio> getMunicipios() throws SQLException {
         List<Municipio> resultados = new ArrayList<Municipio>();
         if (dataSource == null) {
@@ -102,13 +103,15 @@ public class ListadoIncidente implements Serializable {
             throw new SQLException("No se pudo conectar a la fuente de datos");
         }
         try {
-            String query = "SELECT IDUBIC, NOMBUBIC FROM UBICACION WHERE IDUBIC_PADRE = '" + Departamento + "' order by NOMBUBIC";
+            String query = "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE = '" + Departamento + "' order by NOMBUBIC";
             PreparedStatement getUbicacion = connection.prepareStatement(query);
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getUbicacion.executeQuery());
             while (rowSet.next()) {
                 resultados.add(new Municipio(rowSet.getString("IDUBIC"),
-                        rowSet.getString("NOMBUBIC")));
+                        rowSet.getString("NOMBUBIC"),
+                        rowSet.getFloat("LATIDUDUBIC"),
+                        rowSet.getFloat("LONGITUDUBIC")));
             }
             return resultados;
         } finally {
@@ -126,53 +129,53 @@ public class ListadoIncidente implements Serializable {
         if (connection == null) {
             throw new SQLException("No se pudo conectar a la fuente de datos");
         }
-        String filtro = "WHERE 1 ";
-        if(TpIncidente.length()>0){
+        String filtro = " WHERE 1=1 ";
+        if(TpIncidente != null){
             filtro += " AND I.IDTPINC="+TpIncidente;
         }
-        if(Prioridad >0){
+        if(Prioridad != null){
            filtro += " AND I.IDPRIOR="+Prioridad; 
         }
-        if(Estado > 0){
+        if(Estado != null){
             filtro += " AND I.IDESTADO="+Estado;
         }
-        if(Departamento.length()>0 && Municipio.length()>0){
+        if(Departamento != null && Municipio != null){
             filtro += " AND I.IDUBIC IN ("+Departamento+" ,"+Municipio+")"; 
         }
-        else if(Departamento.length()>0){
+        else if(Departamento != null){
             filtro += " AND I.IDUBIC="+Departamento;
         }
-        else if(Municipio.length()>0){
+        else if(Municipio != null){
             filtro += " AND I.IDUBIC="+Municipio;
         }
-        if(FechaIni.toString().length()>0){
-            if(FechaFin.toString().length()>0){
+        if(FechaIni != null){
+            if(FechaFin != null){
                 filtro += " AND FECHORAINIINC BETWEEN DATE "+ utilToSql(getFechaIni())+" 00:00:00 AND "+utilToSql(getFechaFin())+" 23:59:59";
             }
         }
-
-
         try{
             PreparedStatement getIncidentes = connection.prepareStatement(
-                    "SELECT I.IDEV, I.CORRINC, I.IDPRIOR, I.IDESTADO, I.IDTPINC, LL.TELINFOR, "
-                    + "I.IDUBIC, date_format(FECHORAINIINC,'dd/mm/yyyy hh:mm') as f1, LATITUDINC, LONGITUDINC, ALTIMETRIAINC, "
+                    "SELECT I.IDEV, I.CORRINC, I.IDPRIOR, I.IDESTADO, I.IDTPINC, LL.IDINFOR, "
+                    + "I.IDUBIC, FECHORAINIINC, LATITUDINC, LONGITUDINC, ALTIMETRIAINC, "
                     + " DESCINC, DIRINC, PTOREFINC, P.NOMBPRIOR, U.NOMBUBIC, "
-                    + " E.NOMBESTADO, TI.NOMBTPINC,  LL.NOMBINFOR, LL.APELLINFOR FROM INCIDENTE I "
+                    + " E.NOMBESTADO, TI.NOMBTPINC,  LL.NOMBINFOR, LL.APELLINFOR, LL.TELINFOR FROM INCIDENTE I "
                     + " INNER JOIN ESTADO E ON I.IDESTADO=E.IDESTADO INNER JOIN TIPOINCIDENTE TI "
-                    + " ON I.IDTPINC=TP.IDTPINC INNER JOIN LLAMADA LL ON I.TELINFOR = LL.TELINFOR "
-                    + " INNER JOIN UBICACION U ON I.IDUBIC=U.IDUBIC "+ filtro);
+                    + " ON I.IDTPINC=TI.IDTPINC INNER JOIN LLAMADA LL ON I.IDINFOR = LL.IDINFOR "
+                    + " INNER JOIN UBICACION U ON I.IDUBIC=U.IDUBIC INNER JOIN PRIORIDADINCIDENTE "
+                    + "P ON P.IDPRIOR = I.IDPRIOR "+filtro);
+            
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getIncidentes.executeQuery());
             
             while(rowSet.next()){
                 resultados.add(new DatosIncidente(rowSet.getString("IDEV"),
-                        rowSet.getString("CorrInc"),
+                        rowSet.getString("CORRINC"),
                         rowSet.getInt("IDPRIOR"),
                         rowSet.getInt("IDESTADO"),
                         rowSet.getString("IDTPINC"),
-                        rowSet.getString("TELINFOR"),
+                        rowSet.getInt("IDINFOR"),
                         rowSet.getString("IDUBIC"),
-                        rowSet.getDate("f1"),
+                        rowSet.getString("FECHORAINIINC"),
                         rowSet.getFloat("LATITUDINC"),
                         rowSet.getFloat("LONGITUDINC"),
                         rowSet.getFloat("ALTIMETRIAINC"),
@@ -184,7 +187,8 @@ public class ListadoIncidente implements Serializable {
                         rowSet.getString("NOMBESTADO"),
                         rowSet.getString("NOMBTPINC"),
                         rowSet.getString("NOMBINFOR"),
-                        rowSet.getString("APELLINFOR")));
+                        rowSet.getString("APELLINFOR"),
+                        rowSet.getString("TELINFOR")));
             }
             return resultados;
         }finally {

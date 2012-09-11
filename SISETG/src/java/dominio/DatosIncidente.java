@@ -8,9 +8,9 @@ public class DatosIncidente {
     private Integer IdPrioridad;
     private Integer IdEstado;
     private String IdTipoIncidente;
-    private String TelInformante;
+    private Integer IdInformante;
     private String IdUbicacion;
-    private Date FechaIncidente;
+    private String FechaIncidente;
     private Float Latitud;
     private Float Longitud;
     private Float Altimetria;
@@ -23,23 +23,25 @@ public class DatosIncidente {
     private String NombreTipoIncidente;
     private String NombreInformante;
     private String ApellidoInformante;
+    private String TelInformante;
        
     public DatosIncidente(String IdEv, String CorrInc, Integer IdPrioridad, Integer IdEstado, String IdTipoIncidente,
-            String TelInformante, String IdUbicacion, Date FechaIncidente, Float Latitud,
+            Integer IdInformante, String IdUbicacion, String FechaIncidente, Float Latitud,
             Float Longitud, Float Altimetria, String Descripcion, String Direccion,
             String PtoReferencia, String NombrePrioridad, String NombreUbicacion, String NombreEstado,
-            String NombreTipoIncidente, String NombreInformante, String ApellidoInformante) {
+            String NombreTipoIncidente, String NombreInformante, String ApellidoInformante, String TelInformante) {
         this.IdEv = IdEv;
         this.CorrInc = CorrInc;
         this.IdEstado = IdEstado;
         this.IdTipoIncidente = IdTipoIncidente;
-        this.TelInformante = TelInformante;
+        this.IdInformante = IdInformante;
         this.IdUbicacion = IdUbicacion;
         this.FechaIncidente = FechaIncidente;
         this.Latitud = Latitud;
         this.Longitud = Longitud;
         this.Altimetria = Altimetria;
         this.Descripcion = Descripcion;
+        this.Direccion = Direccion;
         this.PtoReferencia = PtoReferencia;
         this.NombrePrioridad = NombrePrioridad;
         this.NombreUbicacion = NombreUbicacion;
@@ -47,6 +49,7 @@ public class DatosIncidente {
         this.NombreTipoIncidente = NombreTipoIncidente;
         this.NombreInformante = NombreInformante;
         this.ApellidoInformante = ApellidoInformante;
+        this.TelInformante = TelInformante;
     }
 
     public Float getAltimetria() {
@@ -89,11 +92,11 @@ public class DatosIncidente {
         this.Direccion = Direccion;
     }
 
-    public Date getFechaIncidente() {
+    public String getFechaIncidente() {
         return FechaIncidente;
     }
 
-    public void setFechaIncidente(Date FechaIncidente) {
+    public void setFechaIncidente(String FechaIncidente) {
         this.FechaIncidente = FechaIncidente;
     }
 
@@ -202,6 +205,13 @@ public class DatosIncidente {
     }
     
 
+    public Integer getIdInformante() {
+        return IdInformante;
+    }
+
+    public void setIdInformante(Integer IdInformante) {
+        this.IdInformante = IdInformante;
+    }
     public String getTelInformante() {
         return TelInformante;
     }
@@ -209,5 +219,4 @@ public class DatosIncidente {
     public void setTelInformante(String TelInformante) {
         this.TelInformante = TelInformante;
     }
-    
 }
