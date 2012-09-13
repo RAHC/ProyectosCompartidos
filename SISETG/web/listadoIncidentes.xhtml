@@ -26,18 +26,16 @@
                     <p:panelGrid style=" font-size: 14px; font-family: calibri" styleClass="generalTable" >
                         <f:facet name="header">
                             <p:row>
-                                <p:column><h:outputLabel value="Filtrar por: " /></p:column>
-                                <p:column><h:outputLabel value="Tipo de Incidente: " for="TpIncidente" /></p:column>
-                                <p:column><h:outputLabel value="Prioridad: "  for="Prioridad" /></p:column>
-                                <p:column><h:outputLabel value="Estado: " for="Estado" /></p:column>
-                                <p:column><h:outputLabel value="Departamento: " for="Departamento" /></p:column>
-                                <p:column><h:outputLabel value="Municipio: " for="Municipio" /></p:column>
+                                <p:column style=" width: 15%"><h:outputLabel value="Filtrar por: " /></p:column>
+                                <p:column style=" width: 15%"><h:outputLabel value="Tipo de Incidente: " for="TpIncidente" /></p:column>
+                                <p:column style=" width: 15%"><h:outputLabel value="Prioridad: "  for="Prioridad" /></p:column>
+                                <p:column style=" width: 15%"><h:outputLabel value="Estado: " for="Estado" /></p:column>
+                                <p:column style=" width: 15%"><h:outputLabel value="Departamento: " for="Departamento" /></p:column>
+                                <p:column style=" width: 15%"><h:outputLabel value="Municipio: " for="Municipio" /></p:column>
                             </p:row>
                         </f:facet>
                         <p:row>
-                            <p:column>
-                                <!--  <p:commandButton update="datosInc" icon="ui-icon-check" value="Generar" /> -->
-                            </p:column>
+                            <p:column></p:column>
                             <p:column>
                                 <p:selectOneMenu id="idTpIncidente" value="#{listadoIncidente.tpIncidente}" style=" font-size: 11px; font-family: calibri" >
                                     <f:selectItem itemLabel="[TODOS]" itemValue="" />
@@ -61,55 +59,62 @@
                                     <p:ajax update="datosInc"/>
                                 </p:selectOneMenu>
                                 <h:message for="estado"/>
-                                
+
                             </p:column>
                             <p:column>
-                                <p:selectOneMenu id="departamento" label="Departamento" value="#{listadoIncidente.departamento}" style=" font-size: 11px; font-family: calibri">
+                                <p:selectOneMenu id="departamento" label="Departamento" value="#{listadoIncidente.codDepartamento}" style=" font-size: 11px; font-family: calibri">
                                     <f:selectItem itemLabel="[TODOS]" itemValue="" />
-                                    <f:selectItems value="#{init.departamentos}" var="depto" itemLabel="#{depto.nombreDepartamento}" itemValue="#{depto.idDepartamento}"/>
+                                    <f:selectItems value="#{listadoIncidente.departamentos}" var="depto" itemLabel="#{depto.nombreDepartamento}" itemValue="#{depto.idDepartamento}"/>
                                     <p:ajax update="municipio, datosInc" />
                                 </p:selectOneMenu>
                                 <h:message for="departamento" /> 
                             </p:column>
                             <p:column>
-                                <p:selectOneMenu id="municipio" label="Municipio" value="#{listadoIncidente.municipio}" style=" font-size: 11px; font-family: calibri">
+                                <p:selectOneMenu id="municipio" label="Municipio" value="#{listadoIncidente.codMunicipio}" style=" font-size: 11px; font-family: calibri" >
                                     <f:selectItem itemLabel="[TODOS]" itemValue="" /> 
                                     <f:selectItems value="#{listadoIncidente.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
                                     <p:ajax update="datosInc"/>
                                 </p:selectOneMenu>
-                                <h:message for="municipio"/>
+                                <h:message for="municipio" /> 
                             </p:column>
                         </p:row>
                     </p:panelGrid>
-
                     <p:dataTable var="li" id="datosInc" value="#{listadoIncidente.loadIncidentes}"
                                  paginator="true" rows="3"
                                  paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
                                  rowsPerPageTemplate="3,6,9,12">
 
                         <p:column colspan="6">
-                            <p:panelGrid style=" font-size: 13px; font-family: calibri" styleClass="generalTable">
+                            <p:panelGrid style=" font-size: 13px; font-family: calibri;" styleClass="generalTable">
                                 <f:facet name="header">  
                                     <p:row>
-                                        <p:column colspan="2" width="100">Datos de Incidente</p:column>
-                                        <p:column width="100" colspan="2">Prioridad: <h:outputText value="#{li.nombrePrioridad}" /></p:column>
-                                        <p:column width="50">Estado: <h:outputText value="#{li.nombreEstado}" /> </p:column>
-                                        <p:column width="200">Menu de Operaciones</p:column>
+                                        <p:column colspan="2">Datos de Incidente: <h:outputText value="#{li.idEv}" /><h:outputText value="#{li.corrInc}" /></p:column>
+                                        <p:column style=" width: 20%" colspan="2">Prioridad: <h:outputText value="#{li.nombrePrioridad}" /></p:column>
+                                        <p:column style=" width: 20%">Estado: <h:outputText value="#{li.nombreEstado}" /> </p:column>
+                                        <p:column style=" width: 20%">
+                                            <p:menuButton value="Men&uacute; de Operaciones" style="font-size: 14px">
+                                                <p:menuitem value="Verificar Incidente" url="#" />
+                                                <p:menuitem value="Seguimiento y Control de Incidente" url="#" />
+                                                <p:menuitem value="Cerrar Incidente" url="#" />
+                                                <p:menuitem value="Registrar Afectaci&oacute;n" url="#" />
+                                                <p:menuitem value="Ver Afectaciones" url="#" />
+                                            </p:menuButton>
+                                        </p:column>
                                     </p:row>
                                 </f:facet>
 
                                 <p:row>
-                                    <p:column>Tipo de Incidente: </p:column>
-                                    <p:column><h:outputText value="#{li.nombreTipoIncidente}" /></p:column>
-                                    <p:column colspan="4">Fecha y Hora de Inicio: <h:outputText value="#{li.fechaIncidente}"/> </p:column>
+                                    <p:column style=" width: 15%">Tipo de Incidente: </p:column>
+                                    <p:column style=" width: 25%"><h:outputText value="#{li.nombreTipoIncidente}" /></p:column>
+                                    <p:column colspan="4">Fecha y Hora de Inicio: <h:outputText value="#{li.fechaIncidente}"/>&nbsp;<h:outputText value="#{li.horaIncidente}"/></p:column>
                                 </p:row>
                                 <p:row>
                                     <p:column>Informante: </p:column>
-                                    <p:column><h:outputText value="#{li.nombreInformante}" /> 
+                                    <p:column><h:outputText value="#{li.nombreInformante}" />&nbsp; 
                                         <h:outputText value="#{li.apellidoInformante}" /> </p:column>
                                     <p:column rowspan="3">Descripci&oacute;n: </p:column>
                                     <p:column colspan="3" rowspan="3" style="margin-top:20px">
-                                        <h:inputTextarea rows="3" cols="150" disabled="true" value="#{li.descripcion}"></h:inputTextarea></p:column>
+                                        <h:inputTextarea rows="3" cols="100" disabled="true" value="#{li.descripcion}"></h:inputTextarea></p:column>
                                 </p:row>
                                 <p:row>
                                     <p:column>Tel&eacute;fono: </p:column>
@@ -117,13 +122,14 @@
                                 </p:row>
                                 <p:row>
                                     <p:column>Fecha de Notificaci&oacute;n</p:column>
-                                    <p:column></p:column>
+                                    <p:column><h:outputText value="#{li.fechaNotificacion}" />
+                                        &nbsp;<h:outputText value="#{li.horaNotificacion}" /></p:column>
                                 </p:row> 
                                 <p:row>
                                     <p:column>Ubicaci&oacute;n: </p:column>
                                     <p:column><h:outputText value="#{li.nombreUbicacion}"/> <p:commandButton icon="ui-icon-pin-s" value="Mapa" /></p:column>
                                     <p:column rowspan="3" style="margin-top:20px" >Acciones Tomadas: </p:column>
-                                    <p:column rowspan="3" colspan="3"><h:inputTextarea rows="4" cols="150" disabled="disabled" ></h:inputTextarea></p:column>
+                                    <p:column rowspan="3" colspan="3"><h:inputTextarea rows="4" cols="100" disabled="disabled" ></h:inputTextarea></p:column>
                                 </p:row>
                                 <p:row>
                                     <p:column colspan="2">Direcci&oacute;n: <h:outputText value="#{li.direccion}" /> </p:column> 
@@ -133,7 +139,7 @@
                                 </p:row>
                             </p:panelGrid>
                         </p:column>
-                    </p:dataTable>     
+                    </p:dataTable>  
                 </h:form>
             </ui:define>
 

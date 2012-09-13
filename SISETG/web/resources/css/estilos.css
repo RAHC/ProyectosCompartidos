@@ -521,4 +521,7 @@ table.innertable td { border: 0; }
 table.innertable tr { border: 0; }
 table.innertable { width: 100% }
 
-table.generalTable {width: 100%}
+
+table.generalTable { width: 100%;}
+
+td.td20 td { width: 20%;}

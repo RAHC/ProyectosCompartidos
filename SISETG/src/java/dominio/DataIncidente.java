@@ -1,7 +1,22 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package dominio;
 
+import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import javax.annotation.Resource;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.sql.DataSource;
+import javax.sql.rowset.CachedRowSet;
 
-public class DatosIncidente{
+@ManagedBean
+@ViewScoped
+public class DataIncidente implements Serializable{
 
     private String IdEv;
     private String CorrInc;
@@ -25,15 +40,14 @@ public class DatosIncidente{
     private String NombreInformante;
     private String ApellidoInformante;
     private String TelInformante;
-    private String FechaNotificacion;
-    private String HoraNotificacion;
-
-    public DatosIncidente(String IdEv, String CorrInc, Integer IdPrioridad, Integer IdEstado, String IdTipoIncidente,
+    @Resource(name = "jdbc/sise")
+    DataSource dataSource;
+    
+    public DataIncidente(String IdEv, String CorrInc, Integer IdPrioridad, Integer IdEstado, String IdTipoIncidente,
             Integer IdInformante, String IdUbicacion, String FechaIncidente, String HoraIncidente, Float Latitud,
             Float Longitud, Float Altimetria, String Descripcion, String Direccion,
             String PtoReferencia, String NombrePrioridad, String NombreUbicacion, String NombreEstado,
-            String NombreTipoIncidente, String NombreInformante, String ApellidoInformante, String TelInformante, 
-            String FechaNotificacion, String HoraNotificacion) {
+            String NombreTipoIncidente, String NombreInformante, String ApellidoInformante, String TelInformante) {
         this.IdEv = IdEv;
         this.CorrInc = CorrInc;
         this.IdEstado = IdEstado;
@@ -55,10 +69,8 @@ public class DatosIncidente{
         this.NombreInformante = NombreInformante;
         this.ApellidoInformante = ApellidoInformante;
         this.TelInformante = TelInformante;
-        this.FechaNotificacion = FechaNotificacion;
-        this.HoraNotificacion = HoraNotificacion;
     }
-
+    
     public Float getAltimetria() {
         return Altimetria;
     }
@@ -234,21 +246,4 @@ public class DatosIncidente{
     public void setTelInformante(String TelInformante) {
         this.TelInformante = TelInformante;
     }
-
-    public String getFechaNotificacion() {
-        return FechaNotificacion;
-    }
-
-    public void setFechaNotificacion(String FechaNotificacion) {
-        this.FechaNotificacion = FechaNotificacion;
-    }
-
-    public String getHoraNotificacion() {
-        return HoraNotificacion;
-    }
-
-    public void setHoraNotificacion(String HoraNotificacion) {
-        this.HoraNotificacion = HoraNotificacion;
-    }
-    
 }

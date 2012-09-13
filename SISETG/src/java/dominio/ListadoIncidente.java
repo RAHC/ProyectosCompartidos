@@ -29,8 +29,8 @@ public class ListadoIncidente implements Serializable {
     private String TpIncidente;
     private Integer Prioridad;
     private Integer Estado;
-    private String Departamento;
-    private String Municipio;
+    private String CodDepartamento;
+    private String CodMunicipio;
     
     @Resource(name = "jdbc/sise")
     DataSource dataSource;
@@ -69,12 +69,12 @@ public class ListadoIncidente implements Serializable {
         this.Prioridad = Prioridad;
     }
 
-    public String getDepartamento() {
-        return Departamento;
+    public String getCodDepartamento() {
+        return CodDepartamento;
     }
 
-    public void setDepartamento(String Departamento) {
-        this.Departamento = Departamento;
+    public void setCodDepartamento(String CodDepartamento) {
+        this.CodDepartamento = CodDepartamento;
     }
 
     public Integer getEstado() {
@@ -85,14 +85,41 @@ public class ListadoIncidente implements Serializable {
         this.Estado = Estado;
     }
 
-    public String getMunicipio() {
-        return Municipio;
+    public String getCodMunicipio() {
+        return CodMunicipio;
     }
 
-    public void setMunicipio(String Municipio) {
-        this.Municipio = Municipio;
+    public void setCodMunicipio(String CodMunicipio) {
+        this.CodMunicipio = CodMunicipio;
     }
-   
+        public List<Departamento> getDepartamentos() throws SQLException {
+        List<Departamento> resultados = new ArrayList<Departamento>();
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+        Connection connection = dataSource.getConnection();
+
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+        try {
+            PreparedStatement getDepartamento = connection.prepareStatement(
+                    "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE is NULL order by NOMBUBIC");
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getDepartamento.executeQuery());
+
+            while (rowSet.next()) {
+                resultados.add(new Departamento(rowSet.getString("IDUBIC"),
+                        rowSet.getString("NOMBUBIC"),
+                        rowSet.getFloat("LATITUDUBIC"),
+                        rowSet.getFloat("LONGITUDUBIC")));
+            }
+            return resultados;
+        } finally {
+            connection.close();
+        }
+    }
+
     public List<Municipio> getMunicipios() throws SQLException {
         List<Municipio> resultados = new ArrayList<Municipio>();
         if (dataSource == null) {
@@ -103,14 +130,14 @@ public class ListadoIncidente implements Serializable {
             throw new SQLException("No se pudo conectar a la fuente de datos");
         }
         try {
-            String query = "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE = '" + Departamento + "' order by NOMBUBIC";
+            String query = "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE = '" + CodDepartamento + "' order by NOMBUBIC";
             PreparedStatement getUbicacion = connection.prepareStatement(query);
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getUbicacion.executeQuery());
             while (rowSet.next()) {
                 resultados.add(new Municipio(rowSet.getString("IDUBIC"),
                         rowSet.getString("NOMBUBIC"),
-                        rowSet.getFloat("LATIDUDUBIC"),
+                        rowSet.getFloat("LATITUDUBIC"),
                         rowSet.getFloat("LONGITUDUBIC")));
             }
             return resultados;
@@ -118,6 +145,7 @@ public class ListadoIncidente implements Serializable {
             connection.close();
         }
     }
+    
     public List<DatosIncidente> getLoadIncidentes() throws SQLException{
         List<DatosIncidente> resultados = new ArrayList<DatosIncidente>();
         if (dataSource == null) {
@@ -139,14 +167,11 @@ public class ListadoIncidente implements Serializable {
         if(Estado != null){
             filtro += " AND I.IDESTADO="+Estado;
         }
-        if(Departamento != null && Municipio != null){
-            filtro += " AND I.IDUBIC IN ("+Departamento+" ,"+Municipio+")"; 
+        if(CodDepartamento != null && CodMunicipio != null){
+            filtro += " AND I.IDUBIC LIKE '"+CodMunicipio+"%'"; 
         }
-        else if(Departamento != null){
-            filtro += " AND I.IDUBIC="+Departamento;
-        }
-        else if(Municipio != null){
-            filtro += " AND I.IDUBIC="+Municipio;
+        else if(CodDepartamento != null){
+            filtro += " AND I.IDUBIC LIKE '"+CodDepartamento+"%'";
         }
         if(FechaIni != null){
             if(FechaFin != null){
@@ -156,7 +181,7 @@ public class ListadoIncidente implements Serializable {
         try{
             PreparedStatement getIncidentes = connection.prepareStatement(
                     "SELECT I.IDEV, I.CORRINC, I.IDPRIOR, I.IDESTADO, I.IDTPINC, LL.IDINFOR, "
-                    + "I.IDUBIC, FECHORAINIINC, LATITUDINC, LONGITUDINC, ALTIMETRIAINC, "
+                    + "I.IDUBIC, convert(varchar, FECHORAINIINC,101) as f1, convert(varchar, FECHORAINIINC,108) as h1, LATITUDINC, LONGITUDINC, ALTIMETRIAINC, "
                     + " DESCINC, DIRINC, PTOREFINC, P.NOMBPRIOR, U.NOMBUBIC, "
                     + " E.NOMBESTADO, TI.NOMBTPINC,  LL.NOMBINFOR, LL.APELLINFOR, LL.TELINFOR FROM INCIDENTE I "
                     + " INNER JOIN ESTADO E ON I.IDESTADO=E.IDESTADO INNER JOIN TIPOINCIDENTE TI "
@@ -168,6 +193,21 @@ public class ListadoIncidente implements Serializable {
             rowSet.populate(getIncidentes.executeQuery());
             
             while(rowSet.next()){
+                PreparedStatement getFechaNotificacion = connection.prepareStatement(
+                        "SELECT convert(varchar, FECHORAALMACC,101) as f1,convert(varchar, FECHORAALMACC,108) as h1 "
+                        + "FROM ACCIONES WHERE IDEV='"+rowSet.getString("IDEV")+"' AND CORRINC='"+rowSet.getString("CORRINC")+"' "
+                        + "AND IDACC = (SELECT MIN(IDACC) FROM ACCIONES A where A.IDEV='"+rowSet.getString("IDEV")+"' AND"
+                        + " A.CORRINC='"+rowSet.getString("CORRINC")+"')");
+                CachedRowSet rowSet2 = new com.sun.rowset.CachedRowSetImpl();
+                rowSet2.populate(getFechaNotificacion.executeQuery());
+                rowSet2.next();
+                
+                PreparedStatement getListAcciones = connection.prepareStatement(
+                        "SELECT * FROM ACCIONES WHERE IDEV='"+rowSet.getString("IDEV")+"' AND CORRINC='"+rowSet.getString("CORRINC")+"'");
+                CachedRowSet rowSet3 = new com.sun.rowset.CachedRowSetImpl();
+                rowSet3.populate(getListAcciones.executeQuery());
+                //rowSet3.next();
+                
                 resultados.add(new DatosIncidente(rowSet.getString("IDEV"),
                         rowSet.getString("CORRINC"),
                         rowSet.getInt("IDPRIOR"),
@@ -175,7 +215,8 @@ public class ListadoIncidente implements Serializable {
                         rowSet.getString("IDTPINC"),
                         rowSet.getInt("IDINFOR"),
                         rowSet.getString("IDUBIC"),
-                        rowSet.getString("FECHORAINIINC"),
+                        rowSet.getString("f1"),
+                        rowSet.getString("h1"),
                         rowSet.getFloat("LATITUDINC"),
                         rowSet.getFloat("LONGITUDINC"),
                         rowSet.getFloat("ALTIMETRIAINC"),
@@ -188,8 +229,10 @@ public class ListadoIncidente implements Serializable {
                         rowSet.getString("NOMBTPINC"),
                         rowSet.getString("NOMBINFOR"),
                         rowSet.getString("APELLINFOR"),
-                        rowSet.getString("TELINFOR")));
-            }
+                        rowSet.getString("TELINFOR"),
+                        rowSet2.getString("f1"),
+                        rowSet2.getString("h1")));
+            }           
             return resultados;
         }finally {
             connection.close();
