@@ -26,7 +26,7 @@
                 style="width:600px;height:400px"
                 model="#{mapBean.draggableModel}" 
                 onPointClick="handlePointClick(event);" 
-                widgetVar="map" update="gmap">
+                widgetVar="map">
 
             <p:ajax event="markerDrag" listener="#{mapBean.onMarkerDrag}" update="grolfo"/> 
             <p:ajax event="overlaySelect" listener="#{mapBean.onMarkerSelect}" update="grolfo" />
