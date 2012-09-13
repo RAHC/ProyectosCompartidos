@@ -9,30 +9,83 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
+import org.primefaces.event.map.MarkerDragEvent;
+import org.primefaces.event.map.OverlaySelectEvent;
+import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
+import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
 
 @ManagedBean
-@ViewScoped
-public class DatosMapa implements Serializable{
+@ApplicationScoped
+public class DatosMapa implements Serializable {
 
     private String CodDepartamento;
     private String CodMunicipio;
     private String CodCanton;
     private String CodCaserio;
-    private Float lat;
-    private Float lng;
-
+    private double lat;
+    private double lng;
+    private MapModel draggableModel;
+    private String title;
     @Resource(name = "jdbc/sise")
     DataSource dataSource;
 
     public DatosMapa() {
+        draggableModel = new DefaultMapModel();
     }
+
+    public void addMessage(FacesMessage message) {
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+
+    public void addMarker(ActionEvent actionEvent) {
+        Marker marker = new Marker(new LatLng(lat, lng), title);
+        marker.setDraggable(true);
+        draggableModel.addOverlay(marker);
+        addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO, "Marca agregada", "Lat:" + lat + ", Lng:" + lng));
+        for (Marker marker1 : draggableModel.getMarkers()) {
+            marker1.setDraggable(true);
+        }
+
+
+    }
+
+    public void onMarkerDrag(MarkerDragEvent event) {
+        Marker marker = event.getMarker();
+        addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO, "Marca trasladada", "Lat:" + marker.getLatlng().getLat() + ", Lng:" + marker.getLatlng().getLng()));
+    }
+
+    public void onMarkerSelect(OverlaySelectEvent event) {
+        Marker marker = (Marker) event.getOverlay();
+
+        addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO, "Marca Seleccionada", marker.getTitle()));
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public MapModel getDraggableModel() {
+        return draggableModel;
+    }
+
+    public void setDraggableModel(MapModel draggableModel) {
+        this.draggableModel = draggableModel;
+    }
+    
+    
 
     public String getCodDepartamento() {
         return CodDepartamento;
@@ -66,16 +119,20 @@ public class DatosMapa implements Serializable{
         this.CodCaserio = CodCaserio;
     }
 
-    public Float getLat() {
+    public double getLat() {
         return lat;
     }
 
-    public void setLat(Float lat) {
+    public void setLat(double lat) {
         this.lat = lat;
     }
 
-    public Float getLng() {
+    public double getLng() {
         return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 
     public void setLng(Float lng) {
@@ -135,18 +192,18 @@ public class DatosMapa implements Serializable{
             connection.close();
         }
     }
-    
+
     public Float getLatitud() throws SQLException {
         Float Latitud;
         if (CodDepartamento == null) {
             Latitud = (float) 13.70;
         } else {
             String id = null;
-            if (CodCaserio !=null) {
+            if (CodCaserio != null) {
                 id = CodCaserio;
-            } else if (CodCanton !=null) {
+            } else if (CodCanton != null) {
                 id = CodCanton;
-            } else if (CodMunicipio !=null) {
+            } else if (CodMunicipio != null) {
                 id = CodMunicipio;
             } else if (CodDepartamento != null) {
                 id = CodDepartamento;
@@ -170,7 +227,7 @@ public class DatosMapa implements Serializable{
         return Latitud;
     }
 
-    public Float getLongitud() throws SQLException{
+    public Float getLongitud() throws SQLException {
         Float Longitud;
         if (CodDepartamento == null) {
             Longitud = (float) -88.91;
@@ -182,7 +239,7 @@ public class DatosMapa implements Serializable{
                 id = CodCanton;
             } else if (CodMunicipio != null) {
                 id = CodMunicipio;
-            } else if (CodDepartamento !=null) {
+            } else if (CodDepartamento != null) {
                 id = CodDepartamento;
             }
             if (dataSource == null) {
@@ -202,27 +259,20 @@ public class DatosMapa implements Serializable{
         }
         return Longitud;
     }
-    public Integer getZoomUbic(){
+
+    public Integer getZoomUbic() {
         Integer z;
         if (CodCaserio != null) {
-                z = 15;
-            } else if (CodCanton != null) {
-                z = 13;
-            } else if (CodMunicipio != null) {
-                z = 12;
-            } else if (CodDepartamento !=null) {
-                z = 10;
-            }
-            else{
-                z = 8;
-            }
+            z = 15;
+        } else if (CodCanton != null) {
+            z = 13;
+        } else if (CodMunicipio != null) {
+            z = 12;
+        } else if (CodDepartamento != null) {
+            z = 10;
+        } else {
+            z = 8;
+        }
         return z;
     }
-    public void addMarker(ActionEvent actionEvent){
-        Marker marker = new Marker(new LatLng(lat, lng));
-        /*emptyModel.addOverlay(marker);
-		
-		addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO, "Marker Added", "Lat:" + lat + ", Lng:" + lng));
-                */
-   }
 }

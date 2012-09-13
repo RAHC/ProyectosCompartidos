@@ -1,15 +1,9 @@
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-var currentMarker = null;
-
 function mover(lat,lng){
     var centros = new google.maps.LatLng(lat,lng);
     map.setCenter(centros);
     map.setZoom(10);
 }
+var currentMarker = null;     
 	
 function handlePointClick(event) {
     if(currentMarker == null) {

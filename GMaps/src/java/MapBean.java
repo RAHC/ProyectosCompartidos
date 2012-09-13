@@ -58,8 +58,6 @@ public class MapBean implements Serializable {
         for(Marker marker1 : draggableModel.getMarkers()) {  
             marker1.setDraggable(true);  
         } 
-       
-        
     }
     
 

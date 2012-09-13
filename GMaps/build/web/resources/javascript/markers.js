@@ -4,6 +4,12 @@
  */
 
 var currentMarker = null;
+
+function mover(lat,lng){
+    var centros = new google.maps.LatLng(lat,lng);
+    map.setCenter(centros);
+    map.setZoom(10);
+}
 	
 function handlePointClick(event) {
     if(currentMarker == null) {
