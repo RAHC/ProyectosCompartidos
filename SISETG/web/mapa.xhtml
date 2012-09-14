@@ -63,7 +63,7 @@
 
                             <p:ajax event="markerDrag" listener="#{datosMapa.onMarkerDrag}" update="grolfo"/> 
                             <p:ajax event="overlaySelect" listener="#{datosMapa.onMarkerSelect}" update="grolfo" />
-                            
+
                         </p:gmap>
 
                         <!-- para que muestre los mensajes -->
@@ -79,9 +79,11 @@
                 </h:form>
 
                 <h:form id="f2">
-                    <p:dialog widgetVar="dlg" showEffect="FADE">
+                    <p:dialog widgetVar="dlg" showEffect="FADE" id="diag1">
 
                         <p:growl id="groldo" showDetail="true"/>
+
+                        <!--<h:form id="f2">-->
 
                         <h:panelGrid columns="3">
                             <h:outputLabel for="descripcion" value="Descripción:" />
@@ -92,10 +94,11 @@
                                 <p:commandButton value="Agregar" 
                                                  actionListener="#{datosMapa.addMarker(event)}" 
                                                  update="groldo,:f1:pg1"
-                                                 oncomplete="markerAddComplete()"/>
+                                                 oncomplete="markerAddComplete()" />
                                 <p:commandButton value="Cancelar" onclick="return cancel()"/>
                             </f:facet>
                         </h:panelGrid>
+                        <!--</h:form>-->
 
                         <h:inputHidden id="lat" value="#{datosMapa.lat}" />
                         <h:inputHidden id="lng" value="#{datosMapa.lng}" />
