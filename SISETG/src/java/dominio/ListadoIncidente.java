@@ -181,7 +181,7 @@ public class ListadoIncidente implements Serializable {
         try{
             PreparedStatement getIncidentes = connection.prepareStatement(
                     "SELECT I.IDEV, I.CORRINC, I.IDPRIOR, I.IDESTADO, I.IDTPINC, LL.IDINFOR, "
-                    + "I.IDUBIC, convert(varchar, FECHORAINIINC,101) as f1, convert(varchar, FECHORAINIINC,108) as h1, LATITUDINC, LONGITUDINC, ALTIMETRIAINC, "
+                    + "I.IDUBIC, convert(varchar, FECHORAINIINC,103) as f1, convert(varchar, FECHORAINIINC,108) as h1, LATITUDINC, LONGITUDINC, ALTIMETRIAINC, "
                     + " DESCINC, DIRINC, PTOREFINC, P.NOMBPRIOR, U.NOMBUBIC, "
                     + " E.NOMBESTADO, TI.NOMBTPINC,  LL.NOMBINFOR, LL.APELLINFOR, LL.TELINFOR FROM INCIDENTE I "
                     + " INNER JOIN ESTADO E ON I.IDESTADO=E.IDESTADO INNER JOIN TIPOINCIDENTE TI "
@@ -194,7 +194,7 @@ public class ListadoIncidente implements Serializable {
             
             while(rowSet.next()){
                 PreparedStatement getFechaNotificacion = connection.prepareStatement(
-                        "SELECT convert(varchar, FECHORAALMACC,101) as f1,convert(varchar, FECHORAALMACC,108) as h1 "
+                        "SELECT convert(varchar, FECHORAALMACC,103) as f1,convert(varchar, FECHORAALMACC,108) as h1 "
                         + "FROM ACCIONES WHERE IDEV='"+rowSet.getString("IDEV")+"' AND CORRINC='"+rowSet.getString("CORRINC")+"' "
                         + "AND IDACC = (SELECT MIN(IDACC) FROM ACCIONES A where A.IDEV='"+rowSet.getString("IDEV")+"' AND"
                         + " A.CORRINC='"+rowSet.getString("CORRINC")+"')");
@@ -202,11 +202,27 @@ public class ListadoIncidente implements Serializable {
                 rowSet2.populate(getFechaNotificacion.executeQuery());
                 rowSet2.next();
                 
+                List<Acciones> resultados2 = new ArrayList<Acciones>();
                 PreparedStatement getListAcciones = connection.prepareStatement(
-                        "SELECT * FROM ACCIONES WHERE IDEV='"+rowSet.getString("IDEV")+"' AND CORRINC='"+rowSet.getString("CORRINC")+"'");
+                        "SELECT *, convert(varchar, FECHORAREALACC,103) as FR, convert(varchar, FECHORAALMACC,103) as FA "
+                        + "FROM ACCIONES WHERE IDEV='"+rowSet.getString("IDEV")+"' AND CORRINC='"+rowSet.getString("CORRINC")+"'");
                 CachedRowSet rowSet3 = new com.sun.rowset.CachedRowSetImpl();
                 rowSet3.populate(getListAcciones.executeQuery());
-                //rowSet3.next();
+                while(rowSet3.next()){
+                    resultados2.add( new Acciones(rowSet3.getInt("IDACC"),
+                            rowSet3.getString("IDEV"),
+                            rowSet3.getString("CORRINC"),
+                            rowSet3.getInt("IDESTADO"),
+                            rowSet3.getInt("IDCONT"),
+                            rowSet3.getString("DESCACC"),
+                            rowSet3.getString("RESPCOORDACC"),
+                            rowSet3.getString("FR"),
+                            rowSet3.getInt("DURACACC"),
+                            rowSet3.getString("ESTADOACTACC"),
+                            rowSet3.getString("FA"),
+                            rowSet3.getString("ESTADOACC")));
+                    
+                }
                 
                 resultados.add(new DatosIncidente(rowSet.getString("IDEV"),
                         rowSet.getString("CORRINC"),
@@ -231,7 +247,8 @@ public class ListadoIncidente implements Serializable {
                         rowSet.getString("APELLINFOR"),
                         rowSet.getString("TELINFOR"),
                         rowSet2.getString("f1"),
-                        rowSet2.getString("h1")));
+                        rowSet2.getString("h1"),
+                        resultados2));
             }           
             return resultados;
         }finally {

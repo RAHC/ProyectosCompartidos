@@ -1,5 +1,7 @@
 package dominio;
 
+import java.util.List;
+
 
 public class DatosIncidente{
 
@@ -27,13 +29,14 @@ public class DatosIncidente{
     private String TelInformante;
     private String FechaNotificacion;
     private String HoraNotificacion;
+    private List<Acciones> ListaAcciones;
 
     public DatosIncidente(String IdEv, String CorrInc, Integer IdPrioridad, Integer IdEstado, String IdTipoIncidente,
             Integer IdInformante, String IdUbicacion, String FechaIncidente, String HoraIncidente, Float Latitud,
             Float Longitud, Float Altimetria, String Descripcion, String Direccion,
             String PtoReferencia, String NombrePrioridad, String NombreUbicacion, String NombreEstado,
             String NombreTipoIncidente, String NombreInformante, String ApellidoInformante, String TelInformante, 
-            String FechaNotificacion, String HoraNotificacion) {
+            String FechaNotificacion, String HoraNotificacion, List<Acciones> ListaAcciones) {
         this.IdEv = IdEv;
         this.CorrInc = CorrInc;
         this.IdEstado = IdEstado;
@@ -57,6 +60,7 @@ public class DatosIncidente{
         this.TelInformante = TelInformante;
         this.FechaNotificacion = FechaNotificacion;
         this.HoraNotificacion = HoraNotificacion;
+        this.ListaAcciones = ListaAcciones;
     }
 
     public Float getAltimetria() {
@@ -249,6 +253,14 @@ public class DatosIncidente{
 
     public void setHoraNotificacion(String HoraNotificacion) {
         this.HoraNotificacion = HoraNotificacion;
+    }
+
+    public List<Acciones> getListaAcciones() {
+        return ListaAcciones;
+    }
+
+    public void setListaAcciones(List<Acciones> ListaAcciones) {
+        this.ListaAcciones = ListaAcciones;
     }
     
 }
