@@ -18,6 +18,10 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
+import org.primefaces.model.map.DefaultMapModel;
+import org.primefaces.model.map.LatLng;
+import org.primefaces.model.map.MapModel;
+import org.primefaces.model.map.Marker;
 
 
 @ManagedBean
@@ -31,6 +35,7 @@ public class ListadoIncidente implements Serializable {
     private Integer Estado;
     private String CodDepartamento;
     private String CodMunicipio;
+    private DatosIncidente selectedMapa;
     
     @Resource(name = "jdbc/sise")
     DataSource dataSource;
@@ -88,7 +93,14 @@ public class ListadoIncidente implements Serializable {
     public String getCodMunicipio() {
         return CodMunicipio;
     }
+    public DatosIncidente getSelectedMapa() {
+        return selectedMapa;
+    }
 
+    public void setSelectedMapa(DatosIncidente selectedMapa) {
+        this.selectedMapa = selectedMapa;
+    }
+    
     public void setCodMunicipio(String CodMunicipio) {
         this.CodMunicipio = CodMunicipio;
     }
@@ -147,6 +159,8 @@ public class ListadoIncidente implements Serializable {
     }
     
     public List<DatosIncidente> getLoadIncidentes() throws SQLException{
+        Marker marker;
+        MapModel simpleModel = new DefaultMapModel();
         List<DatosIncidente> resultados = new ArrayList<DatosIncidente>();
         if (dataSource == null) {
             throw new SQLException("No se pudo tener acceso a la fuente de datos");
@@ -182,7 +196,7 @@ public class ListadoIncidente implements Serializable {
             PreparedStatement getIncidentes = connection.prepareStatement(
                     "SELECT I.IDEV, I.CORRINC, I.IDPRIOR, I.IDESTADO, I.IDTPINC, LL.IDINFOR, "
                     + "I.IDUBIC, convert(varchar, FECHORAINIINC,103) as f1, convert(varchar, FECHORAINIINC,108) as h1, LATITUDINC, LONGITUDINC, ALTIMETRIAINC, "
-                    + " DESCINC, DIRINC, PTOREFINC, P.NOMBPRIOR, U.NOMBUBIC, "
+                    + " DESCINC, DIRINC, PTOREFINC, P.NOMBPRIOR, U.NOMBUBIC, U.LATITUDUBIC, U.LONGITUDUBIC, "
                     + " E.NOMBESTADO, TI.NOMBTPINC,  LL.NOMBINFOR, LL.APELLINFOR, LL.TELINFOR FROM INCIDENTE I "
                     + " INNER JOIN ESTADO E ON I.IDESTADO=E.IDESTADO INNER JOIN TIPOINCIDENTE TI "
                     + " ON I.IDTPINC=TI.IDTPINC INNER JOIN LLAMADA LL ON I.IDINFOR = LL.IDINFOR "
@@ -220,9 +234,10 @@ public class ListadoIncidente implements Serializable {
                             rowSet3.getInt("DURACACC"),
                             rowSet3.getString("ESTADOACTACC"),
                             rowSet3.getString("FA"),
-                            rowSet3.getString("ESTADOACC")));
-                    
+                            rowSet3.getString("ESTADOACC")));  
                 }
+                marker = new Marker(new LatLng(rowSet.getFloat("LATITUDINC"), rowSet.getFloat("LONGITUDINC")),rowSet.getString("DIRINC") );
+                simpleModel.addOverlay(marker);
                 
                 resultados.add(new DatosIncidente(rowSet.getString("IDEV"),
                         rowSet.getString("CORRINC"),
@@ -241,6 +256,8 @@ public class ListadoIncidente implements Serializable {
                         rowSet.getString("PTOREFINC"),
                         rowSet.getString("NOMBPRIOR"),
                         rowSet.getString("NOMBUBIC"),
+                        rowSet.getFloat("LATITUDUBIC"),
+                        rowSet.getFloat("LONGITUDUBIC"),
                         rowSet.getString("NOMBESTADO"),
                         rowSet.getString("NOMBTPINC"),
                         rowSet.getString("NOMBINFOR"),
@@ -248,7 +265,8 @@ public class ListadoIncidente implements Serializable {
                         rowSet.getString("TELINFOR"),
                         rowSet2.getString("f1"),
                         rowSet2.getString("h1"),
-                        resultados2));
+                        resultados2,
+                        simpleModel));
             }           
             return resultados;
         }finally {

@@ -1,7 +1,7 @@
 package dominio;
 
 import java.util.List;
-
+import org.primefaces.model.map.MapModel;
 
 public class DatosIncidente{
 
@@ -22,6 +22,8 @@ public class DatosIncidente{
     private String PtoReferencia;
     private String NombrePrioridad;
     private String NombreUbicacion;
+    private Float LatitudUbicacion;
+    private Float LongitudUbicacion;
     private String NombreEstado;
     private String NombreTipoIncidente;
     private String NombreInformante;
@@ -30,13 +32,14 @@ public class DatosIncidente{
     private String FechaNotificacion;
     private String HoraNotificacion;
     private List<Acciones> ListaAcciones;
+    private MapModel MarkerInc;
 
     public DatosIncidente(String IdEv, String CorrInc, Integer IdPrioridad, Integer IdEstado, String IdTipoIncidente,
             Integer IdInformante, String IdUbicacion, String FechaIncidente, String HoraIncidente, Float Latitud,
             Float Longitud, Float Altimetria, String Descripcion, String Direccion,
-            String PtoReferencia, String NombrePrioridad, String NombreUbicacion, String NombreEstado,
+            String PtoReferencia, String NombrePrioridad, String NombreUbicacion, Float LatitudUbicacion, Float LongitudUbicacion, String NombreEstado,
             String NombreTipoIncidente, String NombreInformante, String ApellidoInformante, String TelInformante, 
-            String FechaNotificacion, String HoraNotificacion, List<Acciones> ListaAcciones) {
+            String FechaNotificacion, String HoraNotificacion, List<Acciones> ListaAcciones, MapModel MarkerInc) {
         this.IdEv = IdEv;
         this.CorrInc = CorrInc;
         this.IdEstado = IdEstado;
@@ -53,6 +56,8 @@ public class DatosIncidente{
         this.PtoReferencia = PtoReferencia;
         this.NombrePrioridad = NombrePrioridad;
         this.NombreUbicacion = NombreUbicacion;
+        this.LatitudUbicacion = LatitudUbicacion;
+        this.LongitudUbicacion = LongitudUbicacion;
         this.NombreEstado = NombreEstado;
         this.NombreTipoIncidente = NombreTipoIncidente;
         this.NombreInformante = NombreInformante;
@@ -61,6 +66,7 @@ public class DatosIncidente{
         this.FechaNotificacion = FechaNotificacion;
         this.HoraNotificacion = HoraNotificacion;
         this.ListaAcciones = ListaAcciones;
+        this.MarkerInc = MarkerInc;
     }
 
     public Float getAltimetria() {
@@ -207,6 +213,22 @@ public class DatosIncidente{
         this.NombreUbicacion = NombreUbicacion;
     }
 
+    public Float getLatitudUbicacion() {
+        return LatitudUbicacion;
+    }
+
+    public void setLatitudUbicacion(Float LatitudUbicacion) {
+        this.LatitudUbicacion = LatitudUbicacion;
+    }
+
+    public Float getLongitudUbicacion() {
+        return LongitudUbicacion;
+    }
+
+    public void setLongitudUbicacion(Float LongitudUbicacion) {
+        this.LongitudUbicacion = LongitudUbicacion;
+    }
+    
     public String getPtoReferencia() {
         return PtoReferencia;
     }
@@ -262,5 +284,12 @@ public class DatosIncidente{
     public void setListaAcciones(List<Acciones> ListaAcciones) {
         this.ListaAcciones = ListaAcciones;
     }
-    
+
+    public MapModel getMarkerInc() {
+        return MarkerInc;
+    }
+
+    public void setMarkerInc(MapModel MarkerInc) {
+        this.MarkerInc = MarkerInc;
+    }
 }

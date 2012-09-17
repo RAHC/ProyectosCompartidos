@@ -14,7 +14,7 @@
             </ui:define>
 
             <ui:define name="content">
-                <h:form prependId="false">
+                <h:form prependId="false" id="form">
                     <h:outputText value="Evento: " /><h:outputText value="Nombre Evento" /><br />
                     <h:outputLabel value="Rango de fechas del incidente del: " for="fechaIni"/>
                     <p:calendar id="fechaIni" effect="slide" showOn="button" navigator="true" pattern="dd/MM/yyyy" locale="es" value="#{listadoIncidente.fechaIni}" /> 
@@ -95,7 +95,7 @@
                                         <p:column style=" width: 20%">
                                             <h:form>
                                             <p:menuButton value="Men&uacute; de Operaciones" style="font-size: 14px">
-                                                <p:menuitem value="Verificar Incidente" url="#" />
+                                                <p:menuitem value="Verificar Incidente" id="btnVal" onclick="window.open('validacion.xhtml?inc=#{li.corrInc}', 'MyWindow', 'height=350,width=250,menubar=no,toolbar=no'); return false;" />
                                                 <p:menuitem value="Seguimiento y Control de Incidente" url="#" />
                                                 <p:menuitem value="Cerrar Incidente" url="#" />
                                                 <p:menuitem value="Registrar Afectaci&oacute;n" url="#" />
@@ -130,7 +130,12 @@
                                 </p:row> 
                                 <p:row>
                                     <p:column>Ubicaci&oacute;n: </p:column>
-                                    <p:column><h:outputText value="#{li.nombreUbicacion}"/> <p:commandButton icon="ui-icon-pin-s" value="Mapa" /></p:column>
+                                    <p:column><h:outputText value="#{li.nombreUbicacion}"/>
+                                        <p:commandButton id="selectMapa" onclick="mapaDialog.show()" 
+                                                         icon="ui-icon-pin-s" value="Ver Mapa" update=":form:display">
+                                            <f:setPropertyActionListener value="#{li}" target="#{listadoIncidente.selectedMapa}" />
+                                        </p:commandButton>
+                                    </p:column>
                                     <p:column rowspan="3" style="margin-top:20px" >Acciones Tomadas: </p:column>
                                     <p:column rowspan="3" colspan="3">
                                         <p:selectOneListbox id="Acciones" style="height:80px; width: 100%">
@@ -146,7 +151,12 @@
                                 </p:row>
                             </p:panelGrid>
                         </p:column>
-                    </p:dataTable>  
+                    </p:dataTable>
+                    <p:dialog header="Mapa de Ubicaci&oacute;n" widgetVar="mapaDialog" width="625" 
+                              resizable="false" height="400" modal="true" showEffect="fade">
+                        <p:gmap id="display" center="#{listadoIncidente.selectedMapa.latitudUbicacion}, #{listadoIncidente.selectedMapa.longitudUbicacion}"
+                                zoom="13" type="HYBRID" style="width:600px;height:400px" widgetVar="mymap" model="#{listadoIncidente.selectedMapa.markerInc}"/>
+                    </p:dialog>
                 </h:form>
             </ui:define>
 
