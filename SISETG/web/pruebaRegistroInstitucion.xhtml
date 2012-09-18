@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="./SisePlantilla.xhtml">
+
+            <ui:define name="titles">
+                Registro Institución
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form prependId="false">
+                    <p:panel header="Informaci&oacute;n de la Institución" id="infoinst"> 
+                        <p:panelGrid styleClass="innertable">
+                            <p:row>
+                                <p:column>
+                                    <h:panelGrid columns="3">
+                                        <h:outputLabel value="Tipo de Instituci&oacute;n: " for="tpInstitucion" />
+                                        <p:selectOneMenu id="tpInstitucion" label="TpInstitucion" value="#{init.tpInstitucion}" required="true" requiredMessage="Por favor seleccione un tipo de instituci&oacute;n" >
+                                            <f:selectItem itemLabel="Seleccione un Tipo de Instituci&oacute;n" itemValue="" />
+                                            <f:selectItems value="#{init.tpInstituciones}" var="tpInstitucion" itemLabel="#{tpInstitucion.nombreTpInstitucion}" itemValue="#{tpInstitucion.idTpInstitucion}" />
+                                            <p:ajax update="institucion" />
+                                        </p:selectOneMenu>
+                                        <p:commandButton id="showDialogButton" type="button" value="+" onclick="dlg.show()" />
+                                        <h:outputLabel value="Nombre de Instituci&oacute;n: " for="institucion" />
+                                        <p:selectOneMenu id="institucion" label="Institucion" value="#{registroContacto.institucion}" required="true" requiredMessage="Por favor seleccione una instituci&oacute;n">
+                                            <f:selectItem itemLabel="Seleccione una Instituci&oacute;n" itemValue="0" />
+                                            <f:selectItems value="#{init.instituciones}" var="inst" itemLabel="#{inst.nombreInstitucion}" itemValue="#{inst.idInstitucion}" />
+                                        </p:selectOneMenu>
+                                        <p:dialog header="Agregar Nuevo Tipo de Institución" widgetVar="dlg" resizable="false">  
+
+                                            <h:panelGrid columns="2" style="margin-bottom:10px">  
+                                                <h:outputLabel for="Nombre" value="Nombre:" />  
+                                                <p:inputText id="nombinst" value="#{TpInstitucion.NombreTpInstitucion}" size="25"/>  
+                                                <h:outputLabel for="Descripcion" value="Descripcion:"/>
+                                                <p:inputTextarea id="descinst" value="#{TpInstitucion.DescTpInstitucion}" rows="2" cols="27" maxlength="100"/> 
+                                            </h:panelGrid>
+                                            <p:commandButton id="submitButton" value="Agregar" action="#{TpInstitucion.guardar}" update="tpInstitucion" oncomplete="dlg.hide();"/>  
+
+                                        </p:dialog>
+                                        <h:outputLabel for="Nombre" value="Nombre de Responsable:" />
+                                        <p:inputText id="responsable" value="" maxlength="50"/> 
+                                        <br/>
+                                        <h:outputText value="Telefono de Contacto: " />
+                                        <p:inputMask value="" mask="9999-9999" maxlength="9"/>
+                                    </h:panelGrid>
+                                </p:column>
+                            </p:row>
+
+
+
+
+
+                            <p:row>
+                                <p:column colspan="4">
+                                    <p:growl id="grow1" showDetail="true">
+                                        <p:fieldset legend="Ubicación" style=" font-size: 14px; font-family: calibri" >
+
+                                        </p:fieldset>
+                                    </p:growl>
+                                </p:column>
+                            </p:row>
+
+                            <p:row>
+                                <p:column colspan="4" style=" text-align: right">
+                                    <p:commandButton id="guardar" value="Guardar" action="#{registroContacto.guardar}" ajax="false" />
+                                    <p:commandButton id="cancel" value="Cancelar" />
+                                    <p:commandButton id="cleanContent" value="Limpiar" />
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>
+                </h:form>
+                
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
