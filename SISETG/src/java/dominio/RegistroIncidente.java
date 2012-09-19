@@ -4,10 +4,12 @@
  */
 package dominio;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.faces.bean.ManagedBean;
@@ -22,6 +24,12 @@ import javax.sql.rowset.CachedRowSet;
 @ManagedBean
 @RequestScoped
 public class RegistroIncidente {
+    
+   private String IdUbicacion;
+   private String ptoReferencia;
+   private Date fechaHora;
+   private String Descripcion;
+   private String IdTipoIncidente;
 
     private String Nombres;
     private String Apellidos;
@@ -32,24 +40,87 @@ public class RegistroIncidente {
     private String Caserio;
     private String Direccion;
     private String Referencia;
-    private String Estado;
-    private String Prioridad;
+    private int Estado;
+    private int Prioridad;
+    
+    private String IdEvento;
+    
     @Resource(name = "jdbc/sise")
     DataSource dataSource;
 
-    public String getEstado() {
+    public String getIdEvento() {
+        return IdEvento;
+    }
+
+    public void setIdEvento(String IdEvento) {
+        this.IdEvento = IdEvento;
+    }
+    
+    
+
+    public String getIdTipoIncidente() {
+        return IdTipoIncidente;
+    }
+
+    public void setIdTipoIncidente(String IdTipoIncidente) {
+        this.IdTipoIncidente = IdTipoIncidente;
+    }
+    
+    
+
+    public Date getFechaHora() {
+        return fechaHora;
+    }
+
+    public void setFechaHora(Date fechaHora) {
+        this.fechaHora = fechaHora;
+    }
+
+    public String getDescripcion() {
+        return Descripcion;
+    }
+
+    public void setDescripcion(String Descripcion) {
+        this.Descripcion = Descripcion;
+    }
+    
+    
+
+    public String getIdUbicacion() {
+        return IdUbicacion;
+    }
+
+    public void setIdUbicacion(String IdUbicacion) {
+        this.IdUbicacion = IdUbicacion;
+    }
+
+    public String getPtoReferencia() {
+        return ptoReferencia;
+    }
+
+    public void setPtoReferencia(String ptoReferencia) {
+        this.ptoReferencia = ptoReferencia;
+    }
+    
+    
+
+    
+    
+    
+
+    public int getEstado() {
         return Estado;
     }
 
-    public String getPrioridad() {
+    public int getPrioridad() {
         return Prioridad;
     }
 
-    public void setPrioridad(String Prioridad) {
+    public void setPrioridad(int Prioridad) {
         this.Prioridad = Prioridad;
     }
 
-    public void setEstado(String Estado) {
+    public void setEstado(int Estado) {
         this.Estado = Estado;
     }
 
@@ -208,20 +279,33 @@ public class RegistroIncidente {
         }
 
         try {
-            PreparedStatement addLlamada = connection.prepareStatement(
-                    "INSERT INTO LLAMADA"+ 
-                    "(TELINFOR,NOMBINFOR,APELLINFOR)" +
-                    "VALUES (?,?,?)");
+            CallableStatement cs;
+            String sql = "{ call registrarIncidente(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+            cs = connection.prepareCall(sql);
             
-            addLlamada.setString(1, getTelefono());
-            addLlamada.setString(2, getNombres());
-            addLlamada.setString(3, getMunicipio());
+            cs.setString(1, getNombres());
+            cs.setString(2, getApellidos());
+            cs.setString(3, getTelefono());
+            cs.setString(4, getMunicipio());//Aqui hay que poner lo de init.java
+            cs.setString(5, getDireccion());
+            cs.setString(6, getPtoReferencia());
+            cs.setDouble(7, 13.800000);
+            cs.setDouble(8, -89.183300);
+            cs.setDouble(9, 0);
+            cs.setString(10, getIdTipoIncidente());
+            cs.setDate(11, new java.sql.Date(getFechaHora().getTime()));
+            cs.setString(12, getDescripcion());
+            cs.setInt(13, getEstado());
+            cs.setInt(14, getPrioridad());
+            cs.setString(15, "TT1201");
             
-            addLlamada.executeUpdate();
+            
+            
+            cs.execute();
             
         } finally {
             connection.close();
         }
-        return "index";
+        return "registroIncidente";
     }
 }

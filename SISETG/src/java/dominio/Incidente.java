@@ -8,13 +8,25 @@ public class Incidente implements Serializable{
     private Date fechaHora;
     private String Direccion;
     private String puntoReferencia;
+    private int Idestado;
 
-    public Incidente(String IdTipoIncidente, Date fechaHora, String Direccion, String puntoReferencia) {
+    public Incidente(int estado,String IdTipoIncidente, Date fechaHora, String Direccion, String puntoReferencia) {
+        this.Idestado=estado;
         this.IdTipoIncidente = IdTipoIncidente;
         this.fechaHora = fechaHora;
         this.Direccion = Direccion;
         this.puntoReferencia = puntoReferencia;
     }
+
+    public int getIdestado() {
+        return Idestado;
+    }
+
+    public void setIdestado(int Idestado) {
+        this.Idestado = Idestado;
+    }
+    
+    
     
     public String getIdTipoIncidente() {
         return IdTipoIncidente;

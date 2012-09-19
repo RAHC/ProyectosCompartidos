@@ -1,0 +1,18 @@
+/* 
+    Document   : colorTable
+    Created on : 09-15-2012, 02:32:48 PM
+    Author     : Familia Molina
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.digitado { 
+    background-color:#000000;
+    background-image:none;
+    color:#000000;
+}
+
+.verdadero{
+    background-color: red; 
+}
+

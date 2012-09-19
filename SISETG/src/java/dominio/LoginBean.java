@@ -26,10 +26,32 @@ public class LoginBean implements Serializable {
     private static final long serialVersionUID = 1L;
     private String username;
     private String password;
+    private String IdEvento;
+    private String IdUbic;
     private String opcion;
     private boolean isLoggedIn;
     @Resource(name = "jdbc/sise")
     DataSource dataSource;
+
+    public String getIdUbic() {
+        return IdUbic;
+    }
+
+    public void setIdUbic(String IdUbic) {
+        this.IdUbic = IdUbic;
+    }
+    
+    
+
+    public String getIdEvento() {
+        return IdEvento;
+    }
+
+    public void setIdEvento(String IdEvento) {
+        this.IdEvento = IdEvento;
+    }
+    
+    
 
     public String getOpcion() {
         return opcion;
@@ -56,7 +78,7 @@ public class LoginBean implements Serializable {
         if (validar()) {
             //changed the state to true
             isLoggedIn = true;
-            url = "listadoIncidentes.xhtml";
+            url = "registroIncidente";
         } else {
             //set the message to display when authentication fails
             FacesContext.getCurrentInstance().addMessage("frmLogin:btnLogin", new FacesMessage("Usuario o contraseña no validos"));
@@ -123,8 +145,9 @@ public class LoginBean implements Serializable {
 
 
             PreparedStatement getUsuario = connection.prepareStatement(
-                    "SELECT username FROM usuario WHERE username = ? ");
+                    "SELECT username, IDUBIC FROM usuario WHERE username = ? ");
             getUsuario.setString(1, getUsername());
+            
             /*getUsuario.setString(2, getPassword()); */
 
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
@@ -140,6 +163,7 @@ public class LoginBean implements Serializable {
                 if (rowSet2.next()) {
                     pass = rowSet2.getString("P");
                     if (pass.equals(getPassword())) {
+                        setIdUbic(rowSet.getString("IDUBIC"));
                         resultado = true;
                     } else {
                         resultado = false;

@@ -1,4 +1,43 @@
+.digitado { 
+    background-color:blue;
+    /*background-image:none;*/
+    color:#FFFFFF;
+}
 
+.verdadero{
+    background-color: red; 
+    color:#FFFFFF;
+}
+
+.falso{
+    background-color: black; 
+    color:#FFFFFF;
+}
+
+.enviandoequipo{
+    background-color: orange; 
+    color:#FFFFFF;
+}
+
+.trabajandozona{
+    background-color: yellow; 
+    color:#FFFFFF;
+}
+
+.concluido{
+    background-color: green; 
+    color:#FFFFFF;
+}
+
+.cerrado{
+    background-color: gray; 
+    color:#FFFFFF;
+}
+
+.cerradoobservaciones{
+    background-color: brown; 
+    color:#FFFFFF;
+}
 
 a.link_lang{
   font-size:11px;

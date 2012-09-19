@@ -22,6 +22,12 @@
             <h:panelGrid columns="2" class="tblListLogin">
                 <h:outputText value="Usuario" /><h:inputText value="#{loginBean.username}" style="width: 106px;" />
                 <h:outputText value="Contraseña" /><h:inputSecret value="#{loginBean.password}" style="width: 108px;" />
+                <h:outputText value="Evento" />
+                <p:selectOneMenu id="evento" label="Evento" required="true" value="#{loginBean.idEvento}" >
+                    <f:selectItem itemLabel="Seleccione un Evento" itemValue="" /> 
+                    <f:selectItems value="#{init.eventos}" var="eventos" itemLabel="#{eventos.nombreEvento}" itemValue="#{eventos.idEvento}" />
+                                                    
+                </p:selectOneMenu>
                 <h:outputText value="" /><h:commandButton action="#{loginBean.login}" value="Iniciar Sesión" id="btnLogin" />
             </h:panelGrid>
         </h:form>
