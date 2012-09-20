@@ -12,8 +12,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 
@@ -24,13 +27,12 @@ import javax.sql.rowset.CachedRowSet;
 @ManagedBean
 @RequestScoped
 public class RegistroIncidente {
-    
-   private String IdUbicacion;
-   private String ptoReferencia;
-   private Date fechaHora;
-   private String Descripcion;
-   private String IdTipoIncidente;
 
+    private String IdUbicacion;
+    private String ptoReferencia;
+    private Date fechaHora;
+    private String Descripcion;
+    private String IdTipoIncidente;
     private String Nombres;
     private String Apellidos;
     private String telefono;
@@ -42,159 +44,9 @@ public class RegistroIncidente {
     private String Referencia;
     private int Estado;
     private int Prioridad;
-    
     private String IdEvento;
-    
     @Resource(name = "jdbc/sise")
     DataSource dataSource;
-
-    public String getIdEvento() {
-        return IdEvento;
-    }
-
-    public void setIdEvento(String IdEvento) {
-        this.IdEvento = IdEvento;
-    }
-    
-    
-
-    public String getIdTipoIncidente() {
-        return IdTipoIncidente;
-    }
-
-    public void setIdTipoIncidente(String IdTipoIncidente) {
-        this.IdTipoIncidente = IdTipoIncidente;
-    }
-    
-    
-
-    public Date getFechaHora() {
-        return fechaHora;
-    }
-
-    public void setFechaHora(Date fechaHora) {
-        this.fechaHora = fechaHora;
-    }
-
-    public String getDescripcion() {
-        return Descripcion;
-    }
-
-    public void setDescripcion(String Descripcion) {
-        this.Descripcion = Descripcion;
-    }
-    
-    
-
-    public String getIdUbicacion() {
-        return IdUbicacion;
-    }
-
-    public void setIdUbicacion(String IdUbicacion) {
-        this.IdUbicacion = IdUbicacion;
-    }
-
-    public String getPtoReferencia() {
-        return ptoReferencia;
-    }
-
-    public void setPtoReferencia(String ptoReferencia) {
-        this.ptoReferencia = ptoReferencia;
-    }
-    
-    
-
-    
-    
-    
-
-    public int getEstado() {
-        return Estado;
-    }
-
-    public int getPrioridad() {
-        return Prioridad;
-    }
-
-    public void setPrioridad(int Prioridad) {
-        this.Prioridad = Prioridad;
-    }
-
-    public void setEstado(int Estado) {
-        this.Estado = Estado;
-    }
-
-    public String getApellidos() {
-        return Apellidos;
-    }
-
-    public void setApellidos(String Apellidos) {
-        this.Apellidos = Apellidos;
-    }
-
-    public String getCanton() {
-        return Canton;
-    }
-
-    public void setCanton(String Canton) {
-        this.Canton = Canton;
-    }
-
-    public String getCaserio() {
-        return Caserio;
-    }
-
-    public void setCaserio(String Caserio) {
-        this.Caserio = Caserio;
-    }
-
-    /*public String getDepartamento() {
-        return Departamento;
-    }
-
-    public void setDepartamento(String Departamento) {
-        this.Departamento = Departamento;
-    }*/
-
-    public String getDireccion() {
-        return Direccion;
-    }
-
-    public void setDireccion(String Direccion) {
-        this.Direccion = Direccion;
-    }
-
-    public String getMunicipio() {
-        return Municipio;
-    }
-
-    public void setMunicipio(String Municipio) {
-        this.Municipio = Municipio;
-    }
-
-    public String getNombres() {
-        return Nombres;
-    }
-
-    public void setNombres(String Nombres) {
-        this.Nombres = Nombres;
-    }
-
-    public String getReferencia() {
-        return Referencia;
-    }
-
-    public void setReferencia(String Referencia) {
-        this.Referencia = Referencia;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
 
     /**
      * Creates a new instance of RegistroIncidente
@@ -267,7 +119,7 @@ public class RegistroIncidente {
 
     }
 
-    public String guardar() throws SQLException  {
+    public String guardar() throws SQLException {
         if (dataSource == null) {
             throw new SQLException("No se pudo tener acceso a la fuente de datos");
         }
@@ -281,8 +133,15 @@ public class RegistroIncidente {
         try {
             CallableStatement cs;
             String sql = "{ call registrarIncidente(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
-            cs = connection.prepareCall(sql);
+            cs = connection.prepareCall(sql);           
+
+            FacesContext context = javax.faces.context.FacesContext.getCurrentInstance();
+            HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+            LoginBean nB = (LoginBean) session.getAttribute("loginBean");
+            //init in = (init) session.getAttribute("init");
             
+            //connection.setAutoCommit(false);
+
             cs.setString(1, getNombres());
             cs.setString(2, getApellidos());
             cs.setString(3, getTelefono());
@@ -297,15 +156,151 @@ public class RegistroIncidente {
             cs.setString(12, getDescripcion());
             cs.setInt(13, getEstado());
             cs.setInt(14, getPrioridad());
-            cs.setString(15, "TT1201");
-            
-            
-            
+            cs.setString(15, nB.getIdEvento());
+            //cs.setString(15, "TT1201");
+
             cs.execute();
             
+            //FacesContext.getCurrentInstance().addMessage("f1:guardar", new FacesMessage("Incidente agregado"));
+            
+            cs.close();
+            
+        
+            
+            
+            //connection.commit();
+
         } finally {
             connection.close();
         }
         return "registroIncidente";
+    }
+
+    public String getIdUbicacion() {
+        return IdUbicacion;
+    }
+
+    public void setIdUbicacion(String IdUbicacion) {
+        this.IdUbicacion = IdUbicacion;
+    }
+
+    public String getPtoReferencia() {
+        return ptoReferencia;
+    }
+
+    public void setPtoReferencia(String ptoReferencia) {
+        this.ptoReferencia = ptoReferencia;
+    }
+
+    public Date getFechaHora() {
+        return fechaHora;
+    }
+
+    public void setFechaHora(Date fechaHora) {
+        this.fechaHora = fechaHora;
+    }
+
+    public String getDescripcion() {
+        return Descripcion;
+    }
+
+    public void setDescripcion(String Descripcion) {
+        this.Descripcion = Descripcion;
+    }
+
+    public String getIdTipoIncidente() {
+        return IdTipoIncidente;
+    }
+
+    public void setIdTipoIncidente(String IdTipoIncidente) {
+        this.IdTipoIncidente = IdTipoIncidente;
+    }
+
+    public String getNombres() {
+        return Nombres;
+    }
+
+    public void setNombres(String Nombres) {
+        this.Nombres = Nombres;
+    }
+
+    public String getApellidos() {
+        return Apellidos;
+    }
+
+    public void setApellidos(String Apellidos) {
+        this.Apellidos = Apellidos;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getMunicipio() {
+        return Municipio;
+    }
+
+    public void setMunicipio(String Municipio) {
+        this.Municipio = Municipio;
+    }
+
+    public String getCanton() {
+        return Canton;
+    }
+
+    public void setCanton(String Canton) {
+        this.Canton = Canton;
+    }
+
+    public String getCaserio() {
+        return Caserio;
+    }
+
+    public void setCaserio(String Caserio) {
+        this.Caserio = Caserio;
+    }
+
+    public String getDireccion() {
+        return Direccion;
+    }
+
+    public void setDireccion(String Direccion) {
+        this.Direccion = Direccion;
+    }
+
+    public String getReferencia() {
+        return Referencia;
+    }
+
+    public void setReferencia(String Referencia) {
+        this.Referencia = Referencia;
+    }
+
+    public int getEstado() {
+        return Estado;
+    }
+
+    public void setEstado(int Estado) {
+        this.Estado = Estado;
+    }
+
+    public int getPrioridad() {
+        return Prioridad;
+    }
+
+    public void setPrioridad(int Prioridad) {
+        this.Prioridad = Prioridad;
+    }
+
+    public String getIdEvento() {
+        return IdEvento;
+    }
+
+    public void setIdEvento(String IdEvento) {
+        this.IdEvento = IdEvento;
     }
 }
