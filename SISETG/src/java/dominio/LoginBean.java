@@ -30,6 +30,7 @@ public class LoginBean implements Serializable {
     private String IdEvento;
     private String IdUbic;
     private String opcion;
+    private Integer IdCont;
     private boolean isLoggedIn;
     private StringBuffer sb;
     @Resource(name = "jdbc/sise")
@@ -53,7 +54,7 @@ public class LoginBean implements Serializable {
             isLoggedIn = true;
             
             if (sb == null) {
-                url = "registroIncidente.xhtml";
+                url = "listadoIncidentes.xhtml";
                 //doRedirect(url);
                 
             } else {
@@ -94,7 +95,7 @@ public class LoginBean implements Serializable {
             }
 
             PreparedStatement getUsuario = connection.prepareStatement(
-                    "SELECT username, IDUBIC FROM usuario WHERE username = ? ");
+                    "SELECT username, IDCONT, IDUBIC FROM usuario WHERE username = ? ");
             getUsuario.setString(1, getUsername());
 
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
@@ -111,6 +112,7 @@ public class LoginBean implements Serializable {
                     pass = rowSet2.getString("P");
                     if (pass.equals(getPassword())) {
                         setIdUbic(rowSet.getString("IDUBIC"));
+                        setIdCont(rowSet.getInt("IDCONT"));
                         resultado = true;
                     } else {
                         resultado = false;
@@ -176,6 +178,14 @@ public class LoginBean implements Serializable {
         this.IdUbic = IdUbic;
     }
 
+    public Integer getIdCont() {
+        return IdCont;
+    }
+
+    public void setIdCont(Integer IdCont) {
+        this.IdCont = IdCont;
+    }
+    
     public String getOpcion() {
         return opcion;
     }
