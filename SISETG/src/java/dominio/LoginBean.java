@@ -51,18 +51,20 @@ public class LoginBean implements Serializable {
         if (validar()) {
             //changed the state to true
             isLoggedIn = true;
-            url = "registroIncidente.xhtml";
+            
             if (sb == null) {
-                doRedirect(url);
+                url = "registroIncidente.xhtml";
+                //doRedirect(url);
                 
             } else {
-                doRedirect(sb.toString());
-                //url = sb.toString();
+                //doRedirect(sb.toString());
+                url = sb.toString();
             }
         } else {
             //set the message to display when authentication fails
             FacesContext.getCurrentInstance().addMessage("frmLogin:btnLogin", new FacesMessage("Usuario o contraseña no validos"));
         }
+        doRedirect(url);
         return url;
     }
 
