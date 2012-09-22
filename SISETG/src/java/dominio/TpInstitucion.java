@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import javax.annotation.Resource;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.sql.DataSource;
 
 /**
@@ -65,7 +66,7 @@ public class TpInstitucion {
         }
         CallableStatement cs;
         try{
-            String sql="{ call sp_addTpInst(?,?)}";
+            String sql="{ call TIPOINSTITUCION_Add(?,?)}";
             cs = connection.prepareCall(sql);
                 cs.setString(1, getNombreTpInstitucion());
                 cs.setString(2, getDescTpInstitucion());
