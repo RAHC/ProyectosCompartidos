@@ -14,7 +14,6 @@ import javax.annotation.Resource;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
@@ -28,7 +27,7 @@ public class registroValidacion {
 
    
     private String Incidente;
-    private Date Fecha;
+    private Date FechaHora;
     private String Acciones;
     private Integer Estado;
     private String corrInc;
@@ -51,19 +50,23 @@ public class registroValidacion {
         if (connection == null) {
             throw new SQLException("No se pudo conectar a la fuente de datos");
         }
+        
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String fecha = dateFormat.format(getFechaHora());
+        
         FacesContext context = javax.faces.context.FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
         LoginBean nB = (LoginBean) session.getAttribute("loginBean");
         CallableStatement cs;
         try{
-            String sql = "{ call sp_registroValidacion(?,?,?,?,?,?)}";
+            String sql = "{ call VALIDACION_Add(?,?,?,?,?,?)}";
             cs = connection.prepareCall(sql);
                 cs.setString(1, nB.getIdEvento());
                 cs.setString(2, getCorrInc());
                 cs.setInt(3, getEstado());
                 cs.setInt(4, nB.getIdCont());
                 cs.setString(5,getAcciones());
-                cs.setDate(6, utilToSql(getFecha()));
+                cs.setString(6, fecha);
                 
                 cs.execute();
         }
@@ -87,12 +90,12 @@ public class registroValidacion {
         this.Incidente = Incidente;
     }
 
-    public Date getFecha() {
-        return Fecha;
+    public Date getFechaHora() {
+        return FechaHora;
     }
 
-    public void setFecha(Date Fecha) {
-        this.Fecha = Fecha;
+    public void setFechaHora(Date FechaHora) {
+        this.FechaHora = FechaHora;
     }
 
     public String getAcciones() {

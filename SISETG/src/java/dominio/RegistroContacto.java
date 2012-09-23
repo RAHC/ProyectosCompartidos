@@ -60,6 +60,9 @@ public class RegistroContacto {
         }
         return "index";
     }
+    public String getCancelar(){
+        return "listadoIncidentes.xhtml";
+    }
 
     public String getApellidos() {
         return Apellidos;

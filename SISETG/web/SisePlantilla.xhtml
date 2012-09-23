@@ -20,7 +20,7 @@
 
     <h:body class="body">
         <f:metadata>
-            <f:event listener="#{loginBean.verifyUseLogin}" type="preRenderView">
+            <f:event listener="{loginBean.verifyUseLogin}" type="preRenderView">
             </f:event>
         </f:metadata>
 
@@ -79,8 +79,8 @@
                     <p:menuitem value="Registrar Albergue" url="index"></p:menuitem>
                 </p:submenu>
                 <p:submenu label="Contactos">
-                    <p:menuitem value="Home" url="index"></p:menuitem>
-                    <p:menuitem value="Home3" url="index"></p:menuitem>
+                    <p:menuitem value="Registar Contacto" url="registroContacto.xhtml"></p:menuitem>
+                    <p:menuitem value="Ver Contactos" url="index"></p:menuitem>
                 </p:submenu>
                 <p:submenu label="Biblioteca">
                     <p:menuitem value="Home" url="index"></p:menuitem>
@@ -88,7 +88,7 @@
                 </p:submenu>
                 <span id="MenuAdmin" style="display: none">
                     <p:submenu label="Administraci&oacute;n">
-                        <p:menuitem value="Home" url="index"></p:menuitem>
+                        <p:menuitem value="Registrar Usuario" url="registroUsuario.xhtml"></p:menuitem>
                         <p:menuitem value="Home3" url="index"></p:menuitem>
                     </p:submenu>
                 </span>

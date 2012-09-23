@@ -219,7 +219,7 @@ public class ListadoIncidente implements Serializable {
                 List<Acciones> resultados2 = new ArrayList<Acciones>();
                 PreparedStatement getListAcciones = connection.prepareStatement(
                         "SELECT *, convert(varchar, FECHORAREALACC,103) as FR, convert(varchar, FECHORAALMACC,103) as FA "
-                        + "FROM ACCIONES WHERE IDEV='"+rowSet.getString("IDEV")+"' AND CORRINC='"+rowSet.getString("CORRINC")+"'");
+                        + "FROM ACCIONES WHERE IDEV='"+rowSet.getString("IDEV")+"' AND CORRINC='"+rowSet.getString("CORRINC")+"' AND ESTADOACC='H'");
                 CachedRowSet rowSet3 = new com.sun.rowset.CachedRowSetImpl();
                 rowSet3.populate(getListAcciones.executeQuery());
                 while(rowSet3.next()){

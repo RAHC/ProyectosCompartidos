@@ -4,7 +4,8 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
 
@@ -21,111 +22,152 @@
 
             <ui:define name="content"> 
                 <h:form prependId="false">
+                    <p:growl id="grow1" life="6000" showDetail="true" >
+                        <p:fieldset legend="Datos de Cuenta" toggleable="true" toggleSpeed="500">
+                            <!--<p:ajax event="toogle" listener="#{fieldsetBean.handleToggle}" update="grow1"/> -->
+                            <p:panelGrid styleClass="innertable" >
+                                <p:row>
+                                    <p:column style=" width: 20%">Alias de Usuario: </p:column>
+                                    <p:column style=" width: 80%" colspan="3"><p:inputText id="alias" size="25" required="true" value="#{registroUsuario.alias}" 
+                                                                                           requiredMessage="Ingrese el Alias del Usuario" />
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column style=" width: 20%">Contrase&ntilde;a: </p:column>
+                                    <p:column style=" width: 80%" colspan="3"><p:password id="pwd1" value="#{registroUsuario.password}" match="pwd2" validatorMessage="La contrase&ntilde;a no coincide en ambos campos" label="Password 1" 
+                                                                                          required="true" size="25" requiredMessage="Por favor ingrese contase&ntilde;a"/>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column style=" width: 20%">Confirme contrase&ntilde;a: </p:column>
+                                    <p:column style=" width: 80%" colspan="3"><p:password id="pwd2" value="#{registroUsuario.password}" label="Password 2" required="true"
+                                                                                          requiredMessage="La contrase&ntilde;a debe ser igual en ambos campos" size="25"/>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column style=" width: 20%">Nivel de acceso: </p:column>
+                                    <p:column style=" width: 80%" colspan="3">
+                                        <p:selectOneMenu id="nivel" label="Nivel" value="#{registroUsuario.nivel}" required="true" requiredMessage="Debe seleccionar el nivel de acceso del nuevo usuario">
+                                            <f:selectItem itemLabel="Seleccione Nivel de Acceso" itemValue="" />
+                                            <f:selectItems value="#{init.roles}" var="role" itemLabel="#{role.nombreRol}" itemValue="#{role.idRol}" />
+                                        </p:selectOneMenu>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column style=" width: 20%">Jurisdicci&oacute;n: </p:column>
+                                    <p:column style=" width: 30%">Departamento: </p:column>
+                                    <p:column style=" width: 50%" colspan="2">
+                                        <p:selectOneMenu id="departamento" label="Departamento" value="#{registroUsuario.codDepartamento}" >
+                                            <f:selectItem itemLabel="Nacional o Seleccione un Departamento" itemValue="" />
+                                            <f:selectItems value="#{registroUsuario.departamentos}" var="depto" itemLabel="#{depto.nombreDepartamento}" itemValue="#{depto.idDepartamento}"/>
+                                            <p:ajax update="municipio" />
+                                        </p:selectOneMenu>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column></p:column><p:column>Municipio:  </p:column>
+                                    <p:column>
+                                        <p:selectOneMenu id="municipio" label="Municipio" value="#{registroUsuario.codMunicipio}" >
+                                            <f:selectItem itemLabel="Seleccione un Municipio" itemValue="" /> 
+                                            <f:selectItems value="#{registroUsuario.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
+                                        </p:selectOneMenu>
+                                    </p:column>
+                                </p:row>
 
-                    <p:panel header="Datos de Cuenta" > 
-
-                        <h:panelGrid columns="3" id="datosUsuario" width="75%" >                   
-                            <h:outputLabel value="Alias de Usuario: " for="alias"/>
-                            <h:panelGroup>
-                                <p:inputText id="alias" size="25" required="true" value="#{registroUsuario.alias}" 
-                                             requiredMessage="Ingrese el Alias del Usuario"/><h:message for="alias"/></h:panelGroup>
-
-                            <p:messages id="messages" showDetail="true" autoUpdate="true"/> 
-                            <h:outputLabel for="pwd1" value="Contrase&ntilde;a: "  />
-                            <p:password id="pwd1" value="#{registroUsuario.password}" match="pwd2" label="Password 1" required="true" size="25"/>
-                            <h:outputLabel />
-                            <h:outputLabel for="pwd2" value="Confirme contrase&ntilde;a: "  />
-                            <p:password id="pwd2" value="#{registroUsuario.password}" label="Password 2" required="true" size="25"/>
-                            <h:outputLabel />
-
-                            <h:outputLabel value="Nivel de acceso: " for="nivel" />
-                            <p:selectOneMenu id="nivel" label="Nivel" value="#{registroUsuario.nivel}">
-                                <f:selectItem itemLabel="Seleccione Nivel de Acceso" itemValue="" />
-                                <f:selectItems value="#{init.roles}" var="role" itemLabel="#{role.nombreRol}" itemValue="#{role.idRol}" />
-                            </p:selectOneMenu>
-                            <h:message for="nivel"/>
-
-                            <h:panelGroup>
-                                <h:outputLabel value="Jurisdicci&oacute;n, " />
-                                <h:outputLabel value="Departamento: " for="departamento"/>
-                            </h:panelGroup>
-                            <p:selectOneMenu id="departamento" label="Departamento" value="#{init.codDepartamento}" >
-                                <f:selectItem itemLabel="Seleccione un Departamento" itemValue="" />
-                                <f:selectItems value="#{init.departamentos}" var="depto" itemLabel="#{depto.nombreDepartamento}" itemValue="#{depto.idDepartamento}"/>
-                                <p:ajax update="municipio" />
-                            </p:selectOneMenu>
-                            <h:message for="departamento" />
-                            <h:outputLabel value="Municipio: " for="municipio"/>                           
-                            <h:panelGroup>
-                                <p:selectOneMenu id="municipio" label="Municipio" value="#{registroUsuario.municipio}" >
-                                    <f:selectItem itemLabel="Seleccione un Municipio" itemValue="" /> 
-                                    <f:selectItems value="#{init.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
-                                </p:selectOneMenu>
-                                <h:message for="municipio"/>
-                            </h:panelGroup>
-                        </h:panelGrid>
-                    </p:panel>
-                    <p:panel header="Instituci&oacute;n a la que pertenece">
-                        <h:panelGrid columns="3" width="75%" >
-                            <h:outputLabel value="Tipo de Instituci&oacute;n: " for="tpInstitucion" />
-                            <p:selectOneMenu id="tpInstitucion" label="TpInstitucion" value="#{init.tpInstitucion}" >
-                                <f:selectItem itemLabel="Seleccione un Tipo de Instituci&oacute;n" itemValue="" />
-                                <f:selectItems value="#{init.tpInstituciones}" var="tpInstitucion" itemLabel="#{tpInstitucion.nombreTpInstitucion}" itemValue="#{tpInstitucion.idTpInstitucion}" />
-                                <p:ajax update="institucion" />
-                            </p:selectOneMenu>
-                            <h:message for="lsTpInst" />
-                            <h:outputLabel value="Nombre de Instituci&oacute;n: " for="institucion" />
-                            <p:selectOneMenu id="institucion" label="Institucion" value="#{registroUsuario.institucion}">
-                                <f:selectItem itemLabel="Seleccione una Instituci&oacute;n" itemValue="0" />
-                                <f:selectItems value="#{init.instituciones}" var="inst" itemLabel="#{inst.nombreInstitucion}" itemValue="#{inst.idInstitucion}" />
-                                <p:ajax update="contacto" />
-                            </p:selectOneMenu>
-                            <h:outputLabel />
-                            <h:outputLabel value="Exportar datos de contacto" for="contacto" />
-                            <p:selectOneMenu id="contacto" label="Contacto" value="#{registroUsuario.contacto}">
-                                <f:selectItem itemLabel="Si el usuario existe como contacto seleccionelo" itemValue="0" />
-                                <f:selectItems value="#{registroUsuario.contactos}" var="contacto" itemLabel="#{contacto.nombreContacto} #{contacto.apellidoContacto}" itemValue="#{contacto.idContacto}" />
-                                <p:ajax update="lyContacto" listener="#{registroUsuario.datosContacto()}" />
-                            </p:selectOneMenu>
-
-                        </h:panelGrid>
-                    </p:panel>
-                    <p:panel header="Datos de Contacto" id="lyContacto"> 
-                        <h:panelGrid columns="4" width="100%">
-                            <h:outputLabel value="Nombres: " for="nombres" />
-                            <p:inputText id="nombres" size="25" value="#{registroUsuario.nombres}" />
-                            <h:outputLabel value="Apellidos: " for="apellidos"/>
-                            <p:inputText id="apellidos" size="25" value="#{registroUsuario.apellidos}" />
-                            <h:outputLabel value="Telefono institucional: " for="telInst" />
-                            <p:inputText id="telInst" size="25" value="#{registroUsuario.telInst}"/>
-                            <h:outputLabel value="Telefono celular: " for="cel" />
-                            <p:inputText id="cel" size="25" value="#{registroUsuario.cel}" />
-                            <h:outputLabel value="Telefono personal: " for="telPers" />
-                            <p:inputText id="telPers" size="25" value="#{registroUsuario.telPers}" />
-                            <h:outputLabel value="Fax: " for="fax"/>
-                            <p:inputText id="fax" size="25" value="#{registroUsuario.fax}" />
-                            <h:outputLabel value="Radio: " for="radio" />
-                            <p:inputText id="radio" size="25" value="#{registroUsuario.radio}" />
-                            <h:outputLabel /><h:outputLabel />
-                            <h:outputLabel value="Correo institucional: " for="correoInst" />
-                            <p:inputText id="correInst" size="25" value="#{registroUsuario.correoInst}" />
-                            <h:outputLabel value="Correo personal: " for="correoPers" />
-                            <p:inputText id="correoPers" size="25" value="#{registroUsuario.correoPers}" />
-                            <h:outputLabel value="Cargo desempe&ntilde;ado: " for="cargo" />
-                            <p:inputText id="cargo" size="25" value="#{registroUsuario.cargo}" />
-                            <h:outputLabel /><h:outputLabel />
-                            <h:outputLabel value="Direcci&oacute;n: " for="direccion" />
-                            <p:inputTextarea id="direccion" rows="5" cols="50" value="#{registroUsuario.direccion}" />
-                            <h:outputLabel /><h:outputLabel />
-                            <h:outputLabel /><h:outputLabel /><h:outputLabel />
-                            <h:panelGroup>
+                            </p:panelGrid>
+                        </p:fieldset>
+                    </p:growl>
+                    <p:growl id="grow2" showDetail="true" >
+                        <p:fieldset legend="Instituci&oacute;n a la que pertenece" toggleable="true" toggleSpeed="500">
+                            <p:panelGrid styleClass="innertable">
+                                <p:row>
+                                    <p:column style=" width: 20%">Tipo de Instituci&oacute;n: </p:column>
+                                    <p:column style="width: 80%" colspan="3">
+                                        <p:selectOneMenu id="tpInstitucion" label="TpInstitucion" value="#{init.tpInstitucion}" 
+                                                         required="true" requiredMessage="Por favor seleccione un tipo de instituci&oacute;n" >
+                                            <f:selectItem itemLabel="Seleccione un Tipo de Instituci&oacute;n" itemValue="" />
+                                            <f:selectItems value="#{init.tpInstituciones}" var="tpInstitucion" itemLabel="#{tpInstitucion.nombreTpInstitucion}" itemValue="#{tpInstitucion.idTpInstitucion}" />
+                                            <p:ajax update="institucion" />
+                                        </p:selectOneMenu>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column style=" width: 20%">Nombre de Instituci&oacute;n</p:column>
+                                    <p:column style=" width: 80%" colspan="3">
+                                        <p:selectOneMenu id="institucion" label="Institucion" value="#{registroUsuario.institucion}" 
+                                                         required="true" requiredMessage="Por favor seleccione una instituci&oacute;n">
+                                            <f:selectItem itemLabel="Seleccione una Instituci&oacute;n" itemValue="" />
+                                            <f:selectItems value="#{init.instituciones}" var="inst" itemLabel="#{inst.nombreInstitucion}" itemValue="#{inst.idInstitucion}" />
+                                            <p:ajax update="contacto" />
+                                        </p:selectOneMenu>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column>Exportar datos de contacto</p:column>
+                                    <p:column>
+                                        <p:selectOneMenu id="contacto" label="Contacto" value="#{registroUsuario.contacto}" >
+                                            <f:selectItem itemLabel="Si el usuario existe como contacto seleccionelo" itemValue="0" />
+                                            <f:selectItems value="#{registroUsuario.contactos}" var="contacto" itemLabel="#{contacto.nombreContacto} #{contacto.apellidoContacto}" itemValue="#{contacto.idContacto}" />
+                                            <p:ajax update="lyContacto"  />
+                                        </p:selectOneMenu>
+                                    </p:column>
+                                </p:row>
+                            </p:panelGrid>
+                        </p:fieldset>
+                    </p:growl>
+                    <p:growl id="lyContacto" showDetail="true" >
+                        <p:fieldset legend="Datos de Contacto" toggleable="true" toggleSpeed="500">
+                            <p:panelGrid styleClass="innertable">
+                                <p:row>
+                                    <p:column style="width: 20%">Nombres: </p:column>
+                                    <p:column style="width: 30%"><p:inputText id="nombres" size="35" value="#{registroUsuario.nombres}" 
+                                                                              required="true" requiredMessage="Por favor ingrese el nombre del usuario"/></p:column>
+                                    <p:column style="width: 20%">Apellidos: </p:column>
+                                    <p:column style="width: 30%"><p:inputText id="apellidos" size="35" value="#{registroUsuario.apellidos}"
+                                                                              required="true" requiredMessage="Por favor ingrese el apellido del usuario"/></p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column style="width: 20%">Tel&eacute;fono institucional: </p:column>
+                                    <p:column style="width: 30%"><p:inputText id="telInst" size="25" value="#{registroUsuario.telInst}"/></p:column>
+                                    <p:column style="width: 20%">Tel&eacute;fono celular: </p:column>
+                                    <p:column style="width: 30%"><p:inputText id="cel" size="25" value="#{registroUsuario.cel}" /></p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column style="width: 20%">Tel&eacute;fono personal: </p:column>
+                                    <p:column style="width: 30%"><p:inputText id="telPers" size="25" value="#{registroUsuario.telPers}" /></p:column>
+                                    <p:column style="width: 20%">Fax: </p:column>
+                                    <p:column style="width: 30%"><p:inputText id="fax" size="25" value="#{registroUsuario.fax}" /></p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column style="width: 20%">Radio: </p:column>
+                                    <p:column style="width: 30%"><p:inputText id="radio" size="25" value="#{registroUsuario.radio}" /></p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column style="width: 20%">Correo institucional: </p:column>
+                                    <p:column style="width: 30%"><p:inputText id="correInst" size="35" value="#{registroUsuario.correoInst}" /></p:column>
+                                    <p:column style="width: 20%">Correo personal</p:column>
+                                    <p:column style="width: 30%"><p:inputText id="correoPers" size="35" value="#{registroUsuario.correoPers}" /></p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column style="width: 20%">Cargo: </p:column>
+                                    <p:column style="width: 80%" colspan="3"><p:inputText id="cargo" size="35" value="#{registroUsuario.cargo}" /></p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column style="width: 20%">Direcci&oacute;n: </p:column>
+                                    <p:column style="width: 80%" colspan="3"><p:inputTextarea id="direccion" rows="3" cols="80" value="#{registroUsuario.direccion}" /></p:column>
+                                </p:row>
+                            </p:panelGrid>
+                        </p:fieldset>
+                    </p:growl>
+                    <p:panelGrid styleClass="innertable" >
+                        <p:row>
+                            <p:column style="text-align:right">
                                 <p:commandButton id="guardar" value="Guardar" action="#{registroUsuario.guardar}" ajax="false" />
                                 <p:commandButton id="cancel" value="Cancelar" />
-                                <p:commandButton id="cleanContent" value="Limpiar" />
-                            </h:panelGroup>
-                        </h:panelGrid>
-                    </p:panel>
-
+                                <p:commandButton id="cleanContent" value="Limpiar" /> 
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
 
                 </h:form>
 

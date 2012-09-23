@@ -95,13 +95,10 @@
                                         <p:column style=" width: 20%">Estado: <h:outputText value="#{li.nombreEstado}" /> </p:column>
                                         <p:column style=" width: 20%">
                                             <h:form>
-                                                <h:link value="Verificar Incidente" outcome="validacion.xhtml" includeViewParams="true"> 
-                                                    <f:param name="corrInc" value="#{li.corrInc}" />
-                                                </h:link>
                                                 <p:menuButton value="Men&uacute; de Operaciones" style="font-size: 14px">
                                                     <p:menuitem value="Verificar Incidente" id="btnVal" url="validacion.xhtml?corrInc=#{li.corrInc}" />
                                                     <p:menuitem value="Seguimiento y Control de Incidente" url="#" />
-                                                    <p:menuitem value="Cerrar Incidente" url="#" />
+                                                    <p:menuitem value="Cerrar Incidente" id="btnCierre"  url="registroCierre.xhtml?corrInc=#{li.corrInc}" />
                                                     <p:menuitem value="Registrar Afectaci&oacute;n" url="#" />
                                                     <p:menuitem value="Ver Afectaciones" url="#" />
                                                 </p:menuButton>

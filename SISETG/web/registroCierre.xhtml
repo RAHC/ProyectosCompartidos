@@ -5,19 +5,22 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui">
-
+    <f:metadata>
+        <f:viewParam name="corrInc" value="#{registroCierre.corrInc}" />
+    </f:metadata>
     <body>
 
         <ui:composition template="./SisePlantilla.xhtml">
-
+            <ui:define name="titles">
+                CERRAR INCIDENTE
+            </ui:define>
             <ui:define name="content">
                <h:form prependId="false">
                     <p:panel> 
                         <h:panelGrid class="tblListBack" cellpadding="10" cellspacing="10" columns="1">
-                            <h2 align="center">Cerrar Incidente</h2>
                             <h:panelGroup>
                                 <h:outputLabel value="Fecha y Hora de Cierre: " for="fechaCierre"/>
-                                <p:calendar id="fechaCierre" effect="slide" showOn="button" navigator="true" pattern="dd/MM/yyyy HH:mm" value="#{registroCierre.fecha}" /> 
+                                <p:calendar id="fechaCierre" effect="slide" showOn="button" navigator="true" locale="es" pattern="dd/MM/yyyy HH:mm:ss" value="#{registroCierre.fechaHora}" /> 
                                 <h:message for="fechaCierre" />
                             </h:panelGroup>
                             <h:outputLabel value="Observaciones sobre el cierre del incidente: " for="acciones" />
