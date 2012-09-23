@@ -20,7 +20,7 @@
             </ui:define>
 
             <ui:define name="content">
-                <h:form prependId="false">
+                <h:form prependId="false" id="f1">
                     <p:accordionPanel multiple="true" activeIndex="0,1,2,3">
                         <p:tab title="Identificación del Informante">
                             <h:panelGrid columns="3">
@@ -203,7 +203,7 @@
 
                     </p:accordionPanel>
 
-                    <p:commandButton id="guardar" value="Guardar" action="#{registroIncidente.guardar}" ajax="false"/>
+                    <p:commandButton id="guardar" value="Guardar" action="#{registroIncidente.guardar}" update="f1"/>
                     <p:commandButton id="cancelar" value="Cancelar" action="index.html"/>  
                     <p:commandButton id="limpiar" value="Limpiar" type="reset"/>  
 

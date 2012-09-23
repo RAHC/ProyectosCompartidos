@@ -8,6 +8,7 @@
 
     <body>
 
+
         <ui:composition template="./SisePlantilla.xhtml">
             <ui:define name="titles">
                 INCIDENTES
@@ -25,7 +26,7 @@
 
                     <p:panelGrid style=" font-size: 14px; font-family: calibri" styleClass="generalTable" >
                         <f:facet name="header">
-                            
+
                             <p:row>
                                 <p:column style=" width: 15%"><h:outputLabel value="Filtrar por: " /></p:column>
                                 <p:column style=" width: 15%"><h:outputLabel value="Tipo de Incidente: " for="TpIncidente" /></p:column>
@@ -94,13 +95,16 @@
                                         <p:column style=" width: 20%">Estado: <h:outputText value="#{li.nombreEstado}" /> </p:column>
                                         <p:column style=" width: 20%">
                                             <h:form>
-                                            <p:menuButton value="Men&uacute; de Operaciones" style="font-size: 14px">
-                                                <p:menuitem value="Verificar Incidente" id="btnVal" onclick="window.open('validacion.xhtml?inc=#{li.corrInc}', 'MyWindow', 'height=350,width=250,menubar=no,toolbar=no'); return false;" />
-                                                <p:menuitem value="Seguimiento y Control de Incidente" url="#" />
-                                                <p:menuitem value="Cerrar Incidente" url="#" />
-                                                <p:menuitem value="Registrar Afectaci&oacute;n" url="#" />
-                                                <p:menuitem value="Ver Afectaciones" url="#" />
-                                            </p:menuButton>
+                                                <h:link value="Verificar Incidente" outcome="validacion.xhtml" includeViewParams="true"> 
+                                                    <f:param name="corrInc" value="#{li.corrInc}" />
+                                                </h:link>
+                                                <p:menuButton value="Men&uacute; de Operaciones" style="font-size: 14px">
+                                                    <p:menuitem value="Verificar Incidente" id="btnVal" url="validacion.xhtml?corrInc=#{li.corrInc}" />
+                                                    <p:menuitem value="Seguimiento y Control de Incidente" url="#" />
+                                                    <p:menuitem value="Cerrar Incidente" url="#" />
+                                                    <p:menuitem value="Registrar Afectaci&oacute;n" url="#" />
+                                                    <p:menuitem value="Ver Afectaciones" url="#" />
+                                                </p:menuButton>
                                             </h:form>
                                         </p:column>
                                     </p:row>
@@ -139,9 +143,9 @@
                                     <p:column rowspan="3" style="margin-top:20px" >Acciones Tomadas: </p:column>
                                     <p:column rowspan="3" colspan="3">
                                         <p:selectOneListbox id="Acciones" style="height:80px; width: 100%">
-                                           <f:selectItems value="#{li.listaAcciones}" var="accion" itemLabel="#{accion.descripAccion}" />
-                                       </p:selectOneListbox>
-                                   </p:column>
+                                            <f:selectItems value="#{li.listaAcciones}" var="accion" itemLabel="#{accion.descripAccion}" />
+                                        </p:selectOneListbox>
+                                    </p:column>
                                 </p:row>
                                 <p:row>
                                     <p:column colspan="2">Direcci&oacute;n: <h:outputText value="#{li.direccion}" /> </p:column> 

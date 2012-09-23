@@ -13,6 +13,9 @@ import java.util.Date;
 import javax.annotation.Resource;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 /**
@@ -23,37 +26,65 @@ import javax.sql.DataSource;
 @ViewScoped
 public class registroValidacion {
 
-    private String Evento;
+   
     private String Incidente;
     private Date Fecha;
     private String Acciones;
     private Integer Estado;
-    private Integer Usuario;
+    private String corrInc;
     
     @Resource(name = "jdbc/sise")
     DataSource dataSource;
     
     public registroValidacion() {
     }
+    
+    
 
-    public String getEvento() {
-        return Evento;
+    public void guardar() throws SQLException{
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+
+        Connection connection = dataSource.getConnection();
+
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+        FacesContext context = javax.faces.context.FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+        LoginBean nB = (LoginBean) session.getAttribute("loginBean");
+        CallableStatement cs;
+        try{
+            String sql = "{ call sp_registroValidacion(?,?,?,?,?,?)}";
+            cs = connection.prepareCall(sql);
+                cs.setString(1, nB.getIdEvento());
+                cs.setString(2, getCorrInc());
+                cs.setInt(3, getEstado());
+                cs.setInt(4, nB.getIdCont());
+                cs.setString(5,getAcciones());
+                cs.setDate(6, utilToSql(getFecha()));
+                
+                cs.execute();
+        }
+        finally{
+            connection.close();
+        }
+    }
+    private java.sql.Date utilToSql(java.util.Date fecha) {
+        DateFormat sqlDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        return java.sql.Date.valueOf(sqlDateFormatter.format(fecha));   
     }
 
-    public void setEvento(String Evento) {
-        this.Evento = Evento;
-    }
-
-    public String getIncidente() {
-        return Incidente;
+     public String getIncidente() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        this.Incidente = (String) facesContext.getExternalContext().getRequestParameterMap().get("corrInc");
+        
+        return this.Incidente;
     }
 
     public void setIncidente(String Incidente) {
         this.Incidente = Incidente;
-    }
-
-    public Integer getUsuario() {
-        return Usuario;
     }
 
     public Date getFecha() {
@@ -79,37 +110,14 @@ public class registroValidacion {
     public void setEstado(Integer Estado) {
         this.Estado = Estado;
     }
+
+    public String getCorrInc() {
+        return corrInc;
+    }
+
+    public void setCorrInc(String corrInc) {
+        this.corrInc = corrInc;
+    }
     
-    public void guardar() throws SQLException{
-        if (dataSource == null) {
-            throw new SQLException("No se pudo tener acceso a la fuente de datos");
-        }
-
-        Connection connection = dataSource.getConnection();
-
-        if (connection == null) {
-            throw new SQLException("No se pudo conectar a la fuente de datos");
-        }
-        CallableStatement cs;
-        try{
-            String sql = "{ call sp_registroValidacion(?,?,?,?,?,?)}";
-            cs = connection.prepareCall(sql);
-                cs.setString(1, getEvento());
-                cs.setString(2, getIncidente());
-                cs.setInt(3, getEstado());
-                cs.setInt(4, getUsuario());
-                cs.setString(5,getAcciones());
-                cs.setDate(6, utilToSql(getFecha()));
-                
-                cs.executeQuery();
-        }
-        finally{
-            connection.close();
-        }
-    }
-    private java.sql.Date utilToSql(java.util.Date fecha) {
-        DateFormat sqlDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-        return java.sql.Date.valueOf(sqlDateFormatter.format(fecha));   
-    }
     
 }

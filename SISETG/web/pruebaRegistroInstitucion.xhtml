@@ -37,11 +37,11 @@
 
                                             <h:panelGrid columns="2" style="margin-bottom:10px">  
                                                 <h:outputLabel for="Nombre" value="Nombre:" />  
-                                                <p:inputText id="nombinst" value="#{TpInstitucion.NombreTpInstitucion}" size="25"/>  
+                                                <p:inputText id="nombinst" value="#{tpInstitucion.nombreTpInstitucion}" required="true" size="25"/>  
                                                 <h:outputLabel for="Descripcion" value="Descripcion:"/>
-                                                <p:inputTextarea id="descinst" value="#{TpInstitucion.DescTpInstitucion}" rows="2" cols="27" maxlength="100"/> 
+                                                <p:inputTextarea id="descinst" value="#{tpInstitucion.descTpInstitucion}" rows="2" cols="27" maxlength="100"/> 
                                             </h:panelGrid>
-                                            <p:commandButton id="submitButton" value="Agregar" action="#{TpInstitucion.guardar}" update="tpInstitucion" oncomplete="dlg.hide();"/>  
+                                            <p:commandButton id="submitButton" value="Agregar" action="#{tpInstitucion.guardar}" update="tpInstitucion" oncomplete="dlg.hide();"/>  
 
                                         </p:dialog>
                                         <h:outputLabel for="Nombre" value="Nombre de Responsable:" />
@@ -61,7 +61,48 @@
                                 <p:column colspan="4">
                                     <p:growl id="grow1" showDetail="true">
                                         <p:fieldset legend="Ubicación" style=" font-size: 14px; font-family: calibri" >
+                                            <h:panelGrid columns="3">
+                                                <h:outputLabel value="Departamento" for="departamento"/>
+                                                <p:selectOneMenu id="departamento" label="Departamento" required="true" value="#{init.codDepartamento}">
+                                                    <f:selectItem itemLabel="Seleccione un Departamento" itemValue="" />
+                                                    <f:selectItems value="#{init.departamentos}" var="dept" itemLabel="#{dept.nombreDepartamento}" itemValue="#{dept.idDepartamento}" />
+                                                    <p:ajax update="municipio"/>
+                                                </p:selectOneMenu>  
+                                                <h:message for="departamento"/>
 
+                                                <h:outputLabel value="Municipio" for="municipio"/>
+                                                <p:selectOneMenu id="municipio" label="Municipio" required="true" value="#{init.codMunicipio}">
+                                                    <f:selectItem itemLabel="Seleccione un Municipio" itemValue="" /> 
+                                                    <f:selectItems value="#{init.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
+                                                    <p:ajax update="canton"/>
+                                                </p:selectOneMenu>
+                                                <h:message for="municipio"/>   
+
+
+                                                <h:outputLabel value="Cantón" for="canton" />
+                                                <p:selectOneMenu id="canton" label="Canton"  value="#{init.codCanton}" >
+                                                    <f:selectItem itemLabel="Seleccione un Cantón" itemValue="" /> 
+                                                    <f:selectItems value="#{init.cantones}" var="canton" itemLabel="#{canton.nombreCanton}" itemValue="#{canton.idCanton}" />
+                                                    <p:ajax update="caserio"/>                                    
+                                                </p:selectOneMenu>
+                                                <h:message for="canton"/>  
+
+                                                <h:outputLabel value="Caserío" for="caserio" />
+                                                <p:selectOneMenu id="caserio" label="Caserío"  value="#{init.codCaserio}">
+                                                    <f:selectItem itemLabel="Seleccione un Caserío" itemValue="" /> 
+                                                    <f:selectItems value="#{init.caserios}" var="caserio" itemLabel="#{caserio.nombreCanserio}" itemValue="#{caserio.idCaserio}" />
+                                                    <p:ajax update="caserio"/>                                       
+                                                </p:selectOneMenu>
+                                                <h:message for="caserio"/>
+
+                                                <h:outputLabel value="Dirección Exacta" for="direccion"/>
+                                                <p:inputText id="direccion" label="Dirección Exacta" value="" required="true"/>
+                                                <h:message for="direccion"/>   
+
+                                                <h:outputLabel value="Punto de Referencia" for="punto"/>
+                                                <p:inputText id="punto" label="Punto de Referencia" value="" required="true" />
+                                                <h:message for="punto"/>                                  
+                                            </h:panelGrid>
                                         </p:fieldset>
                                     </p:growl>
                                 </p:column>
@@ -77,7 +118,7 @@
                         </p:panelGrid>
                     </p:panel>
                 </h:form>
-                
+
             </ui:define>
 
         </ui:composition>
