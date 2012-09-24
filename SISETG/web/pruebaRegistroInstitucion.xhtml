@@ -37,11 +37,11 @@
 
                                             <h:panelGrid columns="2" style="margin-bottom:10px">  
                                                 <h:outputLabel for="Nombre" value="Nombre:" />  
-                                                <p:inputText id="nombinst" value="#{tpInstitucion.nombreTpInstitucion}" required="true" size="25"/>  
+                                                <p:inputText id="nombinst" value="#{registroTipoInstitucion.nombreTpInstitucion}" size="25"/>  
                                                 <h:outputLabel for="Descripcion" value="Descripcion:"/>
-                                                <p:inputTextarea id="descinst" value="#{tpInstitucion.descTpInstitucion}" rows="2" cols="27" maxlength="100"/> 
+                                                <p:inputTextarea id="descinst" value="#{registroTipoInstitucion.descTpInstitucion}" rows="2" cols="27" maxlength="100"/> 
                                             </h:panelGrid>
-                                            <p:commandButton id="submitButton" value="Agregar" action="#{tpInstitucion.guardar}" update="tpInstitucion" oncomplete="dlg.hide();"/>  
+                                            <p:commandButton id="submitButton" value="Agregar" action="#{registroTipoInstitucion.guardarTpInst}" update="tpInstitucion" oncomplete="dlg.hide();"/>  
 
                                         </p:dialog>
                                         <h:outputLabel for="Nombre" value="Nombre de Responsable:" />
@@ -110,7 +110,7 @@
 
                             <p:row>
                                 <p:column colspan="4" style=" text-align: right">
-                                    <p:commandButton id="guardar" value="Guardar" action="#{registroContacto.guardar}" ajax="false" />
+                                    <p:commandButton id="guardar" value="Guardar" ajax="false" />
                                     <p:commandButton id="cancel" value="Cancelar" />
                                     <p:commandButton id="cleanContent" value="Limpiar" />
                                 </p:column>
