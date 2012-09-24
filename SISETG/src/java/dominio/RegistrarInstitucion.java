@@ -5,6 +5,7 @@
 package dominio;
 
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -25,58 +26,76 @@ import javax.sql.rowset.CachedRowSet;
 @ManagedBean
 @RequestScoped
 public class RegistrarInstitucion {
+    private int IdInstitucion;
+    private String NombreInstitucion;
+    private String NombreResponsable;
+    private String DirInstitucion;
+    private String TelInstitucion;
+    private Double LatInst;
+    private Double LngInst;
+    private Double AltInst;
+    private String PnRefInst;
     private String CodDepartamento;
     private String CodMunicipio;
     private String CodCanton;
     private String CodCaserio;
     private int TpInstitucion;
-    private int IdTpInstitucion;
-    private String NombreTpInstitucion;
-    private String DescTpInstitucion;
+    
     @Resource(name = "jdbc/sise")
     DataSource dataSource;
 
        public RegistrarInstitucion() {
     }
-       public String getCodCanton() {
-        return CodCanton;
-    }
-
-    public void setCodCanton(String CodCanton) {
-        this.CodCanton = CodCanton;
-    }
-
-    public String getCodCaserio() {
-        return CodCaserio;
-    }
-
-     public int getIdTpInstitucion() {
-        return IdTpInstitucion;
-    }
-
-    public void setIdTpInstitucion(int IdTpInstitucion) {
-        this.IdTpInstitucion = IdTpInstitucion;
-    }
-    public String getNombreTpInstitucion() {
-        return NombreTpInstitucion;
-    }
-
-    public void setNombreTpInstitucion(String NombreTpInstitucion) {
-        this.NombreTpInstitucion = NombreTpInstitucion;
-    }
+       
     
+       
     
-    public void setCodCaserio(String CodCaserio) {
-        this.CodCaserio = CodCaserio;
-    }
-    public int getTpInstitucion() {
+     public int getTpInstitucion() {
         return TpInstitucion;
     }
 
     public void setTpInstitucion(int TpInstitucion) {
         this.TpInstitucion = TpInstitucion;
     }
+    
+    public String getNombreInstitucion() {
+        return NombreInstitucion;
+    }
 
+    public void setNombreInstitucion(String NombreInstitucion) {
+        this.NombreInstitucion = NombreInstitucion;
+    }
+    
+    public String getNombreResponsable() {
+        return NombreResponsable;
+    }
+
+    public void setNombreResponsable(String NombreResponsable) {
+        this.NombreResponsable = NombreResponsable;
+    }
+    public String getDirInstitucion() {
+        return DirInstitucion;
+    }
+
+    public void setDirInstitucion(String DirInstitucion) {
+        this.DirInstitucion = DirInstitucion;
+    }
+    public String getTelInstitucion() {
+        return TelInstitucion;
+    }
+
+    public void setTelInstitucion(String TelInstitucion) {
+        this.TelInstitucion = TelInstitucion;
+    }
+    
+    public String getPnRefInst() {
+        return PnRefInst;
+    }
+
+    public void setPnRefInst(String PnRefInst) {
+        this.PnRefInst = PnRefInst;
+    }
+   
     public String getCodDepartamento() {
         return CodDepartamento;
     }
@@ -92,6 +111,22 @@ public class RegistrarInstitucion {
     public void setCodMunicipio(String CodMunicipio) {
         this.CodMunicipio = CodMunicipio;
     }
+    public String getCodCanton() {
+        return CodCanton;
+    }
+
+    public void setCodCanton(String CodCanton) {
+        this.CodCanton = CodCanton;
+    }
+
+    public String getCodCaserio() {
+        return CodCaserio;
+    }
+    
+    public void setCodCaserio(String CodCanton) {
+        this.CodCanton = CodCanton;
+    }
+
 public List<TpInstitucion> getTpInstituciones() throws SQLException {
         List<TpInstitucion> resultados = new ArrayList<TpInstitucion>();
         if (dataSource == null) {
@@ -242,5 +277,35 @@ public List<TpInstitucion> getTpInstituciones() throws SQLException {
         } finally {
             connection.close();
         }
+    }
+    public String guardarInst() throws SQLException{
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+
+        Connection connection = dataSource.getConnection();
+
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+        CallableStatement inst;
+        try{
+            String sql="{ call INSTITUCION_Add(?,?,?,?,?,?,?,?,?,?)}";
+            inst = connection.prepareCall(sql);
+                inst.setString(1, getCodCaserio());
+                inst.setInt(2, getTpInstitucion());
+                inst.setString(3, getNombreInstitucion());
+                inst.setString(4, getNombreResponsable());
+                inst.setString(5, getDirInstitucion());
+                inst.setString(6, getTelInstitucion());
+                
+                inst.setString(10, getPnRefInst());
+                
+                inst.execute();
+        }
+        finally{
+            connection.close();
+        }
+        return "index";
     }
 }
