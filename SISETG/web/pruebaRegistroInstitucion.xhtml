@@ -41,7 +41,7 @@
                                                 <h:outputLabel for="Descripcion" value="Descripcion:"/>
                                                 <p:inputTextarea id="descinst" value="#{registroTipoInstitucion.descTpInstitucion}" rows="2" cols="27" maxlength="100"/> 
                                             </h:panelGrid>
-                                            <p:commandButton id="submitButton" value="Agregar" action="#{registroTipoInstitucion.guardarTpInst}" update="tpInstitucion" oncomplete="dlg.hide();"/>  
+                                            <p:commandButton id="submitButton" value="Agregar" action="#{registroTipoInstitucion.guardarTpInst}"  oncomplete="dlg.hide();"/>  
 
                                         </p:dialog>
                                         <h:outputLabel for="Nombre" value="Nombre de Responsable:" />
@@ -63,7 +63,7 @@
                                         <p:fieldset legend="Ubicación" style=" font-size: 14px; font-family: calibri" >
                                             <h:panelGrid columns="3">
                                                 <h:outputLabel value="Departamento" for="departamento"/>
-                                                <p:selectOneMenu id="departamento" label="Departamento" required="true" value="#{registrarInstitucion.codDepartamento}">
+                                                <p:selectOneMenu id="departamento" label="Departamento" value="#{registrarInstitucion.codDepartamento}">
                                                     <f:selectItem itemLabel="Seleccione un Departamento" itemValue="" />
                                                     <f:selectItems value="#{registrarInstitucion.departamentos}" var="dept" itemLabel="#{dept.nombreDepartamento}" itemValue="#{dept.idDepartamento}" />
                                                     <p:ajax update="municipio"/>
@@ -71,7 +71,7 @@
                                                 <h:message for="departamento"/>
 
                                                 <h:outputLabel value="Municipio" for="municipio"/>
-                                                <p:selectOneMenu id="municipio" label="Municipio" required="true" value="#{registrarInstitucion.codMunicipio}">
+                                                <p:selectOneMenu id="municipio" label="Municipio" value="#{registrarInstitucion.codMunicipio}">
                                                     <f:selectItem itemLabel="Seleccione un Municipio" itemValue="" /> 
                                                     <f:selectItems value="#{registrarInstitucion.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
                                                     <p:ajax update="canton"/>
