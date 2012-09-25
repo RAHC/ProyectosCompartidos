@@ -24,7 +24,7 @@ import javax.sql.rowset.CachedRowSet;
  * @author Administrador
  */
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class RegistrarInstitucion {
     private int IdInstitucion;
     private String NombreInstitucion;

@@ -16,46 +16,31 @@
 
             <ui:define name="content">
                 <h:form prependId="false">
+                   
                     <p:panel header="Informaci&oacute;n de la Institución" id="infoinst"> 
                         <p:panelGrid styleClass="innertable">
                             <p:row>
                                 <p:column>
+                                     <h:form id="tpins">
                                     <h:panelGrid columns="3">
                                         <h:outputLabel value="Tipo de Instituci&oacute;n: " for="tpInstitucion" />
                                         <p:selectOneMenu id="tpInstitucion" label="TpInstitucion" value="#{registrarInstitucion.tpInstitucion}" required="true" requiredMessage="Por favor seleccione un tipo de instituci&oacute;n" >
                                             <f:selectItem itemLabel="Seleccione un Tipo de Instituci&oacute;n" itemValue="" />
                                             <f:selectItems value="#{registrarInstitucion.tpInstituciones}" var="tpInstitucion" itemLabel="#{tpInstitucion.nombreTpInstitucion}" itemValue="#{tpInstitucion.idTpInstitucion}" />
-                                            <p:ajax update="institucion" />
                                         </p:selectOneMenu>
                                         <p:commandButton id="showDialogButton" type="button" value="+" onclick="dlg.show()" />
                                         <h:outputLabel value="Nombre de Instituci&oacute;n: " for="institucion" />
-                                        <p:selectOneMenu id="institucion" label="Institucion" value="#{registrarInstitucion.instituciones}" required="true" requiredMessage="Por favor seleccione una instituci&oacute;n">
-                                            <f:selectItem itemLabel="Seleccione una Instituci&oacute;n" itemValue="0" />
-                                            <f:selectItems value="#{registrarInstitucion.instituciones}" var="inst" itemLabel="#{inst.nombreInstitucion}" itemValue="#{inst.idInstitucion}" />
-                                        </p:selectOneMenu>
-                                        <p:dialog header="Agregar Nuevo Tipo de Institución" widgetVar="dlg" resizable="false">  
-
-                                            <h:panelGrid columns="2" style="margin-bottom:10px">  
-                                                <h:outputLabel for="Nombre" value="Nombre:" />  
-                                                <p:inputText id="nombinst" value="#{registroTipoInstitucion.nombreTpInstitucion}" size="25"/>  
-                                                <h:outputLabel for="Descripcion" value="Descripcion:"/>
-                                                <p:inputTextarea id="descinst" value="#{registroTipoInstitucion.descTpInstitucion}" rows="2" cols="27" maxlength="100"/> 
-                                            </h:panelGrid>
-                                            <p:commandButton id="submitButton" value="Agregar" action="#{registroTipoInstitucion.guardarTpInst}"  oncomplete="dlg.hide();"/>  
-
-                                        </p:dialog>
+                                        <p:inputText id="NombInst" value="#{registrarInstitucion.nombreInstitucion}" maxlength="100"/> 
+                                        <br/>
                                         <h:outputLabel for="Nombre" value="Nombre de Responsable:" />
                                         <p:inputText id="responsable" value="#{registrarInstitucion.nombreResponsable}" maxlength="50"/> 
                                         <br/>
                                         <h:outputText value="Telefono de Contacto: " />
                                         <p:inputMask value="#{registrarInstitucion.telInstitucion}" mask="9999-9999" maxlength="9"/>
                                     </h:panelGrid>
+                                     </h:form>
                                 </p:column>
                             </p:row>
-
-
-
-
 
                             <p:row>
                                 <p:column colspan="4">
@@ -117,8 +102,19 @@
                             </p:row>
                         </p:panelGrid>
                     </p:panel>
-                </h:form>
 
+                </h:form>
+                <p:dialog header="Agregar Nuevo Tipo de Institución" widgetVar="dlg" resizable="false">  
+                    <h:form>
+                        <h:panelGrid columns="2" style="margin-bottom:10px">  
+                            <h:outputLabel for="Nombre" value="Nombre:" />  
+                            <p:inputText id="nombinst" value="#{registroTipoInstitucion.nombreTpInstitucion}" required="true" size="25"/>  
+                            <h:outputLabel for="Descripcion" value="Descripcion:"/>
+                            <p:inputTextarea id="descinst" value="#{registroTipoInstitucion.descTpInstitucion}" rows="2" cols="27" maxlength="100"/> 
+                        </h:panelGrid>
+                        <p:commandButton id="submitButton" value="Agregar" action="#{registroTipoInstitucion.guardarTpInst}" oncomplete="dlg.hide();"/>  
+                    </h:form>
+                </p:dialog>
             </ui:define>
 
         </ui:composition>

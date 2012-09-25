@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import javax.annotation.Resource;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.sql.DataSource;
 
@@ -18,7 +19,7 @@ import javax.sql.DataSource;
  * @author DarkMaster
  */
 @ManagedBean
-@ApplicationScoped
+@ViewScoped
 public class RegistroTipoInstitucion {
     
     @Resource(name = "jdbc/sise")
@@ -62,7 +63,7 @@ public class RegistroTipoInstitucion {
         finally{
             connection.close();
         }
-        return "index";
+        return "pruebaRegistroInstitucion.xhtml";
     }
     
 }
