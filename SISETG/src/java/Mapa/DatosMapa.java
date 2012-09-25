@@ -2,6 +2,7 @@ package Mapa;
 
 import dominio.Departamento;
 import dominio.Municipio;
+import dominio.Canton;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +13,7 @@ import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.sql.DataSource;
@@ -24,7 +26,7 @@ import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
 
 @ManagedBean
-@ApplicationScoped
+@ViewScoped
 public class DatosMapa implements Serializable {
 
     private String CodDepartamento;
@@ -183,6 +185,32 @@ public class DatosMapa implements Serializable {
             rowSet.populate(getUbicacion.executeQuery());
             while (rowSet.next()) {
                 resultados.add(new Municipio(rowSet.getString("IDUBIC"),
+                        rowSet.getString("NOMBUBIC"),
+                        rowSet.getFloat("LATITUDUBIC"),
+                        rowSet.getFloat("LONGITUDUBIC")));
+            }
+            return resultados;
+        } finally {
+            connection.close();
+        }
+    }
+    
+    public List<Canton> getCantones() throws SQLException {
+        List<Canton> resultados = new ArrayList<Canton>();
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+        Connection connection = dataSource.getConnection();
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+        try {
+            String query = "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE = '" + CodMunicipio + "' order by NOMBUBIC";
+            PreparedStatement getUbicacion = connection.prepareStatement(query);
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getUbicacion.executeQuery());
+            while (rowSet.next()) {
+                resultados.add(new Canton(rowSet.getString("IDUBIC"),
                         rowSet.getString("NOMBUBIC"),
                         rowSet.getFloat("LATITUDUBIC"),
                         rowSet.getFloat("LONGITUDUBIC")));

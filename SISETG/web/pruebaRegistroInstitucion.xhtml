@@ -16,29 +16,30 @@
 
             <ui:define name="content">
                 <h:form prependId="false">
-                   
-                    <p:panel header="Informaci&oacute;n de la Institución" id="infoinst"> 
+
+                    <p:panel header="Informaci&oacute;n de la Institución"> 
                         <p:panelGrid styleClass="innertable">
                             <p:row>
                                 <p:column>
-                                     <h:form id="tpins">
-                                    <h:panelGrid columns="3">
-                                        <h:outputLabel value="Tipo de Instituci&oacute;n: " for="tpInstitucion" />
-                                        <p:selectOneMenu id="tpInstitucion" label="TpInstitucion" value="#{registrarInstitucion.tpInstitucion}" required="true" requiredMessage="Por favor seleccione un tipo de instituci&oacute;n" >
-                                            <f:selectItem itemLabel="Seleccione un Tipo de Instituci&oacute;n" itemValue="" />
-                                            <f:selectItems value="#{registrarInstitucion.tpInstituciones}" var="tpInstitucion" itemLabel="#{tpInstitucion.nombreTpInstitucion}" itemValue="#{tpInstitucion.idTpInstitucion}" />
-                                        </p:selectOneMenu>
-                                        <p:commandButton id="showDialogButton" type="button" value="+" onclick="dlg.show()" />
-                                        <h:outputLabel value="Nombre de Instituci&oacute;n: " for="institucion" />
-                                        <p:inputText id="NombInst" value="#{registrarInstitucion.nombreInstitucion}" maxlength="100"/> 
-                                        <br/>
-                                        <h:outputLabel for="Nombre" value="Nombre de Responsable:" />
-                                        <p:inputText id="responsable" value="#{registrarInstitucion.nombreResponsable}" maxlength="50"/> 
-                                        <br/>
-                                        <h:outputText value="Telefono de Contacto: " />
-                                        <p:inputMask value="#{registrarInstitucion.telInstitucion}" mask="9999-9999" maxlength="9"/>
-                                    </h:panelGrid>
-                                     </h:form>
+                                    <h:panelGrid columns="3" >
+                                            <h:outputLabel value="Tipo de Instituci&oacute;n: " for="tpInstitucion" />
+                                            <p:selectOneMenu id="tpInstitucion" label="TpInstitucion" value="#{registrarInstitucion.tpInstitucion}" required="true" requiredMessage="Por favor seleccione un tipo de instituci&oacute;n" >
+                                                <f:selectItem itemLabel="Seleccione un Tipo de Instituci&oacute;n" itemValue="" />
+                                                <f:selectItems value="#{registrarInstitucion.tpInstituciones}" var="tpInstitucion" itemLabel="#{tpInstitucion.nombreTpInstitucion}" itemValue="#{tpInstitucion.idTpInstitucion}" />
+                                            </p:selectOneMenu>
+                                            <p:commandButton id="showDialogButton" type="button" value="+" onclick="dlg.show()" />
+                                            <h:outputLabel value="Nombre de Instituci&oacute;n: " for="institucion" />
+                                            <p:inputText id="NombInst" value="#{registrarInstitucion.nombreInstitucion}" maxlength="100" required="true" requiredMessage="Por favor ingrese el nombre de la instituci&oacute;n"/> 
+
+                                            <br/>
+                                            <h:outputLabel for="Nombre" value="Nombre de Responsable:" />
+                                            <p:inputText id="responsable" value="#{registrarInstitucion.nombreResponsable}" maxlength="50" required="true" requiredMessage="Por favor ingrese el nombre del responsable de la instituci&oacute;n"/> 
+
+                                            <br/>
+                                            <h:outputText value="Telefono de Contacto: " />
+                                            <p:inputMask id="telresp" value="#{registrarInstitucion.telInstitucion}" mask="9999-9999" maxlength="9" required="true" requiredMessage="Por favor ingrese el telefono del responsable de la instituci&oacute;n"/>
+
+                                        </h:panelGrid>
                                 </p:column>
                             </p:row>
 
@@ -73,20 +74,19 @@
                                                 <h:message for="canton"/>  
 
                                                 <h:outputLabel value="Caserío" for="caserio" />
-                                                <p:selectOneMenu id="caserio" label="Caserío"  value="#{registrarInstitucion.codCaserio}">
-                                                    <f:selectItem itemLabel="Seleccione un Caserío" itemValue="" /> 
-                                                    <f:selectItems value="#{registrarInstitucion.caserios}" var="caserio" itemLabel="#{caserio.nombreCanserio}" itemValue="#{caserio.idCaserio}" />
+                                                <p:selectOneMenu id="caserio" label="Caserío"  value="#{registrarInstitucion.codCaserio}" required="true">
+                                                    <f:selectItem itemLabel="Seleccione un Caserío" itemValue=""/> 
+                                                    <f:selectItems value="#{registrarInstitucion.caserios}" var="caserio" itemLabel="#{caserio.nombreCanserio}" itemValue="#{caserio.idCaserio}"/>
                                                     <p:ajax update="caserio"/>                                       
                                                 </p:selectOneMenu>
-                                                <h:message for="caserio"/>
 
+                                                <br/>
                                                 <h:outputLabel value="Dirección Exacta" for="direccion"/>
                                                 <p:inputText id="direccion" label="Dirección Exacta" value="#{registrarInstitucion.dirInstitucion}" required="true"/>
-                                                <h:message for="direccion"/>   
-
+                                                <br/>
                                                 <h:outputLabel value="Punto de Referencia" for="punto"/>
-                                                <p:inputText id="punto" label="Punto de Referencia" value="#{registrarInstitucion.pnRefInst}" required="true" />
-                                                <h:message for="punto"/>                                  
+                                                <p:inputText id="punto" label="Punto de Referencia"  value="#{registrarInstitucion.pnRefInst}" required="true" />
+
                                             </h:panelGrid>
                                         </p:fieldset>
                                     </p:growl>
@@ -105,6 +105,7 @@
 
                 </h:form>
                 <p:dialog header="Agregar Nuevo Tipo de Institución" widgetVar="dlg" resizable="false">  
+                     
                     <h:form>
                         <h:panelGrid columns="2" style="margin-bottom:10px">  
                             <h:outputLabel for="Nombre" value="Nombre:" />  
@@ -112,7 +113,9 @@
                             <h:outputLabel for="Descripcion" value="Descripcion:"/>
                             <p:inputTextarea id="descinst" value="#{registroTipoInstitucion.descTpInstitucion}" rows="2" cols="27" maxlength="100"/> 
                         </h:panelGrid>
-                        <p:commandButton id="submitButton" value="Agregar" action="#{registroTipoInstitucion.guardarTpInst}" oncomplete="dlg.hide();"/>  
+                        <p:commandButton id="submitButton" value="Agregar" action="#{registroTipoInstitucion.guardarTpInst}" oncomplete="dlg.hide();">  
+                            <p:ajax update=""/>
+                        </p:commandButton>
                     </h:form>
                 </p:dialog>
             </ui:define>

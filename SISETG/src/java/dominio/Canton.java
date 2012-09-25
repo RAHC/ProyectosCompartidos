@@ -8,7 +8,10 @@ public class Canton {
 
     private String IdCanton;
     private String NombreCanton;
-    public Canton(String IdCanton, String NombreCanton) {
+    private Float LongitudCanton;
+    private Float LatitudCanton;
+    
+    public Canton(String IdCanton, String NombreCanton, Float LongitudCanton, Float LatitudCanton) {
         this.IdCanton = IdCanton;
         this.NombreCanton = NombreCanton;
     }
@@ -27,6 +30,21 @@ public class Canton {
 
     public void setNombreCanton(String NombreCanton) {
         this.NombreCanton = NombreCanton;
+    }
+    public Float getLatitudCanton() {
+        return LatitudCanton;
+    }
+
+    public void setLatitudCanton(Float LatitudCanton) {
+        this.LatitudCanton = LatitudCanton;
+    }
+
+    public Float getLongitudCanton() {
+        return LongitudCanton;
+    }
+
+    public void setLongitudCanton(Float LongitudCanton) {
+        this.LongitudCanton = LongitudCanton;
     }
     
 }
