@@ -19,7 +19,7 @@ import javax.sql.DataSource;
  * @author DarkMaster
  */
 @ManagedBean
-@ViewScoped
+@RequestScoped
 public class RegistroTipoInstitucion {
     
     @Resource(name = "jdbc/sise")

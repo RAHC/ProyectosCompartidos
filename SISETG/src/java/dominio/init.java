@@ -362,13 +362,15 @@ public class init {
             throw new SQLException("No se pudo conectar a la fuente de datos");
         }
         try {
-            String query = "SELECT IDUBIC, NOMBUBIC FROM UBICACION WHERE IDUBIC_PADRE = '" + CodMunicipio + "' order by NOMBUBIC";
+            String query = "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE = '" + CodMunicipio + "' order by NOMBUBIC";
             PreparedStatement getUbicacion = connection.prepareStatement(query);
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getUbicacion.executeQuery());
             while (rowSet.next()) {
                 resultados.add(new Canton(rowSet.getString("IDUBIC"),
-                        rowSet.getString("NOMBUBIC")));
+                        rowSet.getString("NOMBUBIC"),
+                        rowSet.getFloat("LATITUDUBIC"),
+                        rowSet.getFloat("LONGITUDUBIC")));
             }
             return resultados;
         } finally {
