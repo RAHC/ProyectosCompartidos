@@ -35,6 +35,7 @@ public class DatosMapa implements Serializable {
     private String CodCaserio;
     private double lat;
     private double lng;
+    private double altu;
     private MapModel draggableModel;
     private String title;
     @Resource(name = "jdbc/sise")
@@ -50,11 +51,11 @@ public class DatosMapa implements Serializable {
 
     public void addMarker(ActionEvent actionEvent) {
         Marker marker = new Marker(new LatLng(lat, lng), title);
-        marker.setDraggable(true);
+        marker.setDraggable(false);
         draggableModel.addOverlay(marker);
-        addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO, "Marca agregada", "Lat:" + lat + ", Lng:" + lng));
+        addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO, "Marca agregada", "Lat:" + lat + ", Lng:" + lng + ", \nAltura: " + altu + " Metros Sobre el Nivel del Mar"));
         for (Marker marker1 : draggableModel.getMarkers()) {
-            marker1.setDraggable(true);
+            marker1.setDraggable(false);
         }
 
 
@@ -62,7 +63,7 @@ public class DatosMapa implements Serializable {
 
     public void onMarkerDrag(MarkerDragEvent event) {
         Marker marker = event.getMarker();
-        addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO, "Marca trasladada", "Lat:" + marker.getLatlng().getLat() + ", Lng:" + marker.getLatlng().getLng()));
+        addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO, "Marca trasladada", "Lat:" + marker.getLatlng().getLat() + ", Lng:" + marker.getLatlng().getLng() + ", \nAltura: "+altu+" Metros"));
     }
 
     public void onMarkerSelect(OverlaySelectEvent event) {
@@ -135,6 +136,13 @@ public class DatosMapa implements Serializable {
 
     public void setLng(double lng) {
         this.lng = lng;
+    }
+    public double getAltu() {
+        return altu;
+    }
+
+    public void setAltu(double altu) {
+        this.altu = altu;
     }
 
     public void setLng(Float lng) {

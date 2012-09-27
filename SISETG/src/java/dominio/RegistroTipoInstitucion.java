@@ -13,13 +13,14 @@ import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.sql.DataSource;
+import org.primefaces.context.RequestContext;
 
 /**
  *
  * @author DarkMaster
  */
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class RegistroTipoInstitucion {
     
     @Resource(name = "jdbc/sise")
@@ -63,7 +64,7 @@ public class RegistroTipoInstitucion {
         finally{
             connection.close();
         }
-        return "pruebaRegistroInstitucion.xhtml";
+        return "";
     }
     
 }

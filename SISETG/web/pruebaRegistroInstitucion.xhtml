@@ -23,12 +23,12 @@
                             <h:outputLabel for="Descripcion" value="Descripcion:"/>
                             <p:inputTextarea id="descinst" value="#{registroTipoInstitucion.descTpInstitucion}" rows="2" cols="27" maxlength="100"/> 
                         </h:panelGrid>
-                        <p:commandButton id="submitButton" value="Agregar" action="#{registroTipoInstitucion.guardarTpInst}" oncomplete="dlg.hide();">  
-                            <p:ajax update=""/>
+                        <p:commandButton id="submitButton" value="Agregar" action="#{registroTipoInstitucion.guardarTpInst}" onstart="dlg.hide();">  
+                            <!--<p:ajax render=":all"/>-->
                         </p:commandButton>
                     </p:dialog>
                 </h:form>
-                <h:form prependId="false">
+                <h:form prependId="false" id="all">
                     <p:panel header="Informaci&oacute;n de la Institución"> 
                         <p:panelGrid styleClass="innertable">
                             <p:row>
@@ -58,65 +58,123 @@
                         <p:panelGrid styleClass="innertable">
                             <p:row>
                                 <p:column colspan="4">
-                                    <p:growl id="grow1" showDetail="true">
-                                        <p:fieldset legend="Ubicación" style=" font-size: 14px; font-family: calibri" >
-                                            <h:panelGrid columns="3">
-                                                <h:outputLabel value="Departamento" for="departamento"/>
-                                                <p:selectOneMenu id="departamento" label="Departamento" value="#{registrarInstitucion.codDepartamento}">
-                                                    <f:selectItem itemLabel="Seleccione un Departamento" itemValue="" />
-                                                    <f:selectItems value="#{registrarInstitucion.departamentos}" var="dept" itemLabel="#{dept.nombreDepartamento}" itemValue="#{dept.idDepartamento}" />
-                                                    <p:ajax update="municipio"/>
-                                                </p:selectOneMenu>  
-                                                <h:message for="departamento"/>
+                                    <p:fieldset legend="Ubicación" style=" font-size: 14px; font-family: calibri" >
+                    <h:form id="f1">
+                        <p:panelGrid columns="2">
+                            <p:column>
 
-                                                <h:outputLabel value="Municipio" for="municipio"/>
-                                                <p:selectOneMenu id="municipio" label="Municipio" value="#{registrarInstitucion.codMunicipio}">
-                                                    <f:selectItem itemLabel="Seleccione un Municipio" itemValue="" /> 
-                                                    <f:selectItems value="#{registrarInstitucion.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
-                                                    <p:ajax update="canton"/>
-                                                </p:selectOneMenu>
-                                                <h:message for="municipio"/>   
+                                <p:growl id="grolfo" showDetail="true" />
+                                <!--<p:panelGrid styleClass="generalTable" columns="2">-->
 
+                                <h:panelGrid columns="3" id="pg1">
+                                    <h:outputLabel value="Departamento: " for="departamento"/>
 
-                                                <h:outputLabel value="Cantón" for="canton" />
-                                                <p:selectOneMenu id="canton" label="Canton"  value="#{registrarInstitucion.codCanton}" >
-                                                    <f:selectItem itemLabel="Seleccione un Cantón" itemValue="" /> 
-                                                    <f:selectItems value="#{registrarInstitucion.cantones}" var="canton" itemLabel="#{canton.nombreCanton}" itemValue="#{canton.idCanton}" />
-                                                    <p:ajax update="caserio"/>                                    
-                                                </p:selectOneMenu>
-                                                <h:message for="canton"/>  
+                                    <p:selectOneMenu id="departamento" label="Departamento" value="#{registrarInstitucion.codDepartamento}" >
+                                        <f:selectItem itemLabel="Seleccione un Departamento" itemValue="" />
+                                        <f:selectItems value="#{registrarInstitucion.departamentos}" var="depto" itemLabel="#{depto.nombreDepartamento}" itemValue="#{depto.idDepartamento}"/>
+                                        <p:ajax update="municipio, vermapa" />
+                                    </p:selectOneMenu>
+                                    <h:message for="departamento" />
+                                    <h:outputLabel value="municipio: " for="municipio"/>                           
+                                    <p:selectOneMenu id="municipio" label="Municipio" value="#{registrarInstitucion.codMunicipio}" >
+                                        <f:selectItem itemLabel="Seleccione un Municipio" itemValue="" /> 
+                                        <f:selectItems value="#{registrarInstitucion.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
+                                        <p:ajax update="canton, vermapa" />
+                                    </p:selectOneMenu>
+                                    <h:message for="municipio" />
+                                    <h:outputLabel value="canton: " for="canton"/>
+                                    <p:selectOneMenu id="canton" label="canton" value="#{registrarInstitucion.codCanton}" >
+                                        <f:selectItem itemLabel="Seleccione un Canton" itemValue="" />
+                                        <f:selectItems value="#{registrarInstitucion.cantones}" var="canto" itemLabel="#{canto.nombreCanton}" itemValue="#{canto.idCanton}"/>
+                                        <p:ajax update="vermapa" />
+                                    </p:selectOneMenu>
+                                    <h:message for="canton" />
+                                    <h:outputLabel value="Caserío" for="caserio" />
+                                    <p:selectOneMenu id="caserio" label="Caserío"  value="#{registrarInstitucion.codCaserio}" required="false">
+                                        <f:selectItem itemLabel="Seleccione un Caserío" itemValue=""/> 
+                                        <f:selectItems value="#{registrarInstitucion.caserios}" var="caserio" itemLabel="#{caserio.nombreCanserio}" itemValue="#{caserio.idCaserio}"/>
+                                        <p:ajax update="caserio"/>                                       
+                                    </p:selectOneMenu>
+                                    <h:message for="caserio"/> 
+                                    <h:outputLabel value="Dirección Exacta" for="direccion"/>
+                                    <p:inputText id="direccion" label="Dirección Exacta" value="#{registrarInstitucion.dirInstitucion}" required="true"/>
+                                    <br/>
+                                    <h:outputLabel value="Punto de Referencia" for="punto"/>
+                                    <p:inputText id="punto" label="Punto de Referencia"  value="#{registrarInstitucion.pnRefInst}" required="true" />
+                                </h:panelGrid>
 
-                                                <h:outputLabel value="Caserío" for="caserio" />
-                                                <p:selectOneMenu id="caserio" label="Caserío"  value="#{registrarInstitucion.codCaserio}" required="true">
-                                                    <f:selectItem itemLabel="Seleccione un Caserío" itemValue=""/> 
-                                                    <f:selectItems value="#{registrarInstitucion.caserios}" var="caserio" itemLabel="#{caserio.nombreCanserio}" itemValue="#{caserio.idCaserio}"/>
-                                                    <p:ajax update="caserio"/>                                       
-                                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column>
+                                <p:column>
+                                    <p:gmap id="vermapa"
+                                            center="#{registrarInstitucion.latitud},#{registrarInstitucion.longitud}" 
+                                            zoom="#{registrarInstitucion.zoomUbic}" 
+                                            type="ROADMAP" 
+                                            style="width:450px; height:300px;" 
+                                            onPointClick="handlePointClick(event);"
+                                            model="#{registrarInstitucion.draggableModel}"
+                                            widgetVar="map">
 
-                                                <br/>
-                                                <h:outputLabel value="Dirección Exacta" for="direccion"/>
-                                                <p:inputText id="direccion" label="Dirección Exacta" value="#{registrarInstitucion.dirInstitucion}" required="true"/>
-                                                <br/>
-                                                <h:outputLabel value="Punto de Referencia" for="punto"/>
-                                                <p:inputText id="punto" label="Punto de Referencia"  value="#{registrarInstitucion.pnRefInst}" required="true" />
+                                        <p:ajax event="markerDrag" listener="#{registrarInstitucion.onMarkerDrag}" update="grolfo"/> 
+                                        <p:ajax event="overlaySelect" listener="#{registrarInstitucion.onMarkerSelect}" update="grolfo" />
 
-                                            </h:panelGrid>
-                                        </p:fieldset>
-                                    </p:growl>
+                                    </p:gmap>
                                 </p:column>
+                            </p:column>
+                        </p:panelGrid>
+                    </h:form>
+                    
+
+                </p:fieldset>
+                                </p:column>
+                               
                             </p:row>
 
                             <p:row>
                                 <p:column colspan="4" style=" text-align: right">
-                                    <p:commandButton id="guardar" value="Guardar" ajax="false" />
+                                    <p:commandButton id="guardar" value="Guardar" action="#{registrarInstitucion.guardarInst}" ajax="false" />
                                     <p:commandButton id="cancel" value="Cancelar" />
-                                    <p:commandButton id="cleanContent" value="Limpiar" />
+                                    <p:commandButton id="cleanContent" type="reset" value="Limpiar" />
                                 </p:column>
                             </p:row>
                         </p:panelGrid>
+                       <!-- <p:fieldset id="mandar">
+                            <p:outputLabel value="#{registrarInstitucion.codCanton}"/>
+                            <p:outputLabel value="#{registrarInstitucion.tpInstitucion}"/>
+                            <p:outputLabel value="#{registrarInstitucion.nombreInstitucion}"/>
+                            <p:outputLabel value="#{registrarInstitucion.nombreResponsable}"/>
+                            <p:outputLabel value="#{registrarInstitucion.dirInstitucion}"/>
+                            <p:outputLabel value="#{registrarInstitucion.telInstitucion}"/>
+                            <p:outputLabel value="#{registrarInstitucion.lat}"/>
+                            <p:outputLabel value="#{registrarInstitucion.lng}"/>
+                            <p:outputLabel value="#{registrarInstitucion.altu}"/>
+                            <p:outputLabel value="#{registrarInstitucion.pnRefInst}"/>
+                            </p:fieldset>-->
                     </p:panel>
 
                 </h:form>
+                <h:form id="f2">
+                        <p:dialog widgetVar="dlg" showEffect="FADE" id="diag1">
+
+                            <p:growl id="groldo" showDetail="true"/>
+                            <h:panelGrid columns="3">
+                                <h:outputLabel value="Agregar Marcador?" />
+                                <!--<p:inputText id="desc" value="#{registrarInstitucion.title}" required="true"/>
+                                <p:message for="desc"/>-->
+
+                                <f:facet name="footer">
+                                    <p:commandButton value="Agregar" 
+                                                     actionListener="#{registrarInstitucion.addMarker(event)}" 
+                                                     update="groldo,:all:f1:pg1"
+                                                     oncomplete="markerAddComplete()" />
+                                    <p:commandButton value="Cancelar" onclick="return cancel()"/>
+                                </f:facet>
+                            </h:panelGrid>
+                            <h:inputHidden id="lat" value="#{registrarInstitucion.lat}" />
+                            <h:inputHidden id="lng" value="#{registrarInstitucion.lng}" />
+                            <h:inputHidden id="altu" value="#{registrarInstitucion.altu}" />
+                        </p:dialog>
+                    </h:form>
             </ui:define>
 
         </ui:composition>
