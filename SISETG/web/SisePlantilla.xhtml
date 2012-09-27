@@ -64,7 +64,7 @@
             <p:menubar>
                 <p:submenu label="Incidente">
                     <p:menuitem value="Nuevo Incidente" url="#" />
-                    <p:menuitem value="Listado de Incidentes" url="#" />
+                    <p:menuitem value="Listado de Incidentes" url="listadoIncidentes.xhtml" />
                 </p:submenu>
                 <p:submenu label="Mapas">
                     <p:menuitem value="Mapas SNET" url="http://www.snet.gob.sv/googlemaps/#"></p:menuitem>
@@ -86,8 +86,8 @@
                     <p:menuitem value="Home" url="index"></p:menuitem>
                     <p:menuitem value="Home3" url="index"></p:menuitem>
                 </p:submenu>
-                <span id="MenuAdmin" style="display: none">
-                    <p:submenu label="Administraci&oacute;n">
+                <span id="MenuAdmin" style="display:block">
+                    <p:submenu label="Administraci&oacute;n" style="#{loginBean.idRol!=6?'display:none':'display:block'}">
                         <p:menuitem value="Registrar Usuario" url="registroUsuario.xhtml"></p:menuitem>
                         <p:menuitem value="Home3" url="index"></p:menuitem>
                     </p:submenu>

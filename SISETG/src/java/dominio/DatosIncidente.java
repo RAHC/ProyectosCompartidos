@@ -42,6 +42,7 @@ public class DatosIncidente{
             String FechaNotificacion, String HoraNotificacion, List<Acciones> ListaAcciones, MapModel MarkerInc) {
         this.IdEv = IdEv;
         this.CorrInc = CorrInc;
+        this.IdPrioridad = IdPrioridad;
         this.IdEstado = IdEstado;
         this.IdTipoIncidente = IdTipoIncidente;
         this.IdInformante = IdInformante;

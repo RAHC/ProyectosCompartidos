@@ -6,6 +6,7 @@ package dominio;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -31,16 +32,16 @@ public class registroValidacion {
     private String Acciones;
     private Integer Estado;
     private String corrInc;
+    private Integer IdNuevaAccion;
     
     @Resource(name = "jdbc/sise")
     DataSource dataSource;
     
     public registroValidacion() {
     }
-    
-    
 
-    public void guardar() throws SQLException{
+
+    public String guardar() throws SQLException{
         if (dataSource == null) {
             throw new SQLException("No se pudo tener acceso a la fuente de datos");
         }
@@ -58,8 +59,9 @@ public class registroValidacion {
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
         LoginBean nB = (LoginBean) session.getAttribute("loginBean");
         CallableStatement cs;
+        int CodAccion = -1;    
         try{
-            String sql = "{ call VALIDACION_Add(?,?,?,?,?,?)}";
+            String sql = "{ call VALIDACION_Add(?,?,?,?,?,?,?)}";
             cs = connection.prepareCall(sql);
                 cs.setString(1, nB.getIdEvento());
                 cs.setString(2, getCorrInc());
@@ -67,16 +69,27 @@ public class registroValidacion {
                 cs.setInt(4, nB.getIdCont());
                 cs.setString(5,getAcciones());
                 cs.setString(6, fecha);
-                
+                cs.registerOutParameter(7, java.sql.Types.INTEGER);
                 cs.execute();
+                //int iUpdCount = cs.getUpdateCount();
+                //boolean bMoreResults = true;
+                ResultSet rs = null;
+                
+                    rs = cs.getResultSet();
+                    if(rs!=null){
+                        rs.next();
+                        CodAccion = rs.getInt(1);
+                        this.IdNuevaAccion = CodAccion;
+                    }
+                
+                System.out.println("Codigo="+CodAccion);
+                cs.close();
+                
         }
         finally{
             connection.close();
         }
-    }
-    private java.sql.Date utilToSql(java.util.Date fecha) {
-        DateFormat sqlDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-        return java.sql.Date.valueOf(sqlDateFormatter.format(fecha));   
+        return "listadoIncidentes.xhtml?"+IdNuevaAccion;
     }
 
      public String getIncidente() {
@@ -85,7 +98,6 @@ public class registroValidacion {
         
         return this.Incidente;
     }
-
     public void setIncidente(String Incidente) {
         this.Incidente = Incidente;
     }
@@ -120,6 +132,14 @@ public class registroValidacion {
 
     public void setCorrInc(String corrInc) {
         this.corrInc = corrInc;
+    }
+
+    public Integer getIdNuevaAccion() {
+        return IdNuevaAccion;
+    }
+
+    public void setIdNuevaAccion(Integer IdNuevaAccion) {
+        this.IdNuevaAccion = IdNuevaAccion;
     }
     
     

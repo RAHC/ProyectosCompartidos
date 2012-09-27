@@ -4,6 +4,7 @@
  */
 package dominio;
 
+import java.io.Serializable;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,8 +14,10 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -22,7 +25,7 @@ import javax.sql.rowset.CachedRowSet;
  */
 @ManagedBean
 @ViewScoped
-public class RegistroUsuario {
+public class RegistroUsuario implements Serializable{
 
     private String Alias;
     private String Password;
@@ -47,6 +50,7 @@ public class RegistroUsuario {
     @Resource(name = "jdbc/sise")
     DataSource dataSource;
     
+    FacesContext context = javax.faces.context.FacesContext.getCurrentInstance();
     public List<Departamento> getDepartamentos() throws SQLException {
         List<Departamento> resultados = new ArrayList<Departamento>();
         if (dataSource == null) {
@@ -100,40 +104,10 @@ public class RegistroUsuario {
             connection.close();
         }
     }
-    
-    public void getDatosContacto(Integer idCont) throws SQLException{
-        this.Nombres = idCont.toString();
-        if (dataSource == null) {
-             throw new SQLException("No se pudo tener acceso a la fuente de datos");
-        }
-        Connection connection = dataSource.getConnection();
-
-        if (connection == null) {
-            throw new SQLException("No se pudo conectar a la fuente de datos");
-        }
-        try{
-            PreparedStatement datosContacto = connection.prepareStatement(
-                    "SELECT * FROM CONTACTOS WHERE IDCONT=" + idCont);
-            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
-            rowSet.populate(datosContacto.executeQuery());
-            this.Nombres = rowSet.getString("NOMBCONT");
-            this.Apellidos = rowSet.getString("APELLCONT");
-            this.TelPers = rowSet.getString("TELCONT");
-            this.Cel = rowSet.getString("CELCONT");
-            this.CorreoInst = rowSet.getString("MAILINSTCONT");
-            this.Direccion = rowSet.getString("DIRCONT");
-            this.Cargo = rowSet.getString("CARGOCONT");
-            this.TelInst = rowSet.getString("TELINSTCONT");
-            this.Fax = rowSet.getString("FAXCONT");
-            this.CorreoPers = rowSet.getString("MAILPERCONT");
-            this.Radio = rowSet.getString("RADIOCONT");
-        }  
-        finally{
-            connection.close();
-        }
-    }
+   
     public RegistroUsuario() {
     }
+    
     public Integer getContacto() {
         return Contacto;
     }
@@ -221,21 +195,30 @@ public class RegistroUsuario {
             throw new SQLException("No se pudo conectar a la fuente de datos");
         }
         String Ubic;
-        if(getUbicacion().equals("")){
+        if(getUbicacion()==null){
             Ubic = "00";
         }
         else{
             Ubic = getUbicacion();
         }
+        int contact;
+        if(getContacto()==null){
+            contact = 0;
+        }
+        else{
+            contact = getContacto();
+        }
+
         CallableStatement cs;
         try {
             String sql = "{ call USUARIO_Add(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+            
             cs = connection.prepareCall(sql);
                     cs.setString(1, getAlias());
                     cs.setString(2, getPassword());
                     cs.setInt(3, getNivel());
                     cs.setString(4,Ubic);
-                    cs.setInt(5, getContacto());
+                    cs.setInt(5, contact);
                     cs.setInt(6, getInstitucion());
                     cs.setString(7,getNombres());
                     cs.setString(8, getApellidos());
@@ -250,6 +233,9 @@ public class RegistroUsuario {
                     cs.setString(17, getRadio());    
             
                     cs.execute();
+        }
+         catch(NumberFormatException ex){
+             System.out.println(ex);
         }
         finally{
             connection.close();
