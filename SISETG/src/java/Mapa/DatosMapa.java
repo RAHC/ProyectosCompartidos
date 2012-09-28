@@ -2,7 +2,11 @@ package Mapa;
 
 import dominio.Departamento;
 import dominio.Municipio;
+<<<<<<< HEAD
 import dominio.init;
+=======
+import dominio.Canton;
+>>>>>>> 034f80f43bd039f4a666b9b7bc3abf773fb4cd71
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,6 +18,7 @@ import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.sql.DataSource;
@@ -26,7 +31,7 @@ import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
 
 @ManagedBean
-@ApplicationScoped
+@ViewScoped
 public class DatosMapa implements Serializable {
 
     private String CodDepartamento;
@@ -35,6 +40,7 @@ public class DatosMapa implements Serializable {
     private String CodCaserio;
     private double lat;
     private double lng;
+    private double altu;
     private MapModel draggableModel;
     private String title;
     Map<String, Object> viewMap = FacesContext.getCurrentInstance().getViewRoot().getViewMap();
@@ -52,11 +58,11 @@ public class DatosMapa implements Serializable {
 
     public void addMarker(ActionEvent actionEvent) {
         Marker marker = new Marker(new LatLng(lat, lng), title);
-        marker.setDraggable(true);
+        marker.setDraggable(false);
         draggableModel.addOverlay(marker);
-        addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO, "Marca agregada", "Lat:" + lat + ", Lng:" + lng));
+        addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO, "Marca agregada", "Lat:" + lat + ", Lng:" + lng + ", \nAltura: " + altu + " Metros Sobre el Nivel del Mar"));
         for (Marker marker1 : draggableModel.getMarkers()) {
-            marker1.setDraggable(true);
+            marker1.setDraggable(false);
         }
 
 
@@ -64,7 +70,7 @@ public class DatosMapa implements Serializable {
 
     public void onMarkerDrag(MarkerDragEvent event) {
         Marker marker = event.getMarker();
-        addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO, "Marca trasladada", "Lat:" + marker.getLatlng().getLat() + ", Lng:" + marker.getLatlng().getLng()));
+        addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO, "Marca trasladada", "Lat:" + marker.getLatlng().getLat() + ", Lng:" + marker.getLatlng().getLng() + ", \nAltura: "+altu+" Metros"));
     }
 
     public void onMarkerSelect(OverlaySelectEvent event) {
@@ -136,6 +142,13 @@ public class DatosMapa implements Serializable {
     public void setLng(double lng) {
         this.lng = lng;
     }
+    public double getAltu() {
+        return altu;
+    }
+
+    public void setAltu(double altu) {
+        this.altu = altu;
+    }
 
     public void setLng(Float lng) {
         this.lng = lng;
@@ -185,6 +198,32 @@ public class DatosMapa implements Serializable {
             rowSet.populate(getUbicacion.executeQuery());
             while (rowSet.next()) {
                 resultados.add(new Municipio(rowSet.getString("IDUBIC"),
+                        rowSet.getString("NOMBUBIC"),
+                        rowSet.getFloat("LATITUDUBIC"),
+                        rowSet.getFloat("LONGITUDUBIC")));
+            }
+            return resultados;
+        } finally {
+            connection.close();
+        }
+    }
+    
+    public List<Canton> getCantones() throws SQLException {
+        List<Canton> resultados = new ArrayList<Canton>();
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+        Connection connection = dataSource.getConnection();
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+        try {
+            String query = "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE = '" + CodMunicipio + "' order by NOMBUBIC";
+            PreparedStatement getUbicacion = connection.prepareStatement(query);
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getUbicacion.executeQuery());
+            while (rowSet.next()) {
+                resultados.add(new Canton(rowSet.getString("IDUBIC"),
                         rowSet.getString("NOMBUBIC"),
                         rowSet.getFloat("LATITUDUBIC"),
                         rowSet.getFloat("LONGITUDUBIC")));

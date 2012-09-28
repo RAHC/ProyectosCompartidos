@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="./SisePlantilla.xhtml">
+
+            <ui:define name="titles">
+                Registro Institución
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form prependId="false">
+                    <p:dialog header="Agregar Nuevo Tipo de Institución" widgetVar="dlg" resizable="false" showEffect="fade" hideEffect="explode">
+                        <h:panelGrid columns="2" style="margin-bottom:10px">  
+                            <h:outputLabel for="Nombre" value="Nombre:" />  
+                            <p:inputText id="nombinst" value="#{registroTipoInstitucion.nombreTpInstitucion}" required="true" size="25"/>  
+                            <h:outputLabel for="Descripcion" value="Descripcion:"/>
+                            <p:inputTextarea id="descinst" value="#{registroTipoInstitucion.descTpInstitucion}" rows="2" cols="27" maxlength="100"/> 
+                        </h:panelGrid>
+                        <p:commandButton id="submitButton" value="Agregar" action="#{registroTipoInstitucion.guardarTpInst}" onstart="dlg.hide();">  
+                            <p:ajax update=":all:tpInstitucion"/>
+                        </p:commandButton>
+                    </p:dialog>
+                </h:form>
+                <h:form prependId="false" id="all">
+                    <p:panel header="Informaci&oacute;n de la Institución" id="a1"> 
+                        <p:panelGrid styleClass="innertable" id="b">
+                            <p:row>
+                                <p:column>
+                                    <h:panelGrid columns="3" id="f">
+                                        <h:outputLabel value="Tipo de Instituci&oacute;n: " for="tpInstitucion" />
+                                        <p:selectOneMenu id="tpInstitucion" label="TpInstitucion" value="#{registrarInstitucion.tpInstitucion}" required="true" requiredMessage="Por favor seleccione un tipo de instituci&oacute;n" >
+                                            <f:selectItem itemLabel="Seleccione un Tipo de Instituci&oacute;n" itemValue="" />
+                                            <f:selectItems value="#{registrarInstitucion.tpInstituciones}" var="tpInstitucion" itemLabel="#{tpInstitucion.nombreTpInstitucion}" itemValue="#{tpInstitucion.idTpInstitucion}" />
+                                        </p:selectOneMenu>
+                                        <p:commandButton id="showDialogButton" type="button" value="+" onclick="dlg.show()" />
+
+                                    </h:panelGrid>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+
+                    </p:panel>
+
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

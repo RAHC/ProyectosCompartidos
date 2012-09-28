@@ -31,6 +31,7 @@ public class LoginBean implements Serializable {
     private String IdUbic;
     private String opcion;
     private Integer IdCont;
+    private Integer IdRol;
     private boolean isLoggedIn;
     private StringBuffer sb;
     @Resource(name = "jdbc/sise")
@@ -95,7 +96,7 @@ public class LoginBean implements Serializable {
             }
 
             PreparedStatement getUsuario = connection.prepareStatement(
-                    "SELECT username, IDCONT, IDUBIC FROM usuario WHERE username = ? ");
+                    "SELECT username, IDCONT, IDUBIC, IDROL FROM usuario WHERE username = ? ");
             getUsuario.setString(1, getUsername());
 
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
@@ -113,6 +114,7 @@ public class LoginBean implements Serializable {
                     if (pass.equals(getPassword())) {
                         setIdUbic(rowSet.getString("IDUBIC"));
                         setIdCont(rowSet.getInt("IDCONT"));
+                        setIdRol(rowSet.getInt("IDROL"));
                         resultado = true;
                     } else {
                         resultado = false;
@@ -196,6 +198,14 @@ public class LoginBean implements Serializable {
 
     public boolean isIsLoggedIn() {
         return isLoggedIn;
+    }
+
+    public Integer getIdRol() {
+        return IdRol;
+    }
+
+    public void setIdRol(Integer IdRol) {
+        this.IdRol = IdRol;
     }
 
     public void setIsLoggedIn(boolean isLoggedIn) {

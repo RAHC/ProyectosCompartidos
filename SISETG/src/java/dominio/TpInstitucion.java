@@ -24,15 +24,13 @@ public class TpInstitucion {
     private int IdTpInstitucion;
     private String NombreTpInstitucion;
     private String DescTpInstitucion;
-    @Resource(name = "jdbc/sise")
-    DataSource dataSource;
     
     public TpInstitucion(int IdTpInstitucion, String NombreTpInstitucion, String DescTpInstitucion){
         this.IdTpInstitucion = IdTpInstitucion;
         this.NombreTpInstitucion = NombreTpInstitucion;
         this.DescTpInstitucion = DescTpInstitucion;
     }
-    
+        
     public int getIdTpInstitucion() {
         return IdTpInstitucion;
     }
@@ -53,29 +51,5 @@ public class TpInstitucion {
 
     public void setDescTpInstitucion(String DescTpInstitucion) {
         this.DescTpInstitucion = DescTpInstitucion;
-    }
-    public String guardar() throws SQLException{
-        if (dataSource == null) {
-            throw new SQLException("No se pudo tener acceso a la fuente de datos");
-        }
-
-        Connection connection = dataSource.getConnection();
-
-        if (connection == null) {
-            throw new SQLException("No se pudo conectar a la fuente de datos");
-        }
-        CallableStatement cs;
-        try{
-            String sql="{ call TIPOINSTITUCION_Add(?,?)}";
-            cs = connection.prepareCall(sql);
-                cs.setString(1, getNombreTpInstitucion());
-                cs.setString(2, getDescTpInstitucion());
-                
-                cs.execute();
-        }
-        finally{
-            connection.close();
-        }
-        return "index";
     }
 }

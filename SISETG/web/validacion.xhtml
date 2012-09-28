@@ -10,15 +10,17 @@
     </f:metadata>
     <body>
         <ui:composition template="./SisePlantilla.xhtml">
+            <ui:define name="titles">
+                VERIFICACI&Oacute;N DE INCIDENTE
+            </ui:define>
             <ui:define name="content">
                 <h:form prependId="false">
                     <p:panel> 
                         <h:panelGrid class="tblListBack" cellpadding="10" cellspacing="10" columns="1">
-                            <h2 align="center">Verificaci&oacute;n Incidente</h2>
                             <h:panelGroup>
-                                <h:outputLabel value="Fecha y Hora de verificaci&oacute;n: " for="fecha"/>
-                                <p:calendar id="fecha" effect="slide" showOn="button" navigator="true" pattern="dd/MM/yyyy HH:mm" value="#{registroValidacion.fecha}" /> 
-                                <h:message for="fecha"/>
+                                <h:outputLabel value="Fecha y Hora de verificaci&oacute;n: " for="fechaHora"/>
+                                <p:calendar id="fechaHora" effect="slide" showOn="button" navigator="true" pattern="dd/MM/yyyy HH:mm:ss" locale="es" value="#{registroValidacion.fechaHora}" /> 
+                                <h:message for="fechaHora"/>
                             </h:panelGroup>
                             <h:outputLabel value="Descripci&oacute;n de las acciones que permitieron validar el incidente: " for="acciones" />
                             <p:inputTextarea rows="5" id="acciones" cols="70" value="#{registroValidacion.acciones}" />

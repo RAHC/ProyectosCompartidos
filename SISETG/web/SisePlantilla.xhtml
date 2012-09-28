@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version='1.0' encoding='UTF-8' ?> 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
@@ -130,3 +131,137 @@
     </h:body>
 </html>
 
+=======
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href="./resources/css/estilos.css" rel="stylesheet" type="text/css" />
+        <link href="./resources/css/default.css" rel="stylesheet" type="text/css" />
+        <link href="./resources/css/cssLayout.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="./resources/javascript/Sise.js"></script>
+        <script type="text/javascript" src="./resources/javascript/Locale.js"></script>
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <title>SISE</title>
+
+    </h:head>
+
+    <h:body class="body">
+        <f:metadata>
+            <f:event listener="#{loginBean.verifyUseLogin}" type="preRenderView">
+            </f:event>
+        </f:metadata>
+
+        <!--<h:panelGrid id="plantilla" columns="1" class="art-sheet-body" width="97%">
+        <h:dataTable class="art-header">
+            <h:column>
+                <f:facet name="h_derecha">
+                <h1>Sistema Informatico</h1>
+                </f:facet>
+            </h:column>
+            <h:column>
+                <f:facet name="h_izquierda">
+                <p:graphicImage url="resources/images/logos.png" width="30%"/>
+                </f:facet>
+            </h:column>
+        </h:dataTable> -->
+
+        <h:panelGrid id="plantilla" columns="1" class="art-sheet-body" width="97%">
+            <h:panelGrid class="art-header" columns="3" width="100%" cellpadding="10" cellspacing="5" > 
+                <h:panelGroup style="left: 50px;"  class="art-user">
+                    <p:graphicImage url="resources/images/user6.png" width="40px" />
+                    <h:outputText value="#{loginBean.username}" style="font-size: 18px" />
+                    <h:form>
+                        <p:menuButton value="Opciones de Usuario" style="font-size: 12px">
+                            <p:menuitem value="Cambiar Contrase&ntilde;a" icon="ui-icon-unlocked" url="#"  />
+                            <p:menuitem value="Cerrar Sesi&oacute;n" icon="ui-icon-power" actionListener="#{loginBean.cerrarSesion}" />
+                        </p:menuButton>
+                    </h:form>
+
+                    <h:outputText value="#{dateBean.currentDate}" /> 
+                    <!--<h:outputLabel value="Fecha: " /> -->
+                </h:panelGroup>
+                <h:panelGroup>
+                    <h:outputLabel class="art-logo-name" value="Direcci&oacute;n General de Protecci&oacute;n Civil, Prevenci&oacute;n y Mitigaci&oacute;n de Desastres " style=" text-align: center" />
+                    <br /><h:outputLabel class="art-logo-text" value="Sistema Inform&aacute;tico para el Manejo de Servicios de Emergencia " />
+                </h:panelGroup>
+                <p:graphicImage url="resources/images/logos4.png" width="300px" style=" text-align: right"/>
+            </h:panelGrid>
+
+
+            <p:menubar>
+                <p:submenu label="Incidente">
+                    <p:menuitem value="Nuevo Incidente" url="#" />
+                    <p:menuitem value="Listado de Incidentes" url="listadoIncidentes.xhtml" />
+                </p:submenu>
+                <p:submenu label="Mapas">
+                    <p:menuitem value="Mapas SNET" url="http://www.snet.gob.sv/googlemaps/#"></p:menuitem>
+                </p:submenu>
+                <p:submenu label="Reportes">
+                    <p:menuitem value="Incidentes" url="index"></p:menuitem>
+                    <p:menuitem value="Afectaciones" url="index"></p:menuitem>
+                </p:submenu>
+                <p:submenu label="Albergues">
+                    <p:menuitem value="Habilitar Albergue" url="index"></p:menuitem>
+                    <p:menuitem value="Registrar Albergue" url="index"></p:menuitem>
+                    <p:menuitem value="Registrar Albergue" url="index"></p:menuitem>
+                </p:submenu>
+                <p:submenu label="Contactos">
+                    <p:menuitem value="Registar Contacto" url="registroContacto.xhtml"></p:menuitem>
+                    <p:menuitem value="Ver Contactos" url="index"></p:menuitem>
+                </p:submenu>
+                <p:submenu label="Biblioteca">
+                    <p:menuitem value="Home" url="index"></p:menuitem>
+                    <p:menuitem value="Home3" url="index"></p:menuitem>
+                </p:submenu>
+                <span id="MenuAdmin" style="display:block">
+                    <p:submenu label="Administraci&oacute;n" style="#{loginBean.idRol!=6?'display:none':'display:block'}">
+                        <p:menuitem value="Registrar Usuario" url="registroUsuario.xhtml"></p:menuitem>
+                        <p:menuitem value="Home3" url="index"></p:menuitem>
+                    </p:submenu>
+                </span>
+            </p:menubar>
+
+            <!--</h:panelGrid> -->
+
+            <!-- <h:form id="menu">
+                <p:menubar>
+                    <p:submenu label="File" icon="ui-icon-document">
+                        <p:submenu label="New" icon="ui-icon-contact">
+                            <p:menuitem value="Project" url="#" />
+                            <p:menuitem value="Other" url="#" />
+                        </p:submenu>
+                        <p:menuitem value="Open" url="#" />
+                        <p:separator />
+                        <p:menuitem value="Quit" url="#" />
+                    </p:submenu>
+
+                </p:menubar>
+            </h:form> -->
+            <p:panel>
+                <div id="titles" class="txt-titulos">
+                    <ui:insert name="titles">
+                        Titulos
+                    </ui:insert>
+                </div>
+                <div id="content" class="txt-content">
+                    <ui:insert name="content">Content
+
+
+                    </ui:insert>
+
+                </div>
+            </p:panel>
+
+        </h:panelGrid>
+
+    </h:body>
+</html>
+
+>>>>>>> 034f80f43bd039f4a666b9b7bc3abf773fb4cd71

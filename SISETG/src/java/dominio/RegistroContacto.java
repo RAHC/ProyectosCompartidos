@@ -39,7 +39,7 @@ public class RegistroContacto {
         }
         CallableStatement cs;
         try{
-            String sql="{ call sp_registroContacto(?,?,?,?,?,?,?,?,?,?,?)}";
+            String sql="{ call CONTACTO_Add(?,?,?,?,?,?,?,?,?,?,?)}";
             cs = connection.prepareCall(sql);
                 cs.setInt(1, getInstitucion());
                 cs.setString(2, getNombres());
@@ -59,6 +59,9 @@ public class RegistroContacto {
             connection.close();
         }
         return "index";
+    }
+    public String getCancelar(){
+        return "listadoIncidentes.xhtml";
     }
 
     public String getApellidos() {

@@ -16,6 +16,8 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 import org.primefaces.model.map.DefaultMapModel;
@@ -28,83 +30,24 @@ import org.primefaces.model.map.Marker;
 @ViewScoped
 public class ListadoIncidente implements Serializable {
 
-    private Date FechaIni;
-    private Date FechaFin;
+    private Date FechaInicial;
+    private Date FechaFinal;
     private String TpIncidente;
     private Integer Prioridad;
     private Integer Estado;
     private String CodDepartamento;
     private String CodMunicipio;
     private DatosIncidente selectedMapa;
+    private String NombreEvento;
     
     @Resource(name = "jdbc/sise")
     DataSource dataSource;
-    public ListadoIncidente() {
-    }
-
-    public Date getFechaFin() {
-        return FechaFin;
-    }
-
-    public void setFechaFin(Date FechaFin) {
-        this.FechaFin = FechaFin;
-    }
-
-    public Date getFechaIni() {
-        return FechaIni;
-    }
-
-    public void setFechaIni(Date FechaIni) {
-        this.FechaIni = FechaIni;
-    }
-
-    public String getTpIncidente() {
-        return TpIncidente;
-    }
-
-    public void setTpIncidente(String TpIncidente) {
-        this.TpIncidente = TpIncidente;
-    }
-
-    public Integer getPrioridad() {
-        return Prioridad;
-    }
-
-    public void setPrioridad(Integer Prioridad) {
-        this.Prioridad = Prioridad;
-    }
-
-    public String getCodDepartamento() {
-        return CodDepartamento;
-    }
-
-    public void setCodDepartamento(String CodDepartamento) {
-        this.CodDepartamento = CodDepartamento;
-    }
-
-    public Integer getEstado() {
-        return Estado;
-    }
-
-    public void setEstado(Integer Estado) {
-        this.Estado = Estado;
-    }
-
-    public String getCodMunicipio() {
-        return CodMunicipio;
-    }
-    public DatosIncidente getSelectedMapa() {
-        return selectedMapa;
-    }
-
-    public void setSelectedMapa(DatosIncidente selectedMapa) {
-        this.selectedMapa = selectedMapa;
-    }
     
-    public void setCodMunicipio(String CodMunicipio) {
-        this.CodMunicipio = CodMunicipio;
-    }
-        public List<Departamento> getDepartamentos() throws SQLException {
+    FacesContext context = javax.faces.context.FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+        LoginBean nB = (LoginBean) session.getAttribute("loginBean");
+
+     public List<Departamento> getDepartamentos() throws SQLException {
         List<Departamento> resultados = new ArrayList<Departamento>();
         if (dataSource == null) {
             throw new SQLException("No se pudo tener acceso a la fuente de datos");
@@ -114,9 +57,16 @@ public class ListadoIncidente implements Serializable {
         if (connection == null) {
             throw new SQLException("No se pudo conectar a la fuente de datos");
         }
+        String Filtro="";
+        if(!"00".equals(nB.getIdUbic())){
+            String codDep;
+            codDep = nB.getIdUbic().substring(0, 2); 
+            Filtro += " AND IDUBIC LIKE '"+codDep+"%'";
+            this.CodDepartamento = codDep; 
+        }
         try {
             PreparedStatement getDepartamento = connection.prepareStatement(
-                    "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE is NULL order by NOMBUBIC");
+                    "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE is NULL "+Filtro+" order by NOMBUBIC");
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getDepartamento.executeQuery());
 
@@ -141,8 +91,15 @@ public class ListadoIncidente implements Serializable {
         if (connection == null) {
             throw new SQLException("No se pudo conectar a la fuente de datos");
         }
+        String Filtro = "";
+        if(nB.getIdUbic().length()>=4){
+            String codMuni;
+            codMuni  = nB.getIdUbic().substring(0,4);
+            Filtro += " AND IDUBIC LIKE '"+codMuni+"%'";
+            this.CodMunicipio = codMuni;
+        }
         try {
-            String query = "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE = '" + CodDepartamento + "' order by NOMBUBIC";
+            String query = "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE = '" + CodDepartamento + "' "+Filtro+" order by NOMBUBIC";
             PreparedStatement getUbicacion = connection.prepareStatement(query);
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getUbicacion.executeQuery());
@@ -151,6 +108,45 @@ public class ListadoIncidente implements Serializable {
                         rowSet.getString("NOMBUBIC"),
                         rowSet.getFloat("LATITUDUBIC"),
                         rowSet.getFloat("LONGITUDUBIC")));
+            }
+            return resultados;
+        } finally {
+            connection.close();
+        }
+    }
+    public List<Estado> getEstados() throws SQLException{
+        List<Estado> resultados = new ArrayList<Estado>();
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+        Connection connection = dataSource.getConnection();
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+        String Filtro = "WHERE 1 = 1";
+        if(nB.getIdRol()==1){
+            Filtro += " AND IDESTADO IN (1,2,3)";
+        }
+        else if(nB.getIdRol()==2){
+            Filtro += " AND IDESTADO = 1";
+        }
+        else if(nB.getIdRol()==3){
+            Filtro += " AND IDESTADO IN (2,4,5,8)";
+        }
+        else if(nB.getIdRol()==4){
+            Filtro += " AND IDESTADO IN (6,7)";
+        }
+
+        try {
+            PreparedStatement getEstado = connection.prepareStatement(
+                    "SELECT IDESTADO, NOMBESTADO,COLORESTADO FROM ESTADO "+ Filtro +" ORDER BY IDESTADO");
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getEstado.executeQuery());
+
+            while (rowSet.next()) {
+                resultados.add(new Estado(rowSet.getInt("IDESTADO"),
+                        rowSet.getString("NOMBESTADO"),
+                        rowSet.getString("COLORESTADO")));
             }
             return resultados;
         } finally {
@@ -171,7 +167,7 @@ public class ListadoIncidente implements Serializable {
         if (connection == null) {
             throw new SQLException("No se pudo conectar a la fuente de datos");
         }
-        String filtro = " WHERE 1=1 ";
+        String filtro = " WHERE 1=1 AND I.IDEV='"+nB.getIdEvento()+"'";
         if(TpIncidente != null){
             filtro += " AND I.IDTPINC="+TpIncidente;
         }
@@ -181,20 +177,55 @@ public class ListadoIncidente implements Serializable {
         if(Estado != null){
             filtro += " AND I.IDESTADO="+Estado;
         }
+        else{
+            if(nB.getIdRol()==1){
+                filtro += " AND I.IDESTADO IN (1,2,3)";
+             }
+            else if(nB.getIdRol()==2){
+                filtro += " AND I.IDESTADO = 1";
+            }
+            else if(nB.getIdRol()==3){
+                filtro += " AND I.IDESTADO IN (2,4,5,8)";
+            }
+            else if(nB.getIdRol()==4){
+                filtro += " AND I.IDESTADO IN (6,7)";
+            }
+        }
         if(CodDepartamento != null && CodMunicipio != null){
             filtro += " AND I.IDUBIC LIKE '"+CodMunicipio+"%'"; 
         }
         else if(CodDepartamento != null){
-            filtro += " AND I.IDUBIC LIKE '"+CodDepartamento+"%'";
+            if(nB.getIdUbic().length()>=4){
+                String codUbic;
+                codUbic = nB.getIdUbic().substring(0,4);
+                filtro += " AND IDUBIC LIKE '"+codUbic+"%'";
+            }
+            else{
+                filtro += " AND I.IDUBIC LIKE '"+CodDepartamento+"%'";
+            }
         }
-        if(FechaIni != null){
-            if(FechaFin != null){
-                filtro += " AND FECHORAINIINC BETWEEN DATE "+ utilToSql(getFechaIni())+" 00:00:00 AND "+utilToSql(getFechaFin())+" 23:59:59";
+        else{
+            String codUbic;
+            if(nB.getIdUbic().length()>=4){
+                codUbic = nB.getIdUbic().substring(0,4);
+                filtro += " AND IDUBIC LIKE '"+codUbic+"%'";
+            }
+            else if(!"00".equals(nB.getIdUbic())){
+                codUbic = nB.getIdUbic().substring(0,2);
+                filtro += " AND IDUBIC LIKE '"+codUbic+"%'";
+            }
+        }
+        if(FechaInicial !=null){
+            if(FechaFinal !=null){
+                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+                String fecIni = dateFormat.format(getFechaInicial());
+                String fecFin = dateFormat.format(getFechaFinal());
+                filtro += " AND FECHORAINIINC BETWEEN DATE '"+ fecIni+":00' AND '"+fecFin+":00'";
             }
         }
         try{
             PreparedStatement getIncidentes = connection.prepareStatement(
-                    "SELECT I.IDEV, I.CORRINC, I.IDPRIOR, I.IDESTADO, I.IDTPINC, LL.IDINFOR, "
+                    "SELECT I.IDEV, I.CORRINC, P.IDPRIOR, I.IDESTADO, I.IDTPINC, LL.IDINFOR, "
                     + "I.IDUBIC, convert(varchar, FECHORAINIINC,103) as f1, convert(varchar, FECHORAINIINC,108) as h1, LATITUDINC, LONGITUDINC, ALTIMETRIAINC, "
                     + " DESCINC, DIRINC, PTOREFINC, P.NOMBPRIOR, U.NOMBUBIC, U.LATITUDUBIC, U.LONGITUDUBIC, "
                     + " E.NOMBESTADO, TI.NOMBTPINC,  LL.NOMBINFOR, LL.APELLINFOR, LL.TELINFOR FROM INCIDENTE I "
@@ -219,7 +250,7 @@ public class ListadoIncidente implements Serializable {
                 List<Acciones> resultados2 = new ArrayList<Acciones>();
                 PreparedStatement getListAcciones = connection.prepareStatement(
                         "SELECT *, convert(varchar, FECHORAREALACC,103) as FR, convert(varchar, FECHORAALMACC,103) as FA "
-                        + "FROM ACCIONES WHERE IDEV='"+rowSet.getString("IDEV")+"' AND CORRINC='"+rowSet.getString("CORRINC")+"'");
+                        + "FROM ACCIONES WHERE IDEV='"+rowSet.getString("IDEV")+"' AND CORRINC='"+rowSet.getString("CORRINC")+"' AND ESTADOACC='H'");
                 CachedRowSet rowSet3 = new com.sun.rowset.CachedRowSetImpl();
                 rowSet3.populate(getListAcciones.executeQuery());
                 while(rowSet3.next()){
@@ -274,10 +305,99 @@ public class ListadoIncidente implements Serializable {
         }
         
     }
-    private java.sql.Date utilToSql(java.util.Date fecha) {
-        DateFormat sqlDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-         return java.sql.Date.valueOf(sqlDateFormatter.format(fecha));
+
+    public String getNombreEvento() throws SQLException{
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+
+        Connection connection = dataSource.getConnection();
+
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+        try{
+            PreparedStatement getNombEvento = connection.prepareStatement("SELECT NOMBEV FROM EVENTO "
+                    + "WHERE IDEV='"+nB.getIdEvento()+"'");
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getNombEvento.executeQuery());
+            rowSet.next();
+            NombreEvento = rowSet.getString("NOMBEV");
+            return NombreEvento;
+           }
+        finally {
+            connection.close();
+        } 
     }
-   
+
+    public void setNombreEvento(String NombreEvento) {
+        this.NombreEvento = NombreEvento;
+    }
+        
+    public ListadoIncidente() {
+    }
+
+    public String getTpIncidente() {
+        return TpIncidente;
+    }
+
+    public void setTpIncidente(String TpIncidente) {
+        this.TpIncidente = TpIncidente;
+    }
+
+    public Integer getPrioridad() {
+        return Prioridad;
+    }
+
+    public void setPrioridad(Integer Prioridad) {
+        this.Prioridad = Prioridad;
+    }
+
+    public String getCodDepartamento() {
+        return CodDepartamento;
+    }
+
+    public void setCodDepartamento(String CodDepartamento) {
+        this.CodDepartamento = CodDepartamento;
+    }
+
+    public Integer getEstado() {
+        return Estado;
+    }
+
+    public void setEstado(Integer Estado) {
+        this.Estado = Estado;
+    }
+
+    public String getCodMunicipio() {
+        return CodMunicipio;
+    }
+    public DatosIncidente getSelectedMapa() {
+        return selectedMapa;
+    }
+
+    public void setSelectedMapa(DatosIncidente selectedMapa) {
+        this.selectedMapa = selectedMapa;
+    }
+    
+    public void setCodMunicipio(String CodMunicipio) {
+        this.CodMunicipio = CodMunicipio;
+    }
+
+    public Date getFechaFinal() {
+        return FechaFinal;
+    }
+
+    public void setFechaFinal(Date FechaFinal) {
+        this.FechaFinal = FechaFinal;
+    }
+
+    public Date getFechaInicial() {
+        return FechaInicial;
+    }
+
+    public void setFechaInicial(Date FechaInicial) {
+        this.FechaInicial = FechaInicial;
+    }
     
 }
