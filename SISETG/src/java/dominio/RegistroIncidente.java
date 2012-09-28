@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Resource;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -27,8 +28,6 @@ import javax.sql.rowset.CachedRowSet;
 @RequestScoped
 public class RegistroIncidente {
 
-    private String IdUbicacion;
-    private String ptoReferencia;
     private Date fechaHora;
     private String Descripcion;
     private String IdTipoIncidente;
@@ -36,14 +35,18 @@ public class RegistroIncidente {
     private String Apellidos;
     private String telefono;
     //private String Departamento;
-    private String Municipio;
-    private String Canton;
-    private String Caserio;
+    /*private String Municipio;
+     private String Canton;
+     private String Caserio;*/
+    private String IdUbicacion = "0301";
+    private String ptoReferencia;
     private String Direccion;
     private String Referencia;
     private int Estado;
     private int Prioridad;
     private String IdEvento;
+    private double lat;
+    private double lng;
     @Resource(name = "jdbc/sise")
     DataSource dataSource;
 
@@ -132,41 +135,53 @@ public class RegistroIncidente {
         try {
             CallableStatement cs;
             String sql = "{ call registrarIncidente(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
-            cs = connection.prepareCall(sql);           
+            cs = connection.prepareCall(sql);
 
             FacesContext context = javax.faces.context.FacesContext.getCurrentInstance();
             HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
             LoginBean nB = (LoginBean) session.getAttribute("loginBean");
-            //init in = (init) session.getAttribute("init");
-            
-            //connection.setAutoCommit(false);
+
+            Map<String, Object> viewMap = FacesContext.getCurrentInstance().getViewRoot().getViewMap();
+            init in = (init) viewMap.get("init");
+
+
+            if (!(in == null)) {
+
+                /*if (!in.getCodCaserio().equals("")) {
+                 cs.setString(4, in.getCodCaserio());
+                 } else {*/
+                if (!in.getCodCanton().equals("")) {
+                    cs.setString(4, in.getCodCanton());
+                } else {
+                    cs.setString(4, in.getCodMunicipio());
+                }
+            }
+            //}
 
             cs.setString(1, getNombres());
             cs.setString(2, getApellidos());
             cs.setString(3, getTelefono());
-            cs.setString(4, getMunicipio());//Aqui hay que poner lo de init.java
             cs.setString(5, getDireccion());
             cs.setString(6, getPtoReferencia());
-            cs.setDouble(7, 13.800000);
-            cs.setDouble(8, -89.183300);
+            cs.setDouble(7, in.getLat());
+            cs.setDouble(8, in.getLng());
             cs.setDouble(9, 0);
-            cs.setString(10, getIdTipoIncidente());
+            cs.setString(10, in.getIdTipoIncidente());
             cs.setDate(11, new java.sql.Date(getFechaHora().getTime()));
             cs.setString(12, getDescripcion());
             cs.setInt(13, getEstado());
             cs.setInt(14, getPrioridad());
             cs.setString(15, nB.getIdEvento());
-            //cs.setString(15, "TT1201");
 
             cs.execute();
-            
+
             //FacesContext.getCurrentInstance().addMessage("f1:guardar", new FacesMessage("Incidente agregado"));
-            
+
             cs.close();
-            
-        
-            
-            
+
+
+
+
             //connection.commit();
 
         } finally {
@@ -239,30 +254,6 @@ public class RegistroIncidente {
         this.telefono = telefono;
     }
 
-    public String getMunicipio() {
-        return Municipio;
-    }
-
-    public void setMunicipio(String Municipio) {
-        this.Municipio = Municipio;
-    }
-
-    public String getCanton() {
-        return Canton;
-    }
-
-    public void setCanton(String Canton) {
-        this.Canton = Canton;
-    }
-
-    public String getCaserio() {
-        return Caserio;
-    }
-
-    public void setCaserio(String Caserio) {
-        this.Caserio = Caserio;
-    }
-
     public String getDireccion() {
         return Direccion;
     }
@@ -302,4 +293,22 @@ public class RegistroIncidente {
     public void setIdEvento(String IdEvento) {
         this.IdEvento = IdEvento;
     }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+    
+    
 }

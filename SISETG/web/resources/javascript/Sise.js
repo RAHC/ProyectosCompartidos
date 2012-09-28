@@ -4,6 +4,19 @@
  */
 
 var currentMarker = null;
+var categoriaAfectacion=null;
+
+$(document).ready(function(){$('#afpe').hide()});
+
+function mostrarAfecPer(){
+
+    var value = $('#categoria option:selected').val();
+    if(value=='1'){
+        $('#afpe').slideDown('slow');
+    }else{
+        $('#afpe').slideUp('slow');
+    }
+}
 	
 function handlePointClick(event) {
     if(currentMarker == null) {

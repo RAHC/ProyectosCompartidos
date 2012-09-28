@@ -10,10 +10,21 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
+import javax.sql.RowSet;
 import javax.sql.rowset.CachedRowSet;
+import org.primefaces.event.map.MarkerDragEvent;
+import org.primefaces.event.map.OverlaySelectEvent;
+import org.primefaces.model.map.DefaultMapModel;
+import org.primefaces.model.map.LatLng;
+import org.primefaces.model.map.MapModel;
+import org.primefaces.model.map.Marker;
 
 //import model.GeneralModel;
 /**
@@ -24,33 +35,191 @@ import javax.sql.rowset.CachedRowSet;
 @ViewScoped
 public class init {
 
-    private String IdTipoIncidente = "18";
+    private String IdCatIncidente = "";
+    private String IdTipoIncidente = "";
+    private String IdIncidente = "";
     private String CodDepartamento;
     private String CodMunicipio;
     private String CodCanton;
     private String CodCaserio;
+    private double lat;
+    private double lng;
+    private String title;
+    private MapModel draggableModel;
     private int TpInstitucion;
     private String IdUbicacion;
+    private String CategoriaAfectacion;
+    private String tipoAfectacion;
+    List<AfectacionAPersona> resultadosAP = new ArrayList<AfectacionAPersona>();
     @Resource(name = "jdbc/sise")
     DataSource dataSource;
 
     public init() {
+        draggableModel = new DefaultMapModel();
     }
 
-    public String getCodCanton() {
-        return CodCanton;
+    public String getTipoAfectacion() {
+        return tipoAfectacion;
     }
 
-    public void setCodCanton(String CodCanton) {
-        this.CodCanton = CodCanton;
+    public void setTipoAfectacion(String tipoAfectacion) {
+        this.tipoAfectacion = tipoAfectacion;
     }
 
-    public String getCodCaserio() {
-        return CodCaserio;
+    public String getTitle() {
+        return title;
     }
 
-    public void setCodCaserio(String CodCaserio) {
-        this.CodCaserio = CodCaserio;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void addMessage(FacesMessage message) {
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+
+    public void addMarker(ActionEvent actionEvent) {
+        Marker marker = new Marker(new LatLng(lat, lng), title);
+        marker.setDraggable(true);
+        draggableModel.addOverlay(marker);
+        addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO, "Marca agregada", "Lat:" + lat + ", Lng:" + lng));
+        for (Marker marker1 : draggableModel.getMarkers()) {
+            marker1.setDraggable(true);
+        }
+
+
+    }
+
+    public void onMarkerDrag(MarkerDragEvent event) {
+        Marker marker = event.getMarker();
+        addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO, "Marca trasladada", "Lat:" + marker.getLatlng().getLat() + ", Lng:" + marker.getLatlng().getLng()));
+    }
+
+    public void onMarkerSelect(OverlaySelectEvent event) {
+        Marker marker = (Marker) event.getOverlay();
+
+        addMessage(new FacesMessage(FacesMessage.SEVERITY_INFO, "Marca Seleccionada", marker.getTitle()));
+    }
+
+    public Double getLatitud() throws SQLException {
+        Double Latitud;
+
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+        Connection connection = dataSource.getConnection();
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+
+        if (getCodDepartamento() == null) {
+            Latitud = 13.70;
+        } else {
+            String id = null;
+            if (getCodCaserio() != null) {
+                id = getCodCaserio();
+            } else if (getCodCanton() != null) {
+                id = getCodCanton();
+            } else if (getCodMunicipio() != null) {
+                id = getCodMunicipio();
+            } else if (getCodDepartamento() != null) {
+                id = getCodDepartamento();
+            }
+
+            PreparedStatement getLatitudes = connection.prepareStatement(
+                    "SELECT LATITUDUBIC FROM UBICACION WHERE IDUBIC='" + id + "'");
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getLatitudes.executeQuery());
+            rowSet.next();
+            Latitud = Double.parseDouble(rowSet.getString("LATITUDUBIC"));
+
+            connection.close();
+        }
+        return Latitud;
+    }
+
+    public Double getLongitud() throws SQLException {
+        Double Longitud;
+
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+        Connection connection = dataSource.getConnection();
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+
+        if (getCodDepartamento() == null) {
+            Longitud = 13.70;
+        } else {
+            String id = null;
+            if (getCodCaserio() != null) {
+                id = getCodCaserio();
+            } else if (getCodCanton() != null) {
+                id = getCodCanton();
+            } else if (getCodMunicipio() != null) {
+                id = getCodMunicipio();
+            } else if (getCodDepartamento() != null) {
+                id = getCodDepartamento();
+            }
+
+            PreparedStatement getLongitudes = connection.prepareStatement(
+                    "SELECT LONGITUDUBIC FROM UBICACION WHERE IDUBIC='" + id + "'");
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getLongitudes.executeQuery());
+            rowSet.next();
+            Longitud = Double.parseDouble(rowSet.getString("LONGITUDUBIC"));
+            connection.close();
+        }
+        return Longitud;
+    }
+
+    public Integer getZoomUbic() {
+        Integer z;
+        if (getCodCaserio() != null) {
+            z = 20;
+        } else if (getCodCanton() != null) {
+            z = 15;
+        } else if (getCodMunicipio() != null) {
+            z = 12;
+        } else if (getCodDepartamento() != null) {
+            z = 10;
+        } else {
+            z = 8;
+        }
+        return z;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+
+    public MapModel getDraggableModel() {
+        return draggableModel;
+    }
+
+    public void setDraggableModel(MapModel draggableModel) {
+        this.draggableModel = draggableModel;
+    }
+
+    public String getIdIncidente() {
+        return IdIncidente;
+    }
+
+    public void setIdIncidente(String IdIncidente) {
+        this.IdIncidente = IdIncidente;
     }
 
     public String getIdTipoIncidente() {
@@ -59,6 +228,34 @@ public class init {
 
     public void setIdTipoIncidente(String IdTipoIncidente) {
         this.IdTipoIncidente = IdTipoIncidente;
+        this.IdIncidente = IdTipoIncidente;
+    }
+
+    public String getCodCanton() {
+        return CodCanton;
+    }
+
+    public void setCodCanton(String CodCanton) {
+        this.CodCanton = CodCanton;
+        this.IdUbicacion = CodCanton;
+    }
+
+    public String getCodCaserio() {
+        return CodCaserio;
+    }
+
+    public void setCodCaserio(String CodCaserio) {
+        this.CodCaserio = CodCaserio;
+        this.IdUbicacion = CodCaserio;
+    }
+
+    public String getIdCatIncidente() {
+        return IdCatIncidente;
+    }
+
+    public void setIdCatIncidente(String IdCatIncidente) {
+        this.IdCatIncidente = IdCatIncidente;
+        this.IdIncidente = IdCatIncidente;
     }
 
     public String getIdUbicacion() {
@@ -83,6 +280,7 @@ public class init {
 
     public void setCodDepartamento(String CodDepartamento) {
         this.CodDepartamento = CodDepartamento;
+        this.IdUbicacion = CodDepartamento;
     }
 
     public String getCodMunicipio() {
@@ -91,6 +289,7 @@ public class init {
 
     public void setCodMunicipio(String CodMunicipio) {
         this.CodMunicipio = CodMunicipio;
+        this.IdUbicacion = CodMunicipio;
     }
 
     public List<Rol> getRoles() throws SQLException {
@@ -432,7 +631,7 @@ public class init {
 
     }
 
-    public List<TipoIncidente> getIncidentes() throws SQLException {
+    public List<TipoIncidente> getTipoIncidente() throws SQLException {
         List<TipoIncidente> resultados = new ArrayList<TipoIncidente>();
         if (dataSource == null) {
             throw new SQLException("No se pudo tener acceso a la fuente de datos");
@@ -444,7 +643,7 @@ public class init {
         }
         try {
             PreparedStatement getTpInstitucion = connection.prepareStatement(
-                    "SELECT IDTPINC, NOMBTPINC FROM TIPOINCIDENTE WHERE IDTPINCPADRE =" + IdTipoIncidente);
+                    "SELECT IDTPINC, NOMBTPINC FROM TIPOINCIDENTE WHERE IDTPINCPADRE LIKE'" + IdCatIncidente + "'");
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getTpInstitucion.executeQuery());
             while (rowSet.next()) {
@@ -460,6 +659,9 @@ public class init {
     public List<Incidente> getIncidentesActuales() throws SQLException {
 
         List<Incidente> resultados = new ArrayList<Incidente>();
+        FacesContext context = javax.faces.context.FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+        LoginBean nB = (LoginBean) session.getAttribute("loginBean");
 
         if (dataSource == null) {
             throw new SQLException("No se pudo tener acceso a la fuente de datos");
@@ -472,13 +674,10 @@ public class init {
         }
 
         try {
-            /* PreparedStatement getPrioridad = connection.prepareStatement(
-             "SELECT TI.NOMBTPINC, I.FECHORAINIINC,I.DIRINC, I.PTOREFINC FROM INCIDENTE I JOIN TIPOINCIDENTE TI ON TI.IDTPINC=I.IDTPINC "
-             + "WHERE I.IDUBIC=" + IdUbicacion + " OR I.IDTPINC=" + IdTipoIncidente);*/
-
             PreparedStatement getPrioridad = connection.prepareStatement(
-                    "SELECT TI.NOMBTPINC, I.FECHORAINIINC,I.DIRINC, I.PTOREFINC, I.IDESTADO FROM INCIDENTE I JOIN TIPOINCIDENTE TI ON TI.IDTPINC=I.IDTPINC ORDER BY I.IDPRIOR "
-                   );
+                    "SELECT TI.NOMBTPINC, I.FECHORAINIINC,I.DIRINC, I.PTOREFINC, I.IDESTADO FROM INCIDENTE I JOIN TIPOINCIDENTE TI ON TI.IDTPINC=I.IDTPINC "
+                    + "WHERE I.IDEV='" + nB.getIdEvento() + "' AND IDUBIC LIKE '" + IdUbicacion + "%' AND I.IDTPINC LIKE '" + IdIncidente + "%'"
+                    + "ORDER BY I.IDPRIOR");
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getPrioridad.executeQuery());
 
@@ -496,7 +695,7 @@ public class init {
 
     }
 
-    public List<TipoIncidente> getTipoIncidente() throws SQLException {
+    public List<TipoIncidente> getCategoriaIncidente() throws SQLException {
         List<TipoIncidente> resultados = new ArrayList<TipoIncidente>();
         if (dataSource == null) {
             throw new SQLException("No se pudo tener acceso a la fuente de datos");
@@ -546,5 +745,142 @@ public class init {
         } finally {
             connection.close();
         }
+    }
+
+    public List<Afectacion> getCategoriaAfectaciones() throws SQLException {
+        List<Afectacion> resultados = new ArrayList<Afectacion>();
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+        Connection connection = dataSource.getConnection();
+
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+
+        try {
+            PreparedStatement getAfectacion = connection.prepareStatement(
+                    "SELECT IDTPAFEC, NOMBTPAFEC FROM TIPOAFECTACION WHERE IDTPAFEC_PADRE is null");
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getAfectacion.executeQuery());
+
+            while (rowSet.next()) {
+                resultados.add(new Afectacion(rowSet.getString("IDTPAFEC"),
+                        rowSet.getString("NOMBTPAFEC")));
+            }
+            return resultados;
+        } finally {
+            connection.close();
+        }
+
+    }
+
+    public List<Afectacion> getTipoAfectaciones() throws SQLException {
+        List<Afectacion> resultados = new ArrayList<Afectacion>();
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+        Connection connection = dataSource.getConnection();
+
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+
+        try {
+            PreparedStatement getAfectacion = connection.prepareStatement(
+                    "SELECT IDTPAFEC, NOMBTPAFEC FROM TIPOAFECTACION WHERE IDTPAFEC_PADRE='" + CategoriaAfectacion + "'");
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getAfectacion.executeQuery());
+
+            while (rowSet.next()) {
+                resultados.add(new Afectacion(rowSet.getString("IDTPAFEC"),
+                        rowSet.getString("NOMBTPAFEC")));
+            }
+            return resultados;
+        } finally {
+            connection.close();
+        }
+    }
+
+    public List<Afectacion> getCausasAfectaciones() throws SQLException {
+        List<Afectacion> resultados = new ArrayList<Afectacion>();
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+        Connection connection = dataSource.getConnection();
+
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+
+        try {
+            PreparedStatement getAfectacion = connection.prepareStatement(
+                    "SELECT IDTPAFEC, NOMBTPAFEC FROM TIPOAFECTACION WHERE IDTPAFEC_PADRE='" + tipoAfectacion + "'");
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getAfectacion.executeQuery());
+
+            while (rowSet.next()) {
+                resultados.add(new Afectacion(rowSet.getString("IDTPAFEC"),
+                        rowSet.getString("NOMBTPAFEC")));
+            }
+            return resultados;
+        } finally {
+            connection.close();
+        }
+    }
+
+    public List<AfectacionAPersona> getAfectacionesPersonas() throws SQLException {
+        //List<AfectacionAPersona> resultados = new ArrayList<AfectacionAPersona>();
+        //resultados.removeAll(resultados);
+
+        //resultadosAP.clear();
+        
+        /*if(!resultadosAP.isEmpty()){
+            resultadosAP.clear();
+        }   */   
+        
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+        Connection connection = dataSource.getConnection();
+
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+
+        try {
+
+            PreparedStatement getAfectacionPersona = connection.prepareStatement(
+                    "select IDAFECPER,IDAFEC,NOMBTPAFEC,NOMBAFECPER,EDADAFECPER,GENEROAFECPER,DISCAFECPER,CENTROASISTAFECPER from AFECTACIONAPERSONA AP JOIN TIPOAFECTACION TA ON AP.IDAFEC=TA.IDTPAFEC");
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getAfectacionPersona.executeQuery());
+
+            while (rowSet.next()) {
+                resultadosAP.add(new AfectacionAPersona(
+                        rowSet.getInt("IDAFECPER"),
+                        rowSet.getString("IDAFEC"),
+                        rowSet.getString("NOMBTPAFEC"),
+                        rowSet.getString("NOMBAFECPER"),
+                        rowSet.getInt("EDADAFECPER"),
+                        rowSet.getString("GENEROAFECPER"),
+                        rowSet.getString("DISCAFECPER"),
+                        rowSet.getString("CENTROASISTAFECPER")));
+            }
+            
+            //rowSet.close();
+
+            return resultadosAP;
+        } finally {
+            connection.close();
+            
+        }
+    }
+
+    public String getCategoriaAfectacion() {
+        return CategoriaAfectacion;
+    }
+
+    public void setCategoriaAfectacion(String CategoriaAfectacion) {
+        this.CategoriaAfectacion = CategoriaAfectacion;
     }
 }

@@ -10,6 +10,10 @@
         <h:outputScript library="javascript" name="Locale.js"/>
     </h:head>
 
+    <!--<f:metadata>
+        <f:viewParam name="corrInc" value="" />
+    </f:metadata>-->
+
     <body>
 
         <ui:composition template="./SisePlantilla.xhtml">
@@ -19,123 +23,277 @@
             </ui:define>
 
             <ui:define name="content">
-                <h:form prependId="false">
-                    <p:accordionPanel activeIndex="0,1,2" multiple="true">
-                        <p:tab title="Datos de Afectación">
-                            <h:panelGrid columns="3">
-                                <h:outputLabel value="Categoría de afectación" for="categoria"/>
-                                <p:selectOneMenu id="categoria" label="Categoría de Afectación" required="true" value="">
-                                    <f:selectItem itemLabel="Seleccione una Categoría de Afectación" itemValue="" />
-                                    <f:selectItems value="" var="dept" itemLabel="" itemValue="" />
-                                    <p:ajax update="tipo"/>
-                                </p:selectOneMenu>  
-                                <h:message for="categoria"/>
+                <h:form prependId="false" id="f1">
+                    
+                    <p:fieldset legend="Datos de Afectación" toggleable="true" styleClass="borderito">
 
-                                <h:outputLabel value="Tipo de afectación" for="tipo"/>
-                                <p:selectOneMenu id="tipo" label="Tipo de Afectación" required="true" value="">
-                                    <f:selectItem itemLabel="Seleccione un Tipo de Afectación" itemValue="" />
-                                    <f:selectItems value="" var="dept" itemLabel="" itemValue="" />
-                                </p:selectOneMenu>  
-                                <h:message for="tipo"/>
+                        <h:panelGrid columns="3">
+                            <h:outputLabel value="Fecha y Hora" for="fecha"/>                                
+                            <p:calendar id="fecha"  showOn="button" navigator="true" pattern="dd/MM/yyyy HH:mm"  required="true" locale="es" value="#{registroAfectacion.fechaHora}"/>
+                            <h:message for="fecha"/>    
 
-                                <h:outputLabel value="Cantidad" for="cantidad"/>
-                                <p:inputText id="cantidad" label="Cantidad" value=""
-                                             required="true" />
-                                <h:message for="cantidad"/>  
+                            <h:outputLabel value="Categoría de afectación" for="categoria"/>
+                            <p:selectOneMenu id="categoria" label="Categoría de Afectación" required="true" value="#{init.categoriaAfectacion}" onchange="mostrarAfecPer();">
+                                <f:selectItem itemLabel="Seleccione una Categoría de Afectación" itemValue="" />
+                                <f:selectItems value="#{init.categoriaAfectaciones}" var="cats" itemLabel="#{cats.nombreAfectacion}" itemValue="#{cats.idAfectacion}" />
+                                <p:ajax update="tipo"/>
+                            </p:selectOneMenu>  
+                            <h:message for="categoria"/>
 
-                                <h:outputLabel value="Fecha y Hora" for="fecha"/>                                
-                                <p:calendar id="fecha"  showOn="button" navigator="true" pattern="dd/MM/yyyy HH:mm"  required="true" locale="es"/>
-                                <h:message for="fecha"/>    
+                            <h:outputLabel value="Tipo de afectación" for="tipo"/>
+                            <p:selectOneMenu id="tipo" label="Tipo de Afectación" required="true" value="#{init.tipoAfectacion}">
+                                <f:selectItem itemLabel="Seleccione un Tipo de Afectación" itemValue="" />
+                                <f:selectItems value="#{init.tipoAfectaciones}" var="tips" itemLabel="#{tips.nombreAfectacion}" itemValue="#{tips.idAfectacion}" />
+                                <p:ajax update="inac,diagnvaAfec"/>
+                            </p:selectOneMenu>  
+                            <h:message for="tipo"/>
 
-                                <h:outputLabel value="Descripción" for="descripcion"/>  
-                                <p:inputTextarea id="descripcion" autoResize="true"/>
-                                <h:panelGroup/>
-
-                                <h:outputLabel value="Institución que atiende" for="institucion"/>
-                                <p:selectOneMenu id="institucion" label="Institución que atiende" required="true" value="">
-                                    <f:selectItem itemLabel="Seleccione una Institución" itemValue="" />
-                                    <f:selectItems value="" var="dept" itemLabel="" itemValue="" />
-                                </p:selectOneMenu>  
-                                <h:message for="tipo"/>  
+                            <h:outputLabel value="Cantidad" for="cantidad"/>
+                            <h:panelGroup>
+                                <p:spinner id="cantidad" value="#{registroAfectacion.cantidad}" min="1"/>  
+                                <!--<p:inputText id="cantidad" label="Cantidad" value="" required="true" style="margin-bottom:5px" />-->
+                            </h:panelGroup>
+                            <h:message for="cantidad"/>  
 
 
-                                <h:outputLabel value="Daños Materiales" for="danos"/>  
-                                <p:inputTextarea id="danos"/>
-                                <h:panelGroup/>
+                            <h:outputLabel value="Descripción" for="descripcion" />  
+                            <p:inputTextarea id="descripcion" autoResize="true" style="width: 250px" value="#{registroAfectacion.descripcion}"/>
+                            <h:panelGroup/>
 
-                            </h:panelGrid>
+                            <h:outputLabel value="Daños Materiales" for="danos"/>  
+                            <p:inputTextarea id="danos" autoResize="true" style="width: 250px" value="#{registroAfectacion.danosMateriales}"/>
+                            <h:panelGroup/>
 
-                        </p:tab>
+                            <!--<h:outputLabel value="Institución que atiende" for="institucion"/>
+                            <p:selectOneMenu id="institucion" label="Institución que atiende" required="true" value="">
+                                <f:selectItem itemLabel="Seleccione una Institución" itemValue="" />
+                                <f:selectItems value="" var="dept" itemLabel="" itemValue="" />
+                            </p:selectOneMenu>  
+                            <h:message for="tipo"/> -->
 
-                        <p:tab title="Ubicación">
-                            <h:panelGrid columns="3">
-                                <h:outputLabel value="Departamento" for="departamento"/>
-                                <p:selectOneMenu id="departamento" label="Departamento" required="true" >
-                                    <f:selectItem itemLabel="Seleccione un Departamento" itemValue="" />
-                                    <f:selectItems value="" var="dept" itemLabel="" itemValue="" />
-                                    <p:ajax update="municipio"/>
-                                </p:selectOneMenu>  
-                                <h:message for="departamento"/>
+                        </h:panelGrid>
 
-                                <h:outputLabel value="Municipio" for="municipio"/>
-                                <p:selectOneMenu id="municipio" label="Municipio" required="true" value="">
-                                    <f:selectItem itemLabel="Seleccione un Municipio" itemValue="" /> 
-                                    <f:selectItems value="" var="munic" itemLabel="" itemValue="" />
-                                </p:selectOneMenu>
-                                <h:message for="municipio"/>   
+                    </p:fieldset>
+
+                    <p:fieldset legend="Ubicación" toggleable="true" collapsed="false" styleClass="borderito" >
+                        <h:panelGrid columns="3">
+                            <h:outputLabel value="Departamento" for="departamento"/>
+                            <p:selectOneMenu id="departamento" label="Departamento" required="true" value="#{init.codDepartamento}">
+                                <f:selectItem itemLabel="Seleccione un Departamento" itemValue="" />
+                                <f:selectItems value="#{init.departamentos}" var="dept" itemLabel="#{dept.nombreDepartamento}" itemValue="#{dept.idDepartamento}" />
+                                <p:ajax update="municipio"/>
+                            </p:selectOneMenu>  
+                            <h:message for="departamento"/>
+
+                            <h:outputLabel value="Municipio" for="municipio"/>
+                            <p:selectOneMenu id="municipio" label="Municipio" required="true" value="#{init.codMunicipio}">
+                                <f:selectItem itemLabel="Seleccione un Municipio" itemValue="" /> 
+                                <f:selectItems value="#{init.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
+                                <p:ajax update="canton"/>
+                            </p:selectOneMenu>
+                            <h:message for="municipio"/>   
 
 
-                                <h:outputLabel value="Cantón" for="canton"/>
-                                <p:selectOneMenu id="canton" label="Canton" >
-                                </p:selectOneMenu>
-                                <h:message for="canton"/>  
+                            <h:outputLabel value="Cantón" for="canton" />
+                            <p:selectOneMenu id="canton" label="Canton"  value="#{init.codCanton}" >
+                                <f:selectItem itemLabel="Seleccione un Cantón" itemValue="" /> 
+                                <f:selectItems value="#{init.cantones}" var="canton" itemLabel="#{canton.nombreCanton}" itemValue="#{canton.idCanton}" />
+                                <p:ajax update="caserio"/>                                    
+                            </p:selectOneMenu>
+                            <h:message for="canton"/>  
 
-                                <h:outputLabel value="Caserío" for="caserio"/>
-                                <p:selectOneMenu id="caserio" label="Caserío" >
-                                </p:selectOneMenu>
-                                <h:message for="caserio"/>
-                            </h:panelGrid>
-                        </p:tab>
+                            <h:outputLabel value="Caserío" for="caserio" />
+                            <p:selectOneMenu id="caserio" label="Caserío"  value="#{init.codCaserio}">
+                                <f:selectItem itemLabel="Seleccione un Caserío" itemValue="" /> 
+                                <f:selectItems value="#{init.caserios}" var="caserio" itemLabel="#{caserio.nombreCanserio}" itemValue="#{caserio.idCaserio}" />
+                                <!--<p:ajax update="gl,m"/>                                       -->
+                            </p:selectOneMenu>
+                            <h:message for="caserio"/>
 
-                        <p:tab title="Datos de Personas">
-                            <p:commandButton id="detallar" value="Agregar Detalle" ajax="false"/>
+                            <h:outputLabel value="Dirección Exacta" for="direccion"/>
+                            <p:inputText id="direccion" label="Dirección Exacta" value="#{registroIncidente.direccion}" required="true"/>
+                            <h:message for="direccion"/>   
 
-                            <p:dataTable id="inac" value="" var="pe" 
-                                         paginator="true" rows="5"
-                                         paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
-                                         rowsPerPageTemplate="5,10,15"
-                                         >  
 
-                                <p:column>
-                                    <f:facet name="header">Causa</f:facet>
-                                </p:column>
+                            <h:outputLabel value="Punto de Referencia" for="punto"/>
+                            <p:inputText id="punto" label="Punto de Referencia" value="#{registroIncidente.ptoReferencia}" required="true" />
+                            <h:message for="punto"/>   
+                        </h:panelGrid>
+                    </p:fieldset>
 
-                                <p:column>
-                                    <f:facet name="header">Nombres/Apellidos</f:facet>   
-                                </p:column>
+                    <p:growl id="mess" showDetail="true"/>
 
-                                <p:column>
-                                    <f:facet name="header">Sexo</f:facet>  
-                                </p:column>
+                    <p:fieldset id="afpe" legend="Datos de Personas" toggleable="true" styleClass="borderito">
 
-                                <p:column>
-                                    <f:facet name="header">Discapacitado</f:facet>  
-                                </p:column>   
+                        <p:commandButton type="button" value="Agregar Afectación" onclick="nvaAfec.show()"/>  
+                        
+                        <p:dialog widgetVar="nvaAfec" modal="true" header="Agregar Afectación a Persona" id="diagnvaAfec">
+                            <h:form prependId="false">
+                                <p:growl id="msj"/>
+                                <h:panelGrid columns="3">
+                                    <p:outputLabel value="Nombre" for="nombre"/>
+                                    <p:inputText id="nombre" label="Nombre" value="#{registroAfectacionPersona.nombre}" required="true"/>
+                                    <p:message for="nombre"/>
 
-                                <p:column>
-                                    <f:facet name="header">Descripción</f:facet>  
-                                </p:column> 
+                                    <p:outputLabel value="Edad" for="edad"/>
+                                    <p:spinner id="edad" value="#{registroAfectacionPersona.edad}" min="0" max="125" required="true"/> 
+                                    <p:message for="edad"/>
 
-                                <p:column>
-                                    <f:facet name="header">Centro Asistencial</f:facet>  
-                                </p:column>       
+                                    <p:outputLabel value="Genero" for="genero"/>
+                                    <p:selectOneRadio id="genero" value="#{registroAfectacionPersona.genero}">  
+                                        <f:selectItem itemLabel="Masculino" itemValue="M"/>  
+                                        <f:selectItem itemLabel="Femenino" itemValue="F" />  
+                                    </p:selectOneRadio>   
+                                    <p:message for="genero"/>
 
-                                <p:column>
-                                    <f:facet name="header">+</f:facet>  
-                                </p:column>                                     
-                            </p:dataTable>
-                        </p:tab>
-                    </p:accordionPanel>
+                                    <p:outputLabel value="¿Tiene alguna discapacidad?" for="discapacidad"/>
+                                    <p:selectOneRadio id="discapacidad" value="#{registroAfectacionPersona.discap}">  
+                                        <f:selectItem itemLabel="Sí" itemValue="S"/>  
+                                        <f:selectItem itemLabel="No" itemValue="N" />  
+                                    </p:selectOneRadio>   
+                                    <p:message for="discapacidad"/>
+
+                                    <p:outputLabel value="Causa de Afectación" for="causa1"/>
+                                    <p:selectOneMenu id="causa1" label="Causa Afectación" value="#{registroAfectacionPersona.causaAfec}" >
+                                        <f:selectItem itemLabel="Seleccione una Causa" itemValue="" />                                    
+                                        <f:selectItems value="#{init.causasAfectaciones}" var="cau1" itemLabel="#{cau1.nombreAfectacion}" itemValue="#{cau1.idAfectacion}" />
+                                    </p:selectOneMenu>
+                                    <p:message for="causa1"/>                                
+
+                                    <p:outputLabel value="Centro Asistencial" for="centro"/>
+                                    <p:selectOneMenu id="centro" label="Centro que atiende" value="#{registroAfectacionPersona.centro}" >
+                                        <f:selectItem itemLabel="Seleccione una Causa" itemValue="" />
+                                        <f:selectItems value="#{init.tpInstituciones}" var="centroa" itemLabel="#{centroa.nombreTpInstitucion}" itemValue="#{centroa.nombreTpInstitucion}" />
+                                    </p:selectOneMenu>
+                                    <p:message for="centro"/>
+
+                                    <h:panelGroup/>
+                                    <p:commandButton id="keep" value="Guardar"  actionListener="#{registroAfectacionPersona.guardar}" update="msj" oncomplete="nvaAfec.hide()"/>
+                                    <p:commandButton id="cancel" value="Cancelar" onclick="nvaAfec.hide()" type="button"/>
+                                </h:panelGrid>    
+                            </h:form>
+                        </p:dialog>
+
+
+                        <p:dataTable id="inac" value="#{init.afectacionesPersonas}" 
+                                     var="ap" 
+                                     paginator="true" rows="5"
+                                     paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                                     rowsPerPageTemplate="5,10,15"
+                                     editable="true" 
+                                     >  
+                            <p:ajax event="rowEdit"  listener="#{registroAfectacion.onEdit}" update=":f1:mess" />  
+                            <p:ajax event="rowEditCancel"  listener="#{registroAfectacion.onCancel}" update=":f1:mess" /> 
+
+                            <f:facet name="header">  
+                                Afectaciones a Personas  
+                            </f:facet>  
+
+
+                            <p:column headerText="Causa" style="width:125px">  
+                                <p:cellEditor>  
+                                    <f:facet name="output">  
+                                        <h:outputText value="#{ap.nombreAfectacion}" />  
+                                    </f:facet>  
+                                    <f:facet name="input">  
+                                        <p:selectOneMenu id="causa" label="Causa Afectación" value="#{ap.nombreAfectacion}" >
+                                            <!--<f:selectItem itemLabel="Seleccione una Causa" itemValue="" /> -->
+                                            <f:selectItems value="#{init.causasAfectaciones}" var="cau" itemLabel="#{cau.nombreAfectacion}" itemValue="#{cau.idAfectacion}" />
+                                        </p:selectOneMenu>
+                                    </f:facet>  
+                                </p:cellEditor>  
+                            </p:column>  
+
+                            <p:column headerText="Nombres/Apellidos" style="width:125px">  
+                                <p:cellEditor>  
+                                    <f:facet name="output">  
+                                        <h:outputText value="#{ap.nombreAfectado}" />  
+                                    </f:facet>  
+                                    <f:facet name="input">  
+                                        <p:inputText value="#{ap.nombreAfectado}" style="width:100%"/>  
+                                    </f:facet>  
+                                </p:cellEditor>  
+                            </p:column>  
+
+
+                            <p:column headerText="Edad" style="width:50px">  
+                                <p:cellEditor>  
+                                    <f:facet name="output">  
+                                        <h:outputText value="#{ap.edadAfectado}" />  
+                                    </f:facet>  
+                                    <f:facet name="input">  
+                                        <p:spinner id="edad" value="#{ap.edadAfectado}" min="0" max="125"/>   
+                                    </f:facet>  
+                                </p:cellEditor>  
+                            </p:column>  
+
+                            <p:column headerText="Genero" style="width:50px">  
+                                <p:cellEditor>  
+                                    <f:facet name="output">  
+                                        <h:outputText value="#{ap.generoAfectado}" />  
+                                    </f:facet>  
+                                    <f:facet name="input">  
+                                        <p:selectOneRadio id="genero" value="#{ap.generoAfectado}">  
+                                            <f:selectItem itemLabel="Masculino" itemValue="M" />  
+                                            <f:selectItem itemLabel="Femenino" itemValue="F" />  
+                                        </p:selectOneRadio>   
+                                    </f:facet>  
+                                </p:cellEditor>  
+                            </p:column>  
+
+                            <p:column headerText="Discapacitado" style="width:50px">  
+                                <p:cellEditor>  
+                                    <f:facet name="output">  
+                                        <h:outputText value="#{ap.esDiscapacitado}" />  
+                                    </f:facet>  
+                                    <f:facet name="input">  
+                                        <p:selectOneRadio id="discapacidad" value="#{ap.esDiscapacitado}">  
+                                            <f:selectItem itemLabel="Sí" itemValue="S" />  
+                                            <f:selectItem itemLabel="No" itemValue="N" />    
+                                        </p:selectOneRadio>   
+                                    </f:facet>  
+                                </p:cellEditor>  
+                            </p:column>  
+
+                            <!--<p:column headerText="Descripción discapacidad" style="width:125px">  
+                                <p:cellEditor>  
+                                    <f:facet name="output">  
+                                        <h:outputText value="" />  
+                                    </f:facet>  
+                                    <f:facet name="input">  
+                                        <p:inputText value="" style="width:100%"/>  
+                                    </f:facet>  
+                                </p:cellEditor>  
+                            </p:column>  -->
+
+
+                            <p:column headerText="Centro Asistencial" style="width:125px">  
+                                <p:cellEditor>  
+                                    <f:facet name="output">  
+                                        <h:outputText value="#{ap.centroAsistencial}" />  
+                                    </f:facet>  
+                                    <f:facet name="input">  
+                                        <p:selectOneMenu id="centroAsis" label="Causa Afectación" value="#{ap.centroAsistencial}" >
+                                            <!--<f:selectItem itemLabel="Seleccione una Causa" itemValue="" /> -->
+                                            <f:selectItems value="#{init.tpInstituciones}" var="centroa" itemLabel="#{centroa.nombreTpInstitucion}" itemValue="#{centroa.nombreTpInstitucion}" />
+                                        </p:selectOneMenu>
+                                    </f:facet>  
+                                </p:cellEditor>  
+                            </p:column>  
+
+                            <p:column headerText="Editar" style="width:50px">  
+                                <p:rowEditor/>  
+
+                            </p:column>  
+
+
+                        </p:dataTable>
+                    </p:fieldset>
+
+                    <p:commandButton id="guardar" value="Guardar" ajax="false" action="#{registroAfectacion.guardar()}"/>
+                    <p:commandButton id="cancelar" value="Cancelar"/>
+                    <p:commandButton id="limpiar" value="Limpiar" type="Reset"/>
+
                 </h:form>
             </ui:define>
 

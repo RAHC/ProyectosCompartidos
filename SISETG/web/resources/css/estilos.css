@@ -1,3 +1,9 @@
+.borderito{
+    /*ridge, groove, inset, outset, double, dotted, dashed*/
+    border:3px groove #ccc;
+    margin-bottom: 10px;
+}
+
 .digitado { 
     background-color:blue;
     /*background-image:none;*/

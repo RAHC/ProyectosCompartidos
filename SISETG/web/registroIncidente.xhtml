@@ -21,7 +21,7 @@
 
             <ui:define name="content">
                 <h:form prependId="false" id="f1">
-                    <p:accordionPanel multiple="true" activeIndex="0,1,2,3">
+                    <p:accordionPanel multiple="true" activeIndex="0,1,2,3" id="ap">
                         <p:tab title="Identificación del Informante">
                             <h:panelGrid columns="3">
 
@@ -44,20 +44,22 @@
                         </p:tab>
 
                         <p:tab title="Identificación del Incidente">
+                            <p:growl id="grolfo">
+                            </p:growl>
                             <h:panelGrid columns="3">
                                 <h:outputLabel value="Departamento" for="departamento"/>
                                 <p:selectOneMenu id="departamento" label="Departamento" required="true" value="#{init.codDepartamento}">
                                     <f:selectItem itemLabel="Seleccione un Departamento" itemValue="" />
                                     <f:selectItems value="#{init.departamentos}" var="dept" itemLabel="#{dept.nombreDepartamento}" itemValue="#{dept.idDepartamento}" />
-                                    <p:ajax update="municipio, gl"/>
+                                    <p:ajax update="municipio, gl,m"/>
                                 </p:selectOneMenu>  
                                 <h:message for="departamento"/>
 
                                 <h:outputLabel value="Municipio" for="municipio"/>
-                                <p:selectOneMenu id="municipio" label="Municipio" required="true" value="#{registroIncidente.municipio}">
+                                <p:selectOneMenu id="municipio" label="Municipio" required="true" value="#{init.codMunicipio}">
                                     <f:selectItem itemLabel="Seleccione un Municipio" itemValue="" /> 
                                     <f:selectItems value="#{init.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
-                                    <p:ajax update="canton"/>
+                                    <p:ajax update="canton,gl,m"/>
                                 </p:selectOneMenu>
                                 <h:message for="municipio"/>   
 
@@ -66,7 +68,7 @@
                                 <p:selectOneMenu id="canton" label="Canton"  value="#{init.codCanton}" >
                                     <f:selectItem itemLabel="Seleccione un Cantón" itemValue="" /> 
                                     <f:selectItems value="#{init.cantones}" var="canton" itemLabel="#{canton.nombreCanton}" itemValue="#{canton.idCanton}" />
-                                    <p:ajax update="caserio"/>                                    
+                                    <p:ajax update="caserio,gl,m"/>                                    
                                 </p:selectOneMenu>
                                 <h:message for="canton"/>  
 
@@ -74,7 +76,7 @@
                                 <p:selectOneMenu id="caserio" label="Caserío"  value="#{init.codCaserio}">
                                     <f:selectItem itemLabel="Seleccione un Caserío" itemValue="" /> 
                                     <f:selectItems value="#{init.caserios}" var="caserio" itemLabel="#{caserio.nombreCanserio}" itemValue="#{caserio.idCaserio}" />
-                                    <p:ajax update="caserio"/>                                       
+                                    <p:ajax update="gl,m"/>                                       
                                 </p:selectOneMenu>
                                 <h:message for="caserio"/>
 
@@ -82,26 +84,47 @@
                                 <p:inputText id="direccion" label="Dirección Exacta" value="#{registroIncidente.direccion}" required="true"/>
                                 <h:message for="direccion"/>   
 
+
                                 <h:outputLabel value="Punto de Referencia" for="punto"/>
                                 <p:inputText id="punto" label="Punto de Referencia" value="#{registroIncidente.ptoReferencia}" required="true" />
-                                <h:message for="punto"/>                                  
+                                <h:panelGroup>
+                                    <h:message for="punto"/>   
+
+                                    <p:commandButton type="button" icon="ui-icon-pin-s"  
+                                                     value="Mapear" onclick="dlg1.show()"/>  
+                                </h:panelGroup>
+
+                                <p:dialog widgetVar="dlg1" width="625" height="400" modal="true">  
+                                    <p:gmap id="m" 
+                                            center="#{init.latitud},#{init.longitud}" 
+                                            zoom="#{init.zoomUbic}" 
+                                            type="ROADMAP"  
+                                            style="width:600px;height:400px" widgetVar="map"
+                                            onPointClick="handlePointClick(event);"
+                                            model="#{init.draggableModel}">  
+                                        <p:ajax event="markerDrag" listener="#{init.onMarkerDrag(e)}" update=":f2:groldo"/> 
+                                        <p:ajax event="overlaySelect" listener="#{init.onMarkerSelect(e)}" update=":f2:groldo" />
+                                    </p:gmap>
+                                </p:dialog> 
+
                             </h:panelGrid>
+
                         </p:tab>
 
                         <p:tab title="Descripción del Incidente">
                             <h:panelGrid columns="3" >
                                 <h:outputLabel value="Categoría de Incidente" for="categoria"/>
-                                <p:selectOneMenu id="categoria" label="Categoría de Incidente" required="true" value="#{init.idTipoIncidente}">
+                                <p:selectOneMenu id="categoria" label="Categoría de Incidente" required="true" value="#{init.idCatIncidente}">
                                     <f:selectItem itemLabel="Seleccione un Tipo de Incidente" itemValue=""/>
-                                    <f:selectItems value="#{init.tipoIncidente}" var="catinc" itemLabel="#{catinc.nombre}" itemValue="#{catinc.idTipoIncidente}" />
+                                    <f:selectItems value="#{init.categoriaIncidente}" var="catinc" itemLabel="#{catinc.nombre}" itemValue="#{catinc.idTipoIncidente}" />
                                     <p:ajax update="tipo, gl"/>
                                 </p:selectOneMenu>
                                 <h:message for="categoria"/>
 
                                 <h:outputLabel value="Tipo de Incidente" for="tipo"/>
-                                <p:selectOneMenu id="tipo" label="Tipo de Incidente" value="#{registroIncidente.idTipoIncidente}" required="true">
+                                <p:selectOneMenu id="tipo" label="Tipo de Incidente" value="#{init.idTipoIncidente}" required="true">
                                     <f:selectItem itemLabel="Seleccione un Tipo de Incidente" itemValue=""/>
-                                    <f:selectItems value="#{init.incidentes}" var="tpinc" itemLabel="#{tpinc.nombre}" itemValue="#{tpinc.idTipoIncidente}" />
+                                    <f:selectItems value="#{init.tipoIncidente}" var="tpinc" itemLabel="#{tpinc.nombre}" itemValue="#{tpinc.idTipoIncidente}" />
                                     <p:ajax update="gl"/>
                                 </p:selectOneMenu>
                                 <h:message for="tipo"/>   
@@ -136,7 +159,7 @@
                             </h:panelGrid>
                         </p:tab>
 
-                        <p:tab title="Coincidencias">
+                        <p:tab title="Coincidencias" id="coin">
 
                             <p:dataTable id="gl" value="#{init.incidentesActuales}" var="pe" 
                                          paginator="true" rows="10"
@@ -149,7 +172,7 @@
                                     <f:facet name="header">Estado</f:facet>
                                     #{pe.idestado}
                                 </p:column>
-                                
+
                                 <p:column>
                                     <f:facet name="header">Tipo de Incidente</f:facet>
                                     #{pe.idTipoIncidente}
@@ -172,35 +195,6 @@
                             </p:dataTable>
                         </p:tab>
 
-                        <!--<p:tab>
-                            <p:dataTable id="inac" value="#{init.incidentesActuales}" var="pe" 
-                                         paginator="true" rows="3"
-                                         paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
-                                         rowsPerPageTemplate="3,6,9"
-                                         >  
-
-                                <p:column>
-                                    <f:facet name="header">Tipo de Incidente</f:facet>
-                        #{pe.idTipoIncidente}
-                    </p:column>
-
-                    <p:column>
-                        <f:facet name="header">Fecha y Hora</f:facet>   
-                        #{pe.fechaHora}
-                    </p:column>
-
-                    <p:column>
-                        <f:facet name="header">Dirección</f:facet>  
-                        #{pe.direccion}
-                    </p:column>
-
-                    <p:column>
-                        <f:facet name="header">Punto de Referencia</f:facet>  
-                        #{pe.puntoReferencia}
-                    </p:column>                        
-                </p:dataTable>
-            </p:tab>-->
-
                     </p:accordionPanel>
 
                     <p:commandButton id="guardar" value="Guardar" action="#{registroIncidente.guardar}" update="f1"/>
@@ -210,6 +204,30 @@
 
 
 
+                </h:form>
+
+                <h:form id="f2">
+                    <p:dialog  widgetVar="dlg" showEffect="FADE">
+
+                        <p:growl id="groldo" showDetail="true"/>
+
+                        <h:panelGrid columns="3">
+                            <h:outputLabel for="descripcion" value="Descripción:" />
+                            <p:inputText id="desc" value="#{init.title}" required="true"/>
+                            <p:message for="desc"/>
+
+                            <f:facet name="footer">
+                                <p:commandButton value="Agregar" 
+                                                 actionListener="#{init.addMarker(event)}" 
+                                                 update="groldo,:f1:ap:m"
+                                                 oncomplete="markerAddComplete()" />
+                                <p:commandButton value="Cancelar" onclick="return cancel()"/>
+                            </f:facet>
+                        </h:panelGrid>
+
+                        <h:inputHidden id="lat" value="#{init.lat}" />
+                        <h:inputHidden id="lng" value="#{init.lng}" />
+                    </p:dialog>
                 </h:form>
             </ui:define>
 

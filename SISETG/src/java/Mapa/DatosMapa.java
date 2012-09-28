@@ -2,12 +2,14 @@ package Mapa;
 
 import dominio.Departamento;
 import dominio.Municipio;
+import dominio.init;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ApplicationScoped;
@@ -35,6 +37,8 @@ public class DatosMapa implements Serializable {
     private double lng;
     private MapModel draggableModel;
     private String title;
+    Map<String, Object> viewMap = FacesContext.getCurrentInstance().getViewRoot().getViewMap();
+    init in = (init) viewMap.get("init");
     @Resource(name = "jdbc/sise")
     DataSource dataSource;
 
@@ -84,8 +88,6 @@ public class DatosMapa implements Serializable {
     public void setDraggableModel(MapModel draggableModel) {
         this.draggableModel = draggableModel;
     }
-    
-    
 
     public String getCodDepartamento() {
         return CodDepartamento;
@@ -193,68 +195,74 @@ public class DatosMapa implements Serializable {
         }
     }
 
-    public Float getLatitud() throws SQLException {
-        Float Latitud;
-        if (CodDepartamento == null) {
-            Latitud = (float) 13.70;
+    public Double getLatitud() throws SQLException {
+        Double Latitud;
+
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+        Connection connection = dataSource.getConnection();
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+
+        if (in.getCodDepartamento() == null) {
+            Latitud = 13.70;
         } else {
             String id = null;
-            if (CodCaserio != null) {
-                id = CodCaserio;
-            } else if (CodCanton != null) {
-                id = CodCanton;
-            } else if (CodMunicipio != null) {
-                id = CodMunicipio;
-            } else if (CodDepartamento != null) {
-                id = CodDepartamento;
+            if (in.getCodCaserio() != null) {
+                id = in.getCodCaserio();
+            } else if (in.getCodCanton() != null) {
+                id = in.getCodCanton();
+            } else if (in.getCodMunicipio() != null) {
+                id = in.getCodMunicipio();
+            } else if (in.getCodDepartamento() != null) {
+                id = in.getCodDepartamento();
             }
-            if (dataSource == null) {
-                throw new SQLException("No se pudo tener acceso a la fuente de datos");
-            }
-            Connection connection = dataSource.getConnection();
-            if (connection == null) {
-                throw new SQLException("No se pudo conectar a la fuente de datos");
-            }
+
             PreparedStatement getLatitudes = connection.prepareStatement(
                     "SELECT LATITUDUBIC FROM UBICACION WHERE IDUBIC='" + id + "'");
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getLatitudes.executeQuery());
             rowSet.next();
-            Latitud = Float.parseFloat(rowSet.getString("LATITUDUBIC"));
+            Latitud = Double.parseDouble(rowSet.getString("LATITUDUBIC"));
 
             connection.close();
         }
         return Latitud;
     }
 
-    public Float getLongitud() throws SQLException {
-        Float Longitud;
-        if (CodDepartamento == null) {
-            Longitud = (float) -88.91;
+    public Double getLongitud() throws SQLException {
+        Double Longitud;
+
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+        Connection connection = dataSource.getConnection();
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+
+        if (in.getCodDepartamento() == null) {
+            Longitud = 13.70;
         } else {
             String id = null;
-            if (CodCaserio != null) {
-                id = CodCaserio;
-            } else if (CodCanton != null) {
-                id = CodCanton;
-            } else if (CodMunicipio != null) {
-                id = CodMunicipio;
-            } else if (CodDepartamento != null) {
-                id = CodDepartamento;
+            if (in.getCodCaserio() != null) {
+                id = in.getCodCaserio();
+            } else if (in.getCodCanton() != null) {
+                id = in.getCodCanton();
+            } else if (in.getCodMunicipio() != null) {
+                id = in.getCodMunicipio();
+            } else if (in.getCodDepartamento() != null) {
+                id = in.getCodDepartamento();
             }
-            if (dataSource == null) {
-                throw new SQLException("No se pudo tener acceso a la fuente de datos");
-            }
-            Connection connection = dataSource.getConnection();
-            if (connection == null) {
-                throw new SQLException("No se pudo conectar a la fuente de datos");
-            }
+
             PreparedStatement getLongitudes = connection.prepareStatement(
                     "SELECT LONGITUDUBIC FROM UBICACION WHERE IDUBIC='" + id + "'");
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getLongitudes.executeQuery());
             rowSet.next();
-            Longitud = Float.parseFloat(rowSet.getString("LONGITUDUBIC"));
+            Longitud = Double.parseDouble(rowSet.getString("LONGITUDUBIC"));
             connection.close();
         }
         return Longitud;
@@ -262,13 +270,13 @@ public class DatosMapa implements Serializable {
 
     public Integer getZoomUbic() {
         Integer z;
-        if (CodCaserio != null) {
+        if (in.getCodCaserio() != null) {
             z = 15;
-        } else if (CodCanton != null) {
+        } else if (in.getCodCanton() != null) {
             z = 13;
-        } else if (CodMunicipio != null) {
+        } else if (in.getCodMunicipio() != null) {
             z = 12;
-        } else if (CodDepartamento != null) {
+        } else if (in.getCodDepartamento() != null) {
             z = 10;
         } else {
             z = 8;
