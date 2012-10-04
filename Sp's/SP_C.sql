@@ -1,7 +1,26 @@
-CREATE procedure USUARIO_Add @alias varchar(25), @password varchar(100), @rol integer, @ubicacion varchar(10), @idContacto integer, @institucion integer, @nombres varchar(50), @apellido varchar(50), @telCont varchar(15), @celCont varchar(15), @mailInst varchar(60), @direccion varchar(100), @cargo varchar(50), @telInst varchar(15), @fax varchar(15), @mailPers varchar(60), @radio varchar(15)  
+CREATE procedure USUARIO_Add 
+@alias varchar(25), 
+@password varchar(100), 
+@rol integer, 
+@ubicacion varchar(10), 
+@idContacto integer, 
+@institucion integer, 
+@nombres varchar(50), 
+@apellido varchar(50), 
+@telCont varchar(15), 
+@celCont varchar(15), 
+@mailInst varchar(60), 
+@direccion varchar(100), 
+@cargo varchar(50), 
+@telInst varchar(15), 
+@fax varchar(15), 
+@mailPers varchar(60), 
+@radio varchar(15),
+@accion integer OUTPUT  
 AS
-BEGIN	
-
+BEGIN
+	Begin Tran TUsuarioAdd
+	Begin Try
 	DECLARE @idc int;
 	if @idContacto>0 begin
 		set @idc = @idContacto;
@@ -26,16 +45,42 @@ BEGIN
 		INSERT INTO USUARIO(IDCONT, IDROL, IDUBIC, USERNAME, USERPASS, USERESTADO)
 		values(@idc, @rol, @ubicacion, @alias, ENCRYPTBYPASSPHRASE('12345',@password), 'A' );
 	end
-END;
+	set @accion = @idc;
+	COMMIT TRAN TUsuarioAdd
+	End Try
+	Begin Catch
+		Set @accion = 0
+		Rollback TRAN TUsuarioAdd
+	End Catch
+END
 
-CREATE procedure VALIDACION_Add @idEv varchar(6), @corrInc varchar(7), @estado integer, 
-@usuario integer, @descripcion varchar(200), @fecha datetime
+CREATE procedure VALIDACION_Add 
+@idEv varchar(6), 
+@corrInc varchar(7), 
+@estado integer, 
+@usuario integer, 
+@descripcion varchar(200), 
+@fecha datetime,
+@idAccion integer OUTPUT
 AS
 BEGIN
-	INSERT INTO ACCIONES(IDEV, CORRINC, IDESTADO, IDCONT, DESCACC, FECHORAREALACC, ESTADOACTACC, FECHORAALMACC, ESTADOACC)
-	VALUES(@idEv, @corrInc, @estado, @usuario, @descripcion, @fecha, 2, CURRENT_TIMESTAMP, 'H' );
-END;
+	Begin Tran Tval
+	Begin Try
+	
+		INSERT INTO ACCIONES(IDEV, CORRINC, IDESTADO, IDCONT, DESCACC, FECHORAREALACC, ESTADOACTACC, FECHORAALMACC, ESTADOACC)
+		VALUES(@idEv, @corrInc, @estado, @usuario, @descripcion, @fecha, 2, CURRENT_TIMESTAMP, 'H' );
+	
+		UPDATE INCIDENTE SET IDESTADO=@estado WHERE IDEV=@idEv and CORRINC = @corrInc;
+	
+		set @idAccion = (SELECT MAX(IDACC)FROM ACCIONES WHERE IDEV=@idEv and CORRINC = @corrInc);
+		COMMIT TRAN Tval
+	End Try
+	Begin Catch
+		Set @idAccion = 0
+		Rollback TRAN Tval
+	End Catch
 
+END
 
 
 CREATE procedure CIERRE_Add @idEv varchar(6), @corrInc varchar(7), @estado integer, 
@@ -46,10 +91,23 @@ BEGIN
 	VALUES(@idEv, @corrInc, @estado, @usuario, @descripcion, @fecha, 7, CURRENT_TIMESTAMP, 'H' );
 END;
 
-CREATE procedure CONTACTO_Add @idInst integer, @nombre varchar(50), @apellido varchar(50), @tel varchar(15), @cel varchar(15), 
-@mailInst varchar(60), @cargo varchar(25), @telInst varchar(15), @fax varchar(15), @mailPers varchar(60), @radio varchar(15)
+CREATE procedure CONTACTO_Add 
+@idInst integer, 
+@nombre varchar(50), 
+@apellido varchar(50), 
+@tel varchar(15), 
+@cel varchar(15), 
+@mailInst varchar(60), 
+@cargo varchar(25), 
+@telInst varchar(15), 
+@fax varchar(15), 
+@mailPers varchar(60), 
+@radio varchar(15),
+@accion integer OUTPUT
 AS
 BEGIN
+	Begin Tran TContactoAdd
+	Begin Try
 	DECLARE @idc int;
 	set @idc = (select MAX(IDCONT) FROM CONTACTOS);
 	if @idc>0 begin
@@ -61,7 +119,51 @@ BEGIN
 	INSERT INTO CONTACTOS(IDCONT, IDINST, NOMBCONT, APELLCONT,
 	 TELCONT, CELCONT, MAILINSTCONT, CARGOCONT, TELINSTCONT, FAXCONT, MAILPERCONT, 
 	 RADIOCONT) VALUES(@idc, @idInst, @nombre, @apellido, @tel, @cel, @mailInst, @cargo, @telInst, @fax, @mailPers, @radio);
-END;
+	
+	set @accion = @idc;
+	COMMIT TRAN TContactoAdd
+	End Try
+	Begin Catch
+		Set @accion = 0
+		Rollback TRAN TContactoAdd
+	End Catch
+END
+
+
+
+CREATE procedure CONTACTOS_Update
+@idInst integer, 
+@nombre varchar(50), 
+@apellido varchar(50), 
+@tel varchar(15), 
+@cel varchar(15), 
+@mailInst varchar(60),
+@dirCont varchar(100), 
+@cargo varchar(25), 
+@telInst varchar(15), 
+@fax varchar(15), 
+@mailPers varchar(60), 
+@radio varchar(15),
+@idCont integer,
+@accion integer OUTPUT
+AS
+BEGIN
+	Begin Tran TContactoAdd
+	Begin Try
+	
+		UPDATE CONTACTOS SET IDINST=@idInst, NOMBCONT=@nombre, APELLCONT=@apellido, TELCONT=@tel,
+		CELCONT=@cel, MAILINSTCONT=@mailInst, DIRCONT=@dirCont, CARGOCONT=@cargo, TELINSTCONT = @telInst,
+		FAXCONT = @fax, MAILPERCONT=@mailPers, RADIOCONT=@radio WHERE IDCONT=@idCont;
+		
+		set @accion = @idCont;
+	
+		COMMIT TRAN TContactoAdd
+	End Try
+	Begin Catch
+		Set @accion = 0
+		Rollback TRAN TContactoAdd
+	End Catch
+END
 
 
 
