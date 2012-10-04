@@ -11,7 +11,7 @@ public class Canton {
     private Float LongitudCanton;
     private Float LatitudCanton;
     
-    public Canton(String IdCanton, String NombreCanton, Float LongitudCanton, Float LatitudCanton) {
+    public Canton(String IdCanton, String NombreCanton, Float LatitudCanton, Float LongitudCanton) {
         this.IdCanton = IdCanton;
         this.NombreCanton = NombreCanton;
     }

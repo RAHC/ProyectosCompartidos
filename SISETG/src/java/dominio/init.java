@@ -17,7 +17,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-import javax.sql.RowSet;
 import javax.sql.rowset.CachedRowSet;
 import org.primefaces.event.map.MarkerDragEvent;
 import org.primefaces.event.map.OverlaySelectEvent;
@@ -403,13 +402,11 @@ public class init {
     }
 
     public List<Estado> getEstados() throws SQLException {
-
         List<Estado> resultados = new ArrayList<Estado>();
 
         if (dataSource == null) {
             throw new SQLException("No se pudo tener acceso a la fuente de datos");
         }
-
         Connection connection = dataSource.getConnection();
 
         if (connection == null) {
@@ -587,13 +584,15 @@ public class init {
             throw new SQLException("No se pudo conectar a la fuente de datos");
         }
         try {
-            String query = "SELECT IDUBIC, NOMBUBIC FROM UBICACION WHERE IDUBIC_PADRE = '" + CodCanton + "' order by NOMBUBIC";
+            String query = "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE = '" + CodCanton + "' order by NOMBUBIC";
             PreparedStatement getUbicacion = connection.prepareStatement(query);
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getUbicacion.executeQuery());
             while (rowSet.next()) {
                 resultados.add(new Caserio(rowSet.getString("IDUBIC"),
-                        rowSet.getString("NOMBUBIC")));
+                        rowSet.getString("NOMBUBIC"),
+                        rowSet.getFloat("LATITUDUBIC"),
+                        rowSet.getFloat("LONGITUDUBIC")));
             }
             return resultados;
         } finally {
@@ -839,7 +838,7 @@ public class init {
         
         /*if(!resultadosAP.isEmpty()){
             resultadosAP.clear();
-        }   */   
+        } */     
         
         if (dataSource == null) {
             throw new SQLException("No se pudo tener acceso a la fuente de datos");

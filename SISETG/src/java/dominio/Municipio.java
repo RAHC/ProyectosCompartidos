@@ -17,7 +17,7 @@ public class Municipio {
     }
     
 
-    public Municipio(String IdMunicipio, String NombreMunicipio, Float LongitudMunicipio, Float LatitudMunicipio) {
+    public Municipio(String IdMunicipio, String NombreMunicipio, Float LatitudMunicipio, Float LongitudMunicipio) {
         this.IdMunicipio = IdMunicipio;
         this.NombreMunicipio = NombreMunicipio;
     }

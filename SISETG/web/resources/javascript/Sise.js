@@ -4,10 +4,12 @@
  */
 
 var currentMarker = null;
-<<<<<<< HEAD
+
 var categoriaAfectacion=null;
 
-$(document).ready(function(){$('#afpe').hide()});
+$(document).ready(function(){
+    $('#afpe').hide()
+    });
 
 function mostrarAfecPer(){
 
@@ -23,7 +25,8 @@ function handlePointClick(event) {
     if(currentMarker == null) {
         document.getElementById('f2:lat').value = event.latLng.lat();
         document.getElementById('f2:lng').value = event.latLng.lng();
-=======
+    }
+}
 	
 function handlePointClick(event) {
     //cambios para elevacion
@@ -54,7 +57,6 @@ function handlePointClick(event) {
                 alert('Elevation service failed due to: ' + status);
             }
         });
->>>>>>> 034f80f43bd039f4a666b9b7bc3abf773fb4cd71
 
         currentMarker = new google.maps.Marker({
             position:new google.maps.LatLng(event.latLng.lat(), event.latLng.lng())
@@ -67,21 +69,21 @@ function handlePointClick(event) {
 }
 
 function markerAddComplete() {
-<<<<<<< HEAD
+
     var title = document.getElementById('f2:desc');
-=======
+
     var title = "Incidente";
->>>>>>> 034f80f43bd039f4a666b9b7bc3abf773fb4cd71
+
     currentMarker.setTitle(title.value);
     title.value = "";
 
     currentMarker = null;
     dlg.hide();
-<<<<<<< HEAD
-    //window.location.reload();
-=======
+
 //window.location.reload();
->>>>>>> 034f80f43bd039f4a666b9b7bc3abf773fb4cd71
+
+//window.location.reload();
+
     
 }
 

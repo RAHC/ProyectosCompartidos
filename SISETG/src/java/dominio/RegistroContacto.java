@@ -1,17 +1,19 @@
-
 package dominio;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.annotation.Resource;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.sql.DataSource;
 
 @ManagedBean
 @RequestScoped
 public class RegistroContacto {
+
     private String Nombres;
     private String Apellidos;
     private Integer Institucion;
@@ -25,9 +27,11 @@ public class RegistroContacto {
     private String Cargo;
     @Resource(name = "jdbc/sise")
     DataSource dataSource;
+
     public RegistroContacto() {
     }
-    public String guardar() throws SQLException{
+
+    public String guardar() throws SQLException {
         if (dataSource == null) {
             throw new SQLException("No se pudo tener acceso a la fuente de datos");
         }
@@ -38,29 +42,39 @@ public class RegistroContacto {
             throw new SQLException("No se pudo conectar a la fuente de datos");
         }
         CallableStatement cs;
-        try{
-            String sql="{ call CONTACTO_Add(?,?,?,?,?,?,?,?,?,?,?)}";
+        Integer accion;
+        try {
+            String sql = "{ call CONTACTO_Add(?,?,?,?,?,?,?,?,?,?,?,?)}";
             cs = connection.prepareCall(sql);
-                cs.setInt(1, getInstitucion());
-                cs.setString(2, getNombres());
-                cs.setString(3, getApellidos());
-                cs.setString(4, getTelPers());
-                cs.setString(5, getCel());
-                cs.setString(6, getCorreoInst());
-                cs.setString(7, getCargo());
-                cs.setString(8, getTelInst());
-                cs.setString(9, getFax());
-                cs.setString(10, getCorreoPers());
-                cs.setString(11, getRadio());
-                
-                cs.execute();
+            cs.setInt(1, getInstitucion());
+            cs.setString(2, getNombres());
+            cs.setString(3, getApellidos());
+            cs.setString(4, getTelPers());
+            cs.setString(5, getCel());
+            cs.setString(6, getCorreoInst());
+            cs.setString(7, getCargo());
+            cs.setString(8, getTelInst());
+            cs.setString(9, getFax());
+            cs.setString(10, getCorreoPers());
+            cs.setString(11, getRadio());
+            cs.registerOutParameter(12, java.sql.Types.INTEGER);
+            cs.execute();
+            accion = cs.getInt(12);
+            if (accion == 0) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error el la ejecuci&oacute;n, el nuevo contacto no pudo ser registrado", null));
+            } else if (accion > 0) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Contacto registrado satisfactotiamente", null));
+            }
+        }catch(NumberFormatException ex){
+            System.out.println(ex);
         }
-        finally{
+        finally {
             connection.close();
         }
-        return "index";
+        return "listadoIncidentes.xhtml";
     }
-    public String getCancelar(){
+
+    public String getCancelar() {
         return "listadoIncidentes.xhtml";
     }
 
@@ -151,5 +165,4 @@ public class RegistroContacto {
     public void setTelPers(String TelPers) {
         this.TelPers = TelPers;
     }
-    
 }

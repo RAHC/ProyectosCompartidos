@@ -24,7 +24,7 @@
 
             <ui:define name="content">
                 <h:form prependId="false" id="f1">
-                    
+
                     <p:fieldset legend="Datos de Afectación" toggleable="true" styleClass="borderito">
 
                         <h:panelGrid columns="3">
@@ -44,7 +44,7 @@
                             <p:selectOneMenu id="tipo" label="Tipo de Afectación" required="true" value="#{init.tipoAfectacion}">
                                 <f:selectItem itemLabel="Seleccione un Tipo de Afectación" itemValue="" />
                                 <f:selectItems value="#{init.tipoAfectaciones}" var="tips" itemLabel="#{tips.nombreAfectacion}" itemValue="#{tips.idAfectacion}" />
-                                <p:ajax update="inac,diagnvaAfec"/>
+                                <p:ajax update="inac,:diagnvaAfec"/>
                             </p:selectOneMenu>  
                             <h:message for="tipo"/>
 
@@ -125,54 +125,7 @@
 
                     <p:fieldset id="afpe" legend="Datos de Personas" toggleable="true" styleClass="borderito">
 
-                        <p:commandButton type="button" value="Agregar Afectación" onclick="nvaAfec.show()"/>  
-                        
-                        <p:dialog widgetVar="nvaAfec" modal="true" header="Agregar Afectación a Persona" id="diagnvaAfec">
-                            <h:form prependId="false">
-                                <p:growl id="msj"/>
-                                <h:panelGrid columns="3">
-                                    <p:outputLabel value="Nombre" for="nombre"/>
-                                    <p:inputText id="nombre" label="Nombre" value="#{registroAfectacionPersona.nombre}" required="true"/>
-                                    <p:message for="nombre"/>
-
-                                    <p:outputLabel value="Edad" for="edad"/>
-                                    <p:spinner id="edad" value="#{registroAfectacionPersona.edad}" min="0" max="125" required="true"/> 
-                                    <p:message for="edad"/>
-
-                                    <p:outputLabel value="Genero" for="genero"/>
-                                    <p:selectOneRadio id="genero" value="#{registroAfectacionPersona.genero}">  
-                                        <f:selectItem itemLabel="Masculino" itemValue="M"/>  
-                                        <f:selectItem itemLabel="Femenino" itemValue="F" />  
-                                    </p:selectOneRadio>   
-                                    <p:message for="genero"/>
-
-                                    <p:outputLabel value="¿Tiene alguna discapacidad?" for="discapacidad"/>
-                                    <p:selectOneRadio id="discapacidad" value="#{registroAfectacionPersona.discap}">  
-                                        <f:selectItem itemLabel="Sí" itemValue="S"/>  
-                                        <f:selectItem itemLabel="No" itemValue="N" />  
-                                    </p:selectOneRadio>   
-                                    <p:message for="discapacidad"/>
-
-                                    <p:outputLabel value="Causa de Afectación" for="causa1"/>
-                                    <p:selectOneMenu id="causa1" label="Causa Afectación" value="#{registroAfectacionPersona.causaAfec}" >
-                                        <f:selectItem itemLabel="Seleccione una Causa" itemValue="" />                                    
-                                        <f:selectItems value="#{init.causasAfectaciones}" var="cau1" itemLabel="#{cau1.nombreAfectacion}" itemValue="#{cau1.idAfectacion}" />
-                                    </p:selectOneMenu>
-                                    <p:message for="causa1"/>                                
-
-                                    <p:outputLabel value="Centro Asistencial" for="centro"/>
-                                    <p:selectOneMenu id="centro" label="Centro que atiende" value="#{registroAfectacionPersona.centro}" >
-                                        <f:selectItem itemLabel="Seleccione una Causa" itemValue="" />
-                                        <f:selectItems value="#{init.tpInstituciones}" var="centroa" itemLabel="#{centroa.nombreTpInstitucion}" itemValue="#{centroa.nombreTpInstitucion}" />
-                                    </p:selectOneMenu>
-                                    <p:message for="centro"/>
-
-                                    <h:panelGroup/>
-                                    <p:commandButton id="keep" value="Guardar"  actionListener="#{registroAfectacionPersona.guardar}" update="msj" oncomplete="nvaAfec.hide()"/>
-                                    <p:commandButton id="cancel" value="Cancelar" onclick="nvaAfec.hide()" type="button"/>
-                                </h:panelGrid>    
-                            </h:form>
-                        </p:dialog>
+                        <p:commandButton type="button" value="Agregar Afectación" onclick="nvaAfec.show()"/>
 
 
                         <p:dataTable id="inac" value="#{init.afectacionesPersonas}" 
@@ -295,6 +248,53 @@
                     <p:commandButton id="limpiar" value="Limpiar" type="Reset"/>
 
                 </h:form>
+
+                <p:dialog widgetVar="nvaAfec" modal="true" header="Agregar Afectación a Persona" id="diagnvaAfec">
+                    <h:form prependId="false">
+                        <p:growl id="msj"/>
+                        <h:panelGrid columns="3">
+                            <p:outputLabel value="Nombre" for="nombre"/>
+                            <p:inputText id="nombre" label="Nombre" value="#{registroAfectacionPersona.nombre}" required="true"/>
+                            <p:message for="nombre"/>
+
+                            <p:outputLabel value="Edad" for="edad"/>
+                            <p:spinner id="edad" value="#{registroAfectacionPersona.edad}" min="0" max="125" required="true"/> 
+                            <p:message for="edad"/>
+
+                            <p:outputLabel value="Genero" for="genero"/>
+                            <p:selectOneRadio id="genero" value="#{registroAfectacionPersona.genero}">  
+                                <f:selectItem itemLabel="Masculino" itemValue="M"/>  
+                                <f:selectItem itemLabel="Femenino" itemValue="F" />  
+                            </p:selectOneRadio>   
+                            <p:message for="genero"/>
+
+                            <p:outputLabel value="¿Tiene alguna discapacidad?" for="discapacidad"/>
+                            <p:selectOneRadio id="discapacidad" value="#{registroAfectacionPersona.discap}">  
+                                <f:selectItem itemLabel="Sí" itemValue="S"/>  
+                                <f:selectItem itemLabel="No" itemValue="N" />  
+                            </p:selectOneRadio>   
+                            <p:message for="discapacidad"/>
+
+                            <p:outputLabel value="Causa de Afectación" for="causa1"/>
+                            <p:selectOneMenu id="causa1" label="Causa Afectación" value="#{registroAfectacionPersona.causaAfec}" >
+                                <f:selectItem itemLabel="Seleccione una Causa" itemValue="" />                                    
+                                <f:selectItems value="#{init.causasAfectaciones}" var="cau1" itemLabel="#{cau1.nombreAfectacion}" itemValue="#{cau1.idAfectacion}" />
+                            </p:selectOneMenu>
+                            <p:message for="causa1"/>                                
+
+                            <p:outputLabel value="Centro Asistencial" for="centro"/>
+                            <p:selectOneMenu id="centro" label="Centro que atiende" value="#{registroAfectacionPersona.centro}" >
+                                <f:selectItem itemLabel="Seleccione una Causa" itemValue="" />
+                                <f:selectItems value="#{init.tpInstituciones}" var="centroa" itemLabel="#{centroa.nombreTpInstitucion}" itemValue="#{centroa.nombreTpInstitucion}" />
+                            </p:selectOneMenu>
+                            <p:message for="centro"/>
+
+                            <h:panelGroup/>
+                            <p:commandButton id="keep" value="Guardar"  actionListener="#{registroAfectacionPersona.guardar(e)}" update="msj" oncomplete="nvaAfec.hide()"/>
+                            <p:commandButton id="cancel" value="Cancelar" onclick="nvaAfec.hide()" type="button"/>
+                        </h:panelGrid>    
+                    </h:form>
+                </p:dialog>
             </ui:define>
 
         </ui:composition>

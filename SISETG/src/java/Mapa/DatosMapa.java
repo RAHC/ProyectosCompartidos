@@ -2,11 +2,11 @@ package Mapa;
 
 import dominio.Departamento;
 import dominio.Municipio;
-<<<<<<< HEAD
+
 import dominio.init;
-=======
+
 import dominio.Canton;
->>>>>>> 034f80f43bd039f4a666b9b7bc3abf773fb4cd71
+
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

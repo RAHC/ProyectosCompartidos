@@ -144,7 +144,7 @@
                                 <h:outputLabel value="Estado" for="estado"/>
                                 <p:selectOneMenu id="estado" label="Estado" value="#{registroIncidente.estado}" required="true">
                                     <f:selectItem itemLabel="Selecciones un estado" itemValue=""/>
-                                    <f:selectItems value="#{registroIncidente.estados}" var="est" itemLabel="#{est.nombreEstado}" itemValue="#{est.idEstado}" />
+                                    <f:selectItems value="#{init.estados}" var="est" itemLabel="#{est.nombreEstado}" itemValue="#{est.idEstado}" />
                                 </p:selectOneMenu>
                                 <h:message for="estado"/>
 
@@ -152,7 +152,7 @@
 
                                 <p:selectOneMenu id="prioridad" label="Prioridad"  value="#{registroIncidente.prioridad}" required="true">
                                     <f:selectItem itemLabel="Seleccione una prioridad" itemValue=""/>
-                                    <f:selectItems value="#{registroIncidente.prioridades}" var="prior" itemLabel="#{prior.nombrePrioridad}" itemValue="#{prior.idPrioridad}"/>
+                                    <f:selectItems value="#{init.prioridades}" var="prior" itemLabel="#{prior.nombrePrioridad}" itemValue="#{prior.idPrioridad}"/>
                                 </p:selectOneMenu>
 
                                 <h:message for="prioridad"/>   

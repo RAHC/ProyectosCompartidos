@@ -11,11 +11,16 @@ package dominio;
 public class Caserio {
     
     private String IdCaserio;
-    private String NombreCanserio;
+    private String NombreCaserio;
+    private Float LongitudCaserio;
+    private Float LatitudCaserio;
 
-    public Caserio(String IdCaserio, String NombreCanserio) {
+    public Caserio(String IdCaserio, String NombreCaserio,  Float LatitudCaserio, Float LongitudCaserio) {
         this.IdCaserio = IdCaserio;
-        this.NombreCanserio = NombreCanserio;
+        this.NombreCaserio = NombreCaserio;
+        this.LongitudCaserio = LongitudCaserio;
+        this.LatitudCaserio = LatitudCaserio;
+  
     }
 
     public String getIdCaserio() {
@@ -26,14 +31,28 @@ public class Caserio {
         this.IdCaserio = IdCaserio;
     }
 
-    public String getNombreCanserio() {
-        return NombreCanserio;
+    public String getNombreCaserio() {
+        return NombreCaserio;
     }
 
-    public void setNombreCanserio(String NombreCanserio) {
-        this.NombreCanserio = NombreCanserio;
+    public void setNombreCanserio(String NombreCaserio) {
+        this.NombreCaserio = NombreCaserio;
     }
-    
-    
-    
+
+    public Float getLatitudCaserio() {
+        return LatitudCaserio;
+    }
+
+    public void setLatitudCaserio(Float LatitudCaserio) {
+        this.LatitudCaserio = LatitudCaserio;
+    }
+
+    public Float getLongitudCaserio() {
+        return LongitudCaserio;
+    }
+
+    public void setLongitudCaserio(Float LongitudCaserio) {
+        this.LongitudCaserio = LongitudCaserio;
+    }
+
 }

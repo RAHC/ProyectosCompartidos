@@ -14,7 +14,7 @@
                     <file>${libs.Java-EE-GlassFish-v3.classpath}</file>
                 </library>
                 <library dirs="200">
-                    <file>${file.reference.primefaces-3.4.1.jar}</file>
+                    <file>${file.reference.primefaces-3.4.1.jar-1}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
             </web-module-libraries>

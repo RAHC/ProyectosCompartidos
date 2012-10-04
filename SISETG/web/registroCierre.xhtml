@@ -20,11 +20,12 @@
                         <h:panelGrid class="tblListBack" cellpadding="10" cellspacing="10" columns="1">
                             <h:panelGroup>
                                 <h:outputLabel value="Fecha y Hora de Cierre: " for="fechaCierre"/>
-                                <p:calendar id="fechaCierre" effect="slide" showOn="button" navigator="true" locale="es" pattern="dd/MM/yyyy HH:mm:ss" value="#{registroCierre.fechaHora}" /> 
+                                <p:calendar id="fechaCierre" effect="slide" showOn="button" navigator="true" locale="es" pattern="dd/MM/yyyy HH:mm:ss"
+                                            required="true" requiredMessage="Por favor ingrese la fecha y hora de cierre" value="#{registroCierre.fechaHora}" /> 
                                 <h:message for="fechaCierre" />
                             </h:panelGroup>
                             <h:outputLabel value="Observaciones sobre el cierre del incidente: " for="acciones" />
-                            <p:inputTextarea rows="5" id="acciones" cols="70" value="#{registroCierre.acciones}" />
+                            <p:inputTextarea rows="5" id="acciones" cols="70" value="#{registroCierre.acciones}" required="true" requiredMessage="Por favor ingrese las observaciones de cierre" />
                             <h:panelGroup>
                                 <h:outputLabel value="Estado del Incidente: "/>
                                 <p:selectOneMenu id="estado" label="Estado" value="#{registroCierre.estado}" >

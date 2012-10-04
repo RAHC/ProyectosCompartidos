@@ -1,0 +1,219 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./SisePlantilla.xhtml">
+
+            <ui:define name="titles">
+                LIBRETA DE CONTACTOS
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form prependId="false" id="f1">
+
+                    <p:panelGrid style=" font-size: 14px; font-family: calibri; text-align: left" styleClass="innertable">
+                        <f:facet name="header" >
+                            <p:row>
+                                <p:column style="width:26%; text-align: left">
+                                    Ubicaci&oacute;n: 
+                                    Departamento: 
+                                    <p:selectOneMenu id="lsDepartamento" value="#{libretaContacto.codDepartamento}" style=" font-size: 11px; font-family: calibri" effect="blind">
+                                        <f:selectItem itemLabel="[TODOS]" itemValue="" />
+                                        <f:selectItems value="#{init.departamentos}" var="depto" itemLabel="#{depto.nombreDepartamento}" itemValue="#{depto.idDepartamento}"/>
+                                        <p:ajax update="lsMunicipio" />
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column style="width: 24%; text-align: left">
+                                    Municipio: 
+                                    <p:selectOneMenu id="lsMunicipio" value="#{libretaContacto.codMunicipio}" style=" font-size: 11px; font-family: calibri" effect="blind">
+                                        <f:selectItem itemLabel="[TODOS]" itemValue="" />
+                                        <f:selectItems value="#{libretaContacto.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
+                                        <p:ajax update="lsCanton" />
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column style="width: 26%; text-align: left">
+                                    Cant&oacute;n: 
+                                    <p:selectOneMenu id="lsCanton" value="#{libretaContacto.codCanton}" style=" font-size: 11px; font-family: calibri" effect="blind">
+                                        <f:selectItem itemLabel="[TODOS]" itemValue="" />
+                                        <f:selectItems value="#{libretaContacto.cantones}" var="canton" itemLabel="#{canton.nombreCanton}" itemValue="#{canton.idCanton}" />
+                                        <p:ajax update="lsCaserio" />
+                                    </p:selectOneMenu>
+                                </p:column> 
+                                <p:column style="width: 24%; text-align: left">
+                                    Caser&iacute;o: 
+                                    <p:selectOneMenu id="lsCaserio" value="#{libretaContacto.codCaserio}" style=" font-size: 11px; font-family: calibri" effect="blind">
+                                        <f:selectItem itemLabel="[TODOS]" itemValue="" />
+                                        <f:selectItems value="#{libretaContacto.caserios}" var="caserio" itemLabel="#{caserio.nombreCaserio}" itemValue="#{caserio.idCaserio}" />
+                                    </p:selectOneMenu>
+                                </p:column> 
+                            </p:row>
+                            <p:row>
+                                <p:column style="width: 27%; text-align: left">
+                                    Tipo de Instituci&oacute;n: 
+                                    <p:selectOneMenu id="lsTpInstitucion" value="#{libretaContacto.tpInstitucion}" style=" font-size: 11px; font-family: calibri" effect="blind">
+                                        <f:selectItem itemLabel="[TODOS]" itemValue="" />
+                                        <f:selectItems value="#{init.tpInstituciones}" var="tpInst" itemLabel="#{tpInst.nombreTpInstitucion}" itemValue="#{tpInst.idTpInstitucion}" />
+                                        <p:ajax update="lsInstitucion" />
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column style="width: 63%; text-align: left" colspan="3">
+                                    Nombre de Intituci&oacute;n: 
+                                    <p:selectOneMenu id="lsInstitucion" value="#{libretaContacto.institucion}" style=" font-size: 11px; font-family: calibri" effect="blind">
+                                        <f:selectItem itemLabel="[TODOS]" itemValue="" />
+                                        <f:selectItems value="#{libretaContacto.instituciones}" var="insti" itemLabel="#{insti.nombreInstitucion}" itemValue="#{insti.idInstitucion}" />
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column style="width: 100%; text-align: left" colspan="4">
+                                    Buscar Contacto: 
+                                    <p:inputText id="txtNombre" size="30" value="#{libretaContacto.nombreContacto}"/>
+                                </p:column>
+                            </p:row>
+                        </f:facet>
+                        <p:row>
+                            <p:column style="text-align: left;  font-size: 11px; font-family: calibri" colspan="2">
+                                <p:commandButton id="loadContacto" value="Mostrar Contactos" update="tblContactos" />
+                            </p:column>
+                            <p:column style="text-align: right; font-size: 11px; font-family: calibri" colspan="2">
+                                <p:button outcome="registroContacto" value="Nuevo Contacto" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column colspan="4" style=" font-size: 11px; font-family: calibri" >
+                                <p:commandButton id="txtAll" value="Todos los nombres" update="tblContactos" actionListener="#{libretaContacto.order('0')}"/>
+                                <p:commandButton id="txtA" value="A" actionListener="#{libretaContacto.order('A')}" update="tblContactos" />
+                                <p:commandButton id="txtB" value="B" actionListener="#{libretaContacto.order('B')}" update="tblContactos" />
+                                <p:commandButton id="txtC" value="C" actionListener="#{libretaContacto.order('C')}" update="tblContactos" />
+                                <p:commandButton id="txtD" value="D" actionListener="#{libretaContacto.order('D')}" update="tblContactos" />
+                                <p:commandButton id="txtE" value="E" actionListener="#{libretaContacto.order('E')}" update="tblContactos" />
+                                <p:commandButton id="txtF" value="F" actionListener="#{libretaContacto.order('F')}" update="tblContactos" />
+                                <p:commandButton id="txtG" value="G" actionListener="#{libretaContacto.order('G')}" update="tblContactos" />
+                                <p:commandButton id="txtH" value="H" actionListener="#{libretaContacto.order('H')}" update="tblContactos" />
+                                <p:commandButton id="txtI" value="I" actionListener="#{libretaContacto.order('I')}" update="tblContactos" />
+                                <p:commandButton id="txtJ" value="J" actionListener="#{libretaContacto.order('J')}" update="tblContactos" />
+                                <p:commandButton id="txtK" value="K" actionListener="#{libretaContacto.order('K')}" update="tblContactos" />
+                                <p:commandButton id="txtL" value="L" actionListener="#{libretaContacto.order('L')}" update="tblContactos" />
+                                <p:commandButton id="txtM" value="M" actionListener="#{libretaContacto.order('M')}" update="tblContactos" />
+                                <p:commandButton id="txtN" value="N" actionListener="#{libretaContacto.order('N')}" update="tblContactos" />
+                                <p:commandButton id="txtO" value="O" actionListener="#{libretaContacto.order('O')}" update="tblContactos" />
+                                <p:commandButton id="txtP" value="P" actionListener="#{libretaContacto.order('P')}" update="tblContactos" />
+                                <p:commandButton id="txtQ" value="Q" actionListener="#{libretaContacto.order('Q')}" update="tblContactos" />
+                                <p:commandButton id="txtR" value="R" actionListener="#{libretaContacto.order('R')}" update="tblContactos" />
+                                <p:commandButton id="txtS" value="S" actionListener="#{libretaContacto.order('S')}" update="tblContactos" />
+                                <p:commandButton id="txtT" value="T" actionListener="#{libretaContacto.order('T')}" update="tblContactos" />
+                                <p:commandButton id="txtU" value="U" actionListener="#{libretaContacto.order('U')}" update="tblContactos" />
+                                <p:commandButton id="txtV" value="V" actionListener="#{libretaContacto.order('V')}" update="tblContactos" />
+                                <p:commandButton id="txtW" value="W" actionListener="#{libretaContacto.order('W')}" update="tblContactos" />
+                                <p:commandButton id="txtX" value="X" actionListener="#{libretaContacto.order('X')}" update="tblContactos" />
+                                <p:commandButton id="txtY" value="Y" actionListener="#{libretaContacto.order('Y')}" update="tblContactos" />
+                                <p:commandButton id="txtZ" value="Z" actionListener="#{libretaContacto.order('Z')}" update="tblContactos" />
+                            </p:column> 
+                        </p:row>
+                    </p:panelGrid>
+                    <p:growl id="mess" showDetail="true"/>
+                    <p:dataTable var="lc" id="tblContactos" value="#{libretaContacto.loadContactos}"
+                                 paginator="true" rows="20" 
+                                 paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="10,20,30,40" editable="true" >
+                        <p:ajax event="rowEdit" listener="#{libretaContacto.onEdit}" update=":f1:mess"/>
+                        <p:ajax event="rowEditCancel" listener="#{libretaContacto.onCancel}" update=":f1:mess"/>
+                        <p:column style="width:4%">
+                            <p:rowToggler/>
+                        </p:column>
+                        <p:column headerText="Nombre" id="nombreHeader" style="width:48%">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{lc.nombCont}&nbsp;#{lc.apellCont}" />
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:outputLabel for="nombre" value="Nombre: "/>
+                                    <p:inputText id="nombre" value="#{lc.nombCont}" style="width: 40%" required="true" requiredMessage="Por favor ingrese el nombre del contacto" /><br/>
+                                    <p:outputLabel for="apellido" value="Apellido: "/>
+                                    <p:inputText id="apellido" value="#{lc.apellCont}" style="width: 40%" required="true" requiredMessage="Por favor ingrese el apellido del contacto" /><br/>
+                                    Cargo: <p:inputText id="cargo" value="#{lc.cargoCont}" style="width: 40%" /><br/>
+                                    Tel&eacute;fono Intitucional: <p:inputText id="telInt" value="#{lc.telInstCont}" style="width:40%"/><br/>
+                                    Celular: <p:inputText value="#{lc.celCont}" id="celular" style="width:40%"/><br/>
+                                    Tel&eacute;fono Personal: <p:inputText id="telPers" value="#{lc.telCont}" style="width:40%"/><br/>
+                                    Radio: <p:inputText id="radio" value="#{lc.radioCont}" style="width:40%"/><br/>
+                                    Correo Institucional: <p:inputText id="mailInst" value="#{lc.mailInstCont}" style="width:40%"/><br/>
+                                    Correo Personal: <p:inputText id="mailPers" value="#{lc.mailPerCon}" style="width: 40%"/><br/>
+
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column id="instHeader" headerText="Instituci&oacute;n" style="width:48%">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{lc.nombInst}" />
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:selectOneMenu value="#{lc.idInst}">
+                                        <f:selectItems value="#{libretaContacto.todasInstituciones}" var="inst" itemLabel="#{inst.nombreInstitucion}" itemValue="#{inst.idInstitucion}"/>
+                                    </p:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Editar" style="width: 50px">
+                            <p:rowEditor/>
+                        </p:column>
+                        <p:rowExpansion>
+
+                            <p:panelGrid style=" font-size: 13px; font-family: calibri; border-style: hidden; 
+                                         margin-bottom: 10px; margin: 10px; " styleClass="innertable">
+                                <p:row>
+                                    <p:column colspan="6" style="border: 0">
+                                        <h:outputText value="Cargo: #{lc.cargoCont}"/>
+                                        <br/><h:outputText value="Ubicaci&oacute;n: #{lc.nombUbic}"/>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column colspan="2" rowspan="3" style="text-align: right; width:28% ">
+                                        <br/>Tel&eacute;fono:&nbsp;<br/>
+                                        Correo:&nbsp;</p:column>
+                                    <p:column style="text-align: center;">Institucional</p:column>
+                                    <p:column style="text-align: center;">Celular</p:column>
+                                    <p:column style="text-align: center;">Personal</p:column>
+                                    <p:column style="text-align: center;">Radio</p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column style="width: 18%">
+                                        &nbsp;<h:outputText value="#{lc.telInstCont}"/>
+                                    </p:column>
+                                    <p:column style="width: 18%">
+                                        &nbsp;<h:outputText value="#{lc.celCont}"/>
+                                    </p:column>
+                                    <p:column style="width: 18%">
+                                        &nbsp;<h:outputText value="#{lc.telCont}"/>
+                                    </p:column>
+                                    <p:column style="width: 18%">
+                                        &nbsp;<h:outputText value="#{lc.radioCont}"/>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column style="width: 18%">
+                                        &nbsp;<h:outputText value="#{lc.mailInstCont}"/>
+                                    </p:column>
+                                    <p:column style="width: 18%"/>
+                                    <p:column style="width: 18%">
+                                        &nbsp; <h:outputText value="#{lc.mailPerCon}"/>
+                                    </p:column>
+                                    <p:column style="width: 18%"/>
+                                </p:row>
+                            </p:panelGrid>
+                        </p:rowExpansion>  
+
+                    </p:dataTable>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

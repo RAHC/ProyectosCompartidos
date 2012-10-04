@@ -450,7 +450,9 @@ public class RegistrarInstitucion implements Serializable {
             rowSet.populate(getUbicacion.executeQuery());
             while (rowSet.next()) {
                 resultados.add(new Caserio(rowSet.getString("IDUBIC"),
-                        rowSet.getString("NOMBUBIC")));
+                        rowSet.getString("NOMBUBIC"),
+                        rowSet.getFloat("LATITUDUBIC"),
+                        rowSet.getFloat("LONGITUDUBIC")));
             }
             return resultados;
         } finally {
@@ -458,7 +460,7 @@ public class RegistrarInstitucion implements Serializable {
         }
     }
 
-    public String guardarInst() throws SQLException {
+    public String guardarInst(/*ActionEvent e*/) throws SQLException {
         if (dataSource == null) {
             throw new SQLException("No se pudo tener acceso a la fuente de datos");
         }
@@ -468,8 +470,9 @@ public class RegistrarInstitucion implements Serializable {
         if (connection == null) {
             throw new SQLException("No se pudo conectar a la fuente de datos");
         }
-        CallableStatement inst;
+        
         try {
+            CallableStatement inst;
             String sql = "{ call INSTITUCION_Add(?,?,?,?,?,?,?,?,?,?)}";
             inst = connection.prepareCall(sql);
             inst.setString(1, getCodCanton());
@@ -484,6 +487,7 @@ public class RegistrarInstitucion implements Serializable {
             inst.setString(10, getPnRefInst());
 
             inst.execute();
+            inst.close();
         } finally {
             connection.close();
         }

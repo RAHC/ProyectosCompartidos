@@ -47,7 +47,7 @@ public class Departamento {
         this.LongitudDepartamento = LongitudDepartamento;
     }
     
-    public Departamento(String idDepartamento, String nombreDepartamento, Float LongitudDepartamento, Float LatitudDepartamento) {
+    public Departamento(String idDepartamento, String nombreDepartamento, Float LatitudDepartamento, Float LongitudDepartamento) {
         this.idDepartamento = idDepartamento;
         this.nombreDepartamento = nombreDepartamento;
     }

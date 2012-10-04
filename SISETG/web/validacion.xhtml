@@ -19,11 +19,13 @@
                         <h:panelGrid class="tblListBack" cellpadding="10" cellspacing="10" columns="1">
                             <h:panelGroup>
                                 <h:outputLabel value="Fecha y Hora de verificaci&oacute;n: " for="fechaHora"/>
-                                <p:calendar id="fechaHora" effect="slide" showOn="button" navigator="true" pattern="dd/MM/yyyy HH:mm:ss" locale="es" value="#{registroValidacion.fechaHora}" /> 
+                                <p:calendar id="fechaHora" effect="slide" showOn="button" navigator="true" pattern="dd/MM/yyyy HH:mm:ss" locale="es"
+                                            required="true" requiredMessage="Por favor ingrese la fecha y hora de validaci&oacute;n" value="#{registroValidacion.fechaHora}" /> 
                                 <h:message for="fechaHora"/>
                             </h:panelGroup>
-                            <h:outputLabel value="Descripci&oacute;n de las acciones que permitieron validar el incidente: " for="acciones" />
-                            <p:inputTextarea rows="5" id="acciones" cols="70" value="#{registroValidacion.acciones}" />
+                            <h:outputLabel value="Descripci&oacute;n de las acciones que permitieron validar el incidente: " for="acciones"/>
+                            <p:inputTextarea rows="5" id="acciones" cols="70" value="#{registroValidacion.acciones}" required="true"
+                                             requiredMessage="Por favor ingrese las observaciones de la validaci&oacute;n"/>
                             <h:panelGroup>
                                 <h:outputLabel value="Estado del Incidente: "/>
                                 <p:selectOneMenu id="estado" label="Estado" value="#{registroValidacion.estado}" >

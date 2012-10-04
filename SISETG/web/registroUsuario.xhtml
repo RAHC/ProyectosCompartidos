@@ -27,29 +27,29 @@
                             <!--<p:ajax event="toogle" listener="#{fieldsetBean.handleToggle}" update="grow1"/> -->
                             <p:panelGrid styleClass="innertable" >
                                 <p:row>
-                                    <p:column style=" width: 20%">Alias de Usuario: </p:column>
+                                    <p:column style=" width: 20%"><p:outputLabel for="alias" value=" Alias de Usuario:"/></p:column>
                                     <p:column style=" width: 80%" colspan="3"><p:inputText id="alias" size="25" required="true" value="#{registroUsuario.alias}" 
                                                                                            requiredMessage="Ingrese el Alias del Usuario" />
                                     </p:column>
                                 </p:row>
                                 <p:row>
-                                    <p:column style=" width: 20%">Contrase&ntilde;a: </p:column>
+                                    <p:column style=" width: 20%"><p:outputLabel for="pw1" value="Contrase&ntilde;a: "/></p:column>
                                     <p:column style=" width: 80%" colspan="3"><p:password id="pwd1" value="#{registroUsuario.password}" match="pwd2" validatorMessage="La contrase&ntilde;a no coincide en ambos campos &oacute; contrase&ntilde;a menor a 5 caracteres" label="Password 1" 
                                                                                           required="true" feedback="true"  size="25" requiredMessage="Por favor ingrese contase&ntilde;a" weakLabel="Contrase&ntilde;a debil" 
-                                                                                          goodLabel="Contrase&ntilde; segura" strongLabel="Contrase&ntilde;a Fuerte" promptLabel="Ingrese una contrase&ntilde;a con 5 caracteres m&iacute;nimos">
+                                                                                          goodLabel="Contrase&ntilde;a segura" strongLabel="Contrase&ntilde;a Fuerte" promptLabel="Ingrese una contrase&ntilde;a con 5 caracteres m&iacute;nimos">
                                             <f:validateLength minimum="5" maximum="25" />
                                         </p:password>
                                     </p:column>
                                 </p:row>
                                 <p:row>
-                                    <p:column style=" width: 20%">Confirme contrase&ntilde;a: </p:column>
+                                    <p:column style=" width: 20%"><p:outputLabel for="pwd2" value="Confirme contrase&ntilde;a: "/></p:column>
                                     <p:column style=" width: 80%" colspan="3"><p:password id="pwd2" value="#{registroUsuario.password}" label="Password 2" required="true"
                                                                                           requiredMessage="La contrase&ntilde;a debe ser igual en ambos campos" size="25"
-                                                                                          feedback="true" weakLabel="Contrase&ntilde;a debil" goodLabel="Contrase&ntilde; segura" strongLabel="Contrase&ntilde;a Fuerte" promptLabel="Ingrese su contraseña nuevamente" />
+                                                                                          feedback="true" weakLabel="Contrase&ntilde;a debil" goodLabel="Contrase&ntilde;a segura" strongLabel="Contrase&ntilde;a Fuerte" promptLabel="Ingrese su contraseña nuevamente" />
                                     </p:column>
                                 </p:row>
                                 <p:row>
-                                    <p:column style=" width: 20%">Nivel de acceso: </p:column>
+                                    <p:column style=" width: 20%"><p:outputLabel for="nivel" value="Nivel de acceso: "/></p:column>
                                     <p:column style=" width: 80%" colspan="3">
                                         <p:selectOneMenu id="nivel" label="Nivel" value="#{registroUsuario.nivel}" required="true" requiredMessage="Debe seleccionar el nivel de acceso del nuevo usuario">
                                             <f:selectItem itemLabel="Seleccione Nivel de Acceso" itemValue="" />
@@ -85,7 +85,7 @@
                         <p:fieldset legend="Instituci&oacute;n a la que pertenece" toggleable="true" toggleSpeed="500">
                             <p:panelGrid styleClass="innertable">
                                 <p:row>
-                                    <p:column style=" width: 20%">Tipo de Instituci&oacute;n: </p:column>
+                                    <p:column style=" width: 20%"><p:outputLabel for="tpInstitucion" value="Tipo de Instituci&oacute;n: "/></p:column>
                                     <p:column style="width: 80%" colspan="3">
                                         <p:selectOneMenu id="tpInstitucion" label="TpInstitucion" value="#{init.tpInstitucion}" 
                                                          required="true" requiredMessage="Por favor seleccione un tipo de instituci&oacute;n" >
@@ -96,7 +96,7 @@
                                     </p:column>
                                 </p:row>
                                 <p:row>
-                                    <p:column style=" width: 20%">Nombre de Instituci&oacute;n</p:column>
+                                    <p:column style=" width: 20%"><p:outputLabel for="institucion" value="Nombre de Instituci&oacute;n: "/></p:column>
                                     <p:column style=" width: 80%" colspan="3">
                                         <p:selectOneMenu id="institucion" label="Institucion" value="#{registroUsuario.institucion}" 
                                                          required="true" requiredMessage="Por favor seleccione una instituci&oacute;n">
@@ -119,14 +119,14 @@
                             </p:panelGrid>
                         </p:fieldset>
                     </p:growl>
-                    <p:growl id="lyContacto" showDetail="true" >
-                        <p:fieldset legend="Datos de Contacto" toggleable="true" toggleSpeed="500">
+                    <p:growl id="grow3" showDetail="true" >
+                        <p:fieldset legend="Datos de Contacto" id="lyContacto" toggleable="true" toggleSpeed="500">
                             <p:panelGrid styleClass="innertable">
                                 <p:row>
-                                    <p:column style="width: 20%">Nombres: </p:column>
+                                    <p:column style="width: 20%"><p:outputLabel for="nombre" value="Nombres: "/></p:column>
                                     <p:column style="width: 30%"><p:inputText id="nombres" size="35" value="#{registroUsuario.nombres}" 
                                                                               required="true" requiredMessage="Por favor ingrese el nombre del usuario"/></p:column>
-                                    <p:column style="width: 20%">Apellidos: </p:column>
+                                    <p:column style="width: 20%"><p:outputLabel for="apellidos" value="Apellidos: "/></p:column>
                                     <p:column style="width: 30%"><p:inputText id="apellidos" size="35" value="#{registroUsuario.apellidos}"
                                                                               required="true" requiredMessage="Por favor ingrese el apellido del usuario"/></p:column>
                                 </p:row>

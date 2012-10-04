@@ -569,4 +569,9 @@ table.innertable { width: 100% }
 
 table.generalTable { width: 100%;}
 
+table.borderzero { border: 1; }
+table.borderzero td { border: 0; }
+table.borderzero tr { border: 0; }
+
+
 td.td20 td { width: 20%;}

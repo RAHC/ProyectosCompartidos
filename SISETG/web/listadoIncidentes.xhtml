@@ -102,10 +102,10 @@
                                         <p:column style=" width: 20%">
                                             <h:form>
                                                 <p:menuButton value="Men&uacute; de Operaciones" style="font-size: 14px">
-                                                    <p:menuitem value="Verificar Incidente" id="btnVal" url="validacion.xhtml?corrInc=#{li.corrInc}" disabled="#{loginBean.idRol==1?'true':loginBean.idRol==3?'true':loginBean.idRol==4?'true':'false'}" />
-                                                    <p:menuitem value="Seguimiento y Control de Incidente" url="#" disabled="#{loginBean.idRol==1?'true':loginBean.idRol==2?'true':loginBean.idRol==4?'true':'false'}"/>
-                                                    <p:menuitem value="Cerrar Incidente" id="btnCierre"  url="registroCierre.xhtml?corrInc=#{li.corrInc}" disabled="#{loginBean.idRol==1?'true':loginBean.idRol==2?'true':loginBean.idRol==3?'true':'false'}"  />
-                                                    <p:menuitem value="Registrar Afectaci&oacute;n" url="#" disabled="#{loginBean.idRol==1?'true':loginBean.idRol==2?'true':loginBean.idRol==4?'true':'false'}" />
+                                                    <p:menuitem value="Verificar Incidente" id="btnVal" url="validacion.xhtml?corrInc=#{li.corrInc}" style="#{loginBean.idRol==1?'display:none':loginBean.idRol==3?'display:none':loginBean.idRol==4?'display:none':'display:block'}" />
+                                                    <p:menuitem value="Seguimiento y Control de Incidente" url="#" style="#{loginBean.idRol==1?'display:none':loginBean.idRol==2?'display:none':loginBean.idRol==4?'display:none':'display:block'}"/>
+                                                    <p:menuitem value="Cerrar Incidente" id="btnCierre"  url="registroCierre.xhtml?corrInc=#{li.corrInc}" style="#{loginBean.idRol==1?'display:none':loginBean.idRol==2?'display:none':loginBean.idRol==3?'display:none':'display:block'}"  />
+                                                    <p:menuitem value="Registrar Afectaci&oacute;n" url="registroAfectacion.xhtml" style="#{loginBean.idRol==1?'display:none':loginBean.idRol==2?'display:none':loginBean.idRol==4?'display:none':'display:block'}" />
                                                     <p:menuitem value="Ver Afectaciones" url="#" />
                                                 </p:menuButton>
                                             </h:form>
