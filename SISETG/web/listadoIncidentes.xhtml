@@ -100,15 +100,18 @@
 
                                         </p:column>
                                         <p:column style=" width: 20%">
-                                            <h:form>
-                                                <p:menuButton value="Men&uacute; de Operaciones" style="font-size: 14px">
-                                                    <p:menuitem value="Verificar Incidente" id="btnVal" url="validacion.xhtml?corrInc=#{li.corrInc}" style="#{loginBean.idRol==1?'display:none':loginBean.idRol==3?'display:none':loginBean.idRol==4?'display:none':'display:block'}" />
-                                                    <p:menuitem value="Seguimiento y Control de Incidente" url="#" style="#{loginBean.idRol==1?'display:none':loginBean.idRol==2?'display:none':loginBean.idRol==4?'display:none':'display:block'}"/>
-                                                    <p:menuitem value="Cerrar Incidente" id="btnCierre"  url="registroCierre.xhtml?corrInc=#{li.corrInc}" style="#{loginBean.idRol==1?'display:none':loginBean.idRol==2?'display:none':loginBean.idRol==3?'display:none':'display:block'}"  />
-                                                    <p:menuitem value="Registrar Afectaci&oacute;n" url="registroAfectacion.xhtml" style="#{loginBean.idRol==1?'display:none':loginBean.idRol==2?'display:none':loginBean.idRol==4?'display:none':'display:block'}" />
-                                                    <p:menuitem value="Ver Afectaciones" url="#" />
-                                                </p:menuButton>
-                                            </h:form>
+
+                                            <p:menuButton value="Men&uacute; de Operaciones" style="font-size: 14px">
+                                                <p:menuitem id="selectIncidente" onclick="nvaValidacion.show()" value="Validaci&oacute;n" update=":validacion" 
+                                                            style="#{loginBean.idRol==1?'display:none':loginBean.idRol==3?'display:none':loginBean.idRol==4?'display:none':'display:block'}">
+                                                    <f:setPropertyActionListener value="#{li}" target="#{registroValidacion.selectedIncidente}"/>
+                                                </p:menuitem>
+                                                <p:menuitem value="Seguimiento y Control de Incidente" url="#" style="#{loginBean.idRol==1?'display:none':loginBean.idRol==2?'display:none':loginBean.idRol==4?'display:none':'display:block'}"/>
+                                                <p:menuitem value="Cerrar Incidente" id="btnCierre"  url="registroCierre.xhtml?corrInc=#{li.corrInc}" style="#{loginBean.idRol==1?'display:none':loginBean.idRol==2?'display:none':loginBean.idRol==3?'display:none':'display:block'}"  />
+                                                <p:menuitem value="Registrar Afectaci&oacute;n" url="registroAfectacion.xhtml" style="#{loginBean.idRol==1?'display:none':loginBean.idRol==2?'display:none':loginBean.idRol==4?'display:none':'display:block'}" />
+                                                <p:menuitem value="Ver Afectaciones" url="#" />
+                                            </p:menuButton>
+
                                         </p:column>
                                     </p:row>
                                 </f:facet>
@@ -165,6 +168,36 @@
                                 zoom="13" type="HYBRID" style="width:600px;height:400px" widgetVar="mymap" model="#{listadoIncidente.selectedMapa.markerInc}"/>
                     </p:dialog>
                 </h:form>
+                
+                <p:dialog header="VERIFICACI&Oacute;N DE INCIDENTE" widgetVar="nvaValidacion" modal="true" id="diagnvaValidacion"
+                          resizable="false" > 
+                    <h:form id="validacion" prependId="false">
+                        <p:growl id="msj"/>
+                        <h:panelGrid  cellpadding="10" cellspacing="10" columns="1">
+                            <h:panelGroup>
+                                <p:outputLabel value="Fecha y Hora de verificaci&oacute;n: " for="fechaHora"/>
+                                <p:calendar id="fechaHora" effect="slide" showOn="button" navigator="true" pattern="dd/MM/yyyy HH:mm:ss" locale="es"
+                                            required="true" requiredMessage="Por favor ingrese la fecha y hora de validaci&oacute;n" value="#{registroValidacion.fechaHora}" /> 
+                                <h:message for="fechaHora"/>
+                            </h:panelGroup>
+                            <p:outputLabel value="Descripci&oacute;n de las acciones que permitieron validar el incidente: " for="acciones"/>
+                            <p:inputTextarea rows="5" id="acciones" cols="70" value="#{registroValidacion.acciones}" required="true"
+                                             requiredMessage="Por favor ingrese las observaciones de la validaci&oacute;n"/>
+                            <h:panelGroup>
+                                <p:outputLabel for="estado" value="Estado del Incidente: "/>
+                                <p:selectOneMenu id="estado" label="Estado" value="#{registroValidacion.estado}" >
+                                    <f:selectItems value="#{init.estadosValidacion}" var="estados" itemLabel="#{estados.nombreEstado}" itemValue="#{estados.idEstado}"/>
+
+                                </p:selectOneMenu>
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                <p:commandButton id="guardar"  value="Guardar" action="#{registroValidacion.guardar()}" oncomplete="nvaValidacion.hide()"
+                                                 update="msj, :form:datosInc"  style=" left: 80%" />
+                                <!--  <p:commandButton id="cancel" value="Cancelar" style=" left: 60%" oncomplete="nvaValidacion.hide();" />-->
+                            </h:panelGroup>
+                        </h:panelGrid>
+                    </h:form>            
+                </p:dialog>
             </ui:define>
 
         </ui:composition>
