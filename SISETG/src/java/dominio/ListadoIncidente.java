@@ -66,7 +66,7 @@ public class ListadoIncidente implements Serializable {
         }
         try {
             PreparedStatement getDepartamento = connection.prepareStatement(
-                    "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE is NULL "+Filtro+" order by NOMBUBIC");
+                    "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE is NULL AND IDUBIC!='00' "+Filtro+" order by NOMBUBIC");
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getDepartamento.executeQuery());
 
@@ -123,9 +123,9 @@ public class ListadoIncidente implements Serializable {
         if (connection == null) {
             throw new SQLException("No se pudo conectar a la fuente de datos");
         }
-        String Filtro = "WHERE 1 = 1";
+        String Filtro = " WHERE 1 = 1 AND IDESTADO!=3 AND IDESTADO!=7 ";
         if(nB.getIdRol()==1){
-            Filtro += " AND IDESTADO IN (1,2,3)";
+            Filtro += " AND IDESTADO IN (1,2)";
         }
         else if(nB.getIdRol()==2){
             Filtro += " AND IDESTADO = 1";
@@ -134,7 +134,7 @@ public class ListadoIncidente implements Serializable {
             Filtro += " AND IDESTADO IN (2,4,5,8)";
         }
         else if(nB.getIdRol()==4){
-            Filtro += " AND IDESTADO IN (6,7)";
+            Filtro += " AND IDESTADO IN (6)";
         }
 
         try {
@@ -178,8 +178,9 @@ public class ListadoIncidente implements Serializable {
             filtro += " AND I.IDESTADO="+Estado;
         }
         else{
+            filtro +=" AND I.IDESTADO!=3 AND I.IDESTADO!=7";
             if(nB.getIdRol()==1){
-                filtro += " AND I.IDESTADO IN (1,2,3)";
+                filtro += " AND I.IDESTADO IN (1,2)";
              }
             else if(nB.getIdRol()==2){
                 filtro += " AND I.IDESTADO = 1";
@@ -188,7 +189,7 @@ public class ListadoIncidente implements Serializable {
                 filtro += " AND I.IDESTADO IN (2,4,5,8)";
             }
             else if(nB.getIdRol()==4){
-                filtro += " AND I.IDESTADO IN (6,7)";
+                filtro += " AND I.IDESTADO IN (6)";
             }
         }
         if(CodDepartamento != null && CodMunicipio != null){
@@ -249,7 +250,8 @@ public class ListadoIncidente implements Serializable {
                 
                 List<Acciones> resultados2 = new ArrayList<Acciones>();
                 PreparedStatement getListAcciones = connection.prepareStatement(
-                        "SELECT *, convert(varchar, FECHORAREALACC,103) as FR, convert(varchar, FECHORAALMACC,103) as FA "
+                        "SELECT *, convert(varchar, FECHORAREALACC,103) as FR, convert(varchar, FECHORAALMACC,103) as FA, "
+                        + "convert(varchar, DURACACC,108) as DR "
                         + "FROM ACCIONES WHERE IDEV='"+rowSet.getString("IDEV")+"' AND CORRINC='"+rowSet.getString("CORRINC")+"' AND ESTADOACC='H' ORDER BY IDACC");
                 CachedRowSet rowSet3 = new com.sun.rowset.CachedRowSetImpl();
                 rowSet3.populate(getListAcciones.executeQuery());
@@ -262,8 +264,7 @@ public class ListadoIncidente implements Serializable {
                             rowSet3.getString("DESCACC"),
                             rowSet3.getString("RESPCOORDACC"),
                             rowSet3.getString("FR"),
-                            rowSet3.getInt("DURACACC"),
-                            rowSet3.getString("ESTADOACTACC"),
+                            rowSet3.getString("DR"),
                             rowSet3.getString("FA"),
                             rowSet3.getString("ESTADOACC")));  
                 }

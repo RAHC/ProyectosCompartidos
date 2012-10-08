@@ -366,7 +366,7 @@ public class RegistrarInstitucion implements Serializable {
         }
         try {
             PreparedStatement getDepartamento = connection.prepareStatement(
-                    "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE is NULL order by NOMBUBIC");
+                    "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE is NULL and IDUBIC!='00' order by NOMBUBIC");
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getDepartamento.executeQuery());
 

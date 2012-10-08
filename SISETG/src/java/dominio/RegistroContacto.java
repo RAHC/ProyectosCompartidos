@@ -60,6 +60,7 @@ public class RegistroContacto {
             cs.registerOutParameter(12, java.sql.Types.INTEGER);
             cs.execute();
             accion = cs.getInt(12);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, accion.toString(), null));
             if (accion == 0) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error el la ejecuci&oacute;n, el nuevo contacto no pudo ser registrado", null));
             } else if (accion > 0) {

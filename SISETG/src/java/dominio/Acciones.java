@@ -1,6 +1,8 @@
 
 package dominio;
 
+import java.util.Date;
+
 
 public class Acciones {
     private Integer IdAcc;
@@ -11,13 +13,12 @@ public class Acciones {
     private String DescripAccion;
     private String ResponsableCoord;
     private String FechaRealizacion;
-    private Integer Duracion;
-    private String EstadoActual;
+    private String Duracion;
     private String FechaAlmacenado;
     private String EstadoAccion;
     
     public Acciones(Integer IdAcc, String IdEv, String CorrInc, Integer IdEstado, Integer IdContacto, String DescripAccion, String ResponsableCoord, 
-            String FechaRealizacion, Integer Duracion, String EstadoActual, String FechaAlmacenado, String EstadoAccion) {
+            String FechaRealizacion, String Duracion, String FechaAlmacenado, String EstadoAccion) {
         this.IdAcc = IdAcc;
         this.IdEv = IdEv;
         this.CorrInc = CorrInc;
@@ -27,7 +28,6 @@ public class Acciones {
         this.ResponsableCoord = ResponsableCoord;
         this.FechaRealizacion = FechaRealizacion;
         this.Duracion = Duracion;
-        this.EstadoActual = EstadoActual;
         this.FechaAlmacenado = FechaAlmacenado;
         this.EstadoAccion = EstadoAccion;
     }
@@ -56,11 +56,11 @@ public class Acciones {
         this.DescripAccion = DescripAccion;
     }
 
-    public Integer getDuracion() {
+    public String getDuracion() {
         return Duracion;
     }
 
-    public void setDuracion(Integer Duracion) {
+    public void setDuracion(String Duracion) {
         this.Duracion = Duracion;
     }
 
@@ -70,14 +70,6 @@ public class Acciones {
 
     public void setEstadoAccion(String EstadoAccion) {
         this.EstadoAccion = EstadoAccion;
-    }
-
-    public String getEstadoActual() {
-        return EstadoActual;
-    }
-
-    public void setEstadoActual(String EstadoActual) {
-        this.EstadoActual = EstadoActual;
     }
 
     public String getFechaAlmacenado() {

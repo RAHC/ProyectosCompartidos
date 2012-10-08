@@ -33,6 +33,7 @@ public class RegistroUsuario implements Serializable {
     private String Ubicacion;
     private String CodDepartamento;
     private String CodMunicipio;
+    private Integer TpInstitucion;
     private Integer Institucion;
     private Integer Contacto;
     private String Nombres;
@@ -62,7 +63,7 @@ public class RegistroUsuario implements Serializable {
         }
         try {
             PreparedStatement getDepartamento = connection.prepareStatement(
-                    "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE is NULL order by NOMBUBIC");
+                    "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE is NULL AND IDUBIC!='00' order by NOMBUBIC");
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getDepartamento.executeQuery());
 
@@ -109,6 +110,38 @@ public class RegistroUsuario implements Serializable {
 
     public Integer getContacto() {
         return Contacto;
+    }
+    
+    public List<Institucion> getInstituciones() throws SQLException {
+        List<Institucion> resultados = new ArrayList<Institucion>();
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+        Connection connection = dataSource.getConnection();
+
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+        String filtro = "";
+        if(CodMunicipio!=null){
+            filtro = " AND (IDUBIC LIKE '" + CodMunicipio + "' or IDUBIC LIKE '"+CodDepartamento+"')";
+        }
+        else if((CodDepartamento!=null) && (!"00".equals(CodDepartamento))){
+            filtro += " AND IDUBIC LIKE '" + CodDepartamento + "'";
+        }
+        try {
+            PreparedStatement getInstitucion = connection.prepareStatement(
+                    "SELECT IDINST, NOMBINST FROM INSTITUCION WHERE IDTPINST= " + TpInstitucion + ""+filtro);
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getInstitucion.executeQuery());
+            while (rowSet.next()) {
+                resultados.add(new Institucion(rowSet.getInt("IDINST"),
+                        rowSet.getString("NOMBINST")));
+            }
+            return resultados;
+        } finally {
+            connection.close();
+        }
     }
 
     public void setContacto(Integer Contacto) throws SQLException {
@@ -183,7 +216,7 @@ public class RegistroUsuario implements Serializable {
         }
     }
 
-    public void guardar() throws SQLException {
+    public String guardar() throws SQLException {
         if (dataSource == null) {
             throw new SQLException("No se pudo tener acceso a la fuente de datos");
         }
@@ -253,7 +286,7 @@ public class RegistroUsuario implements Serializable {
         finally {
             connection.close();
         }
-        //return "index";
+        return "listadoIncidentes.xhtml";
     }
 
     public Integer getInstitucion() {
@@ -399,4 +432,13 @@ public class RegistroUsuario implements Serializable {
     public void setDireccion(String Direccion) {
         this.Direccion = Direccion;
     }
+
+    public Integer getTpInstitucion() {
+        return TpInstitucion;
+    }
+
+    public void setTpInstitucion(Integer TpInstitucion) {
+        this.TpInstitucion = TpInstitucion;
+    }
+    
 }

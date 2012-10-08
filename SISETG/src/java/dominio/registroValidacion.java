@@ -17,7 +17,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-import org.primefaces.context.RequestContext;
 
 /**
  *
