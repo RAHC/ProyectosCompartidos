@@ -58,7 +58,7 @@ public class ListadoIncidente implements Serializable {
             throw new SQLException("No se pudo conectar a la fuente de datos");
         }
         String Filtro="";
-        if(!"00".equals(nB.getIdUbic())){
+        if(!"''".equals(nB.getIdUbic())){
             String codDep;
             codDep = nB.getIdUbic().substring(0, 2); 
             Filtro += " AND IDUBIC LIKE '"+codDep+"%'";
@@ -66,7 +66,7 @@ public class ListadoIncidente implements Serializable {
         }
         try {
             PreparedStatement getDepartamento = connection.prepareStatement(
-                    "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE is NULL AND IDUBIC!='00' "+Filtro+" order by NOMBUBIC");
+                    "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE is NULL "+Filtro+" order by NOMBUBIC");
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getDepartamento.executeQuery());
 

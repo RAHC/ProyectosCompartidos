@@ -20,6 +20,7 @@ import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 import org.primefaces.event.map.MarkerDragEvent;
 import org.primefaces.event.map.OverlaySelectEvent;
+import org.primefaces.model.DualListModel;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
@@ -50,6 +51,7 @@ public class init {
     private String CategoriaAfectacion;
     private String tipoAfectacion;
     List<AfectacionAPersona> resultadosAP = new ArrayList<AfectacionAPersona>();
+    
     @Resource(name = "jdbc/sise")
     DataSource dataSource;
 
@@ -506,7 +508,7 @@ public class init {
         }
         try {
             PreparedStatement getDepartamento = connection.prepareStatement(
-                    "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE is NULL AND IDUBIC!='00' order by NOMBUBIC");
+                    "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE is NULL order by NOMBUBIC");
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getDepartamento.executeQuery());
 
@@ -696,6 +698,32 @@ public class init {
 
     }
 
+    public List<TipoEvento> getTipoEventos() throws SQLException {
+        List<TipoEvento> resultados = new ArrayList<TipoEvento>();
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+        Connection connection = dataSource.getConnection();
+
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+        try {
+            String sql = "SELECT * FROM TIPO EVENTO ORDER BY NOMBTPEV";
+            PreparedStatement getTpEventos = connection.prepareStatement(sql);
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getTpEventos.executeQuery());
+            while (rowSet.next()) {
+                resultados.add(new TipoEvento(rowSet.getString("IDTPEV"),
+                        rowSet.getString("NOMBTPEV"),
+                        rowSet.getString("DESCTPEV")));
+            }
+            return resultados;
+        } finally {
+            connection.close();
+        }
+    }
+
     public List<TipoIncidente> getCategoriaIncidente() throws SQLException {
         List<TipoIncidente> resultados = new ArrayList<TipoIncidente>();
         if (dataSource == null) {
@@ -734,13 +762,14 @@ public class init {
 
         try {
             PreparedStatement getRol = connection.prepareStatement(
-                    "SELECT IDEV, NOMBEV FROM EVENTO WHERE ESTADOEV='H'");
+                    "SELECT IDEV, NOMBEV, DESCEV FROM EVENTO WHERE ESTADOEV='H'");
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getRol.executeQuery());
 
             while (rowSet.next()) {
                 resultados.add(new Evento(rowSet.getString("IDEV"),
-                        rowSet.getString("NOMBEV")));
+                        rowSet.getString("NOMBEV"),
+                        rowSet.getString("DESCEV")));
             }
             return resultados;
         } finally {
@@ -835,11 +864,11 @@ public class init {
         //resultados.removeAll(resultados);
 
         //resultadosAP.clear();
-        
-        /*if(!resultadosAP.isEmpty()){
-            resultadosAP.clear();
-        } */     
-        
+
+        /*
+         * if(!resultadosAP.isEmpty()){ resultadosAP.clear(); }
+         */
+
         if (dataSource == null) {
             throw new SQLException("No se pudo tener acceso a la fuente de datos");
         }
@@ -867,13 +896,13 @@ public class init {
                         rowSet.getString("DISCAFECPER"),
                         rowSet.getString("CENTROASISTAFECPER")));
             }
-            
+
             //rowSet.close();
 
             return resultadosAP;
         } finally {
             connection.close();
-            
+
         }
     }
 
@@ -883,5 +912,37 @@ public class init {
 
     public void setCategoriaAfectacion(String CategoriaAfectacion) {
         this.CategoriaAfectacion = CategoriaAfectacion;
+    }
+    /*
+     * Metodo utilizado para generar lista doble de Tipos de Incidentes
+     */
+
+    public DualListModel<TpIncidente> getDualTipoIncidentes() throws SQLException {
+        DualListModel<TpIncidente> DualTipoIncidente = null;
+        if (DualTipoIncidente == null) {
+            List<TpIncidente> TpIncidenteSource = new ArrayList<TpIncidente>();
+            List<TpIncidente> TpIncidenteTarget = new ArrayList<TpIncidente>();
+
+            if (dataSource == null) {
+                throw new SQLException("No se pudo tener acceso a la fuente de datos");
+            }
+            Connection connection = dataSource.getConnection();
+
+            if (connection == null) {
+                throw new SQLException("No se pudo conectar a la fuente de datos");
+            }
+            PreparedStatement getTipoIncidente = connection.prepareStatement(
+                    "SELECT IDTPINC, NOMBTPINC, DESCTPINC FROM TIPOINCIDENTE WHERE ESTADOTPINC='H' ORDER BY NOMBTPINC");
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getTipoIncidente.executeQuery());
+            while (rowSet.next()){
+                TpIncidenteSource.add(new TpIncidente(rowSet.getString("IDTPINC"),
+                        rowSet.getString("NOMBTPINC"),
+                        rowSet.getString("DESCTPINC")));
+            }
+            DualTipoIncidente = new DualListModel<TpIncidente>(TpIncidenteSource, TpIncidenteTarget);
+            connection.close();
+        }
+        return DualTipoIncidente;
     }
 }

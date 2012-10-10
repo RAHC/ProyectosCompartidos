@@ -1,7 +1,7 @@
 package dominio;
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in
+ * the editor.
  */
 
 import java.io.IOException;
@@ -29,6 +29,7 @@ public class LoginBean implements Serializable {
     private String password;
     private String IdEvento;
     private String IdUbic;
+    private String Jurisdiccion;
     private String opcion;
     private Integer IdCont;
     private Integer IdRol;
@@ -49,15 +50,15 @@ public class LoginBean implements Serializable {
     public String login() {
 
         String url = "login.xhtml";
-        
+
         if (validar()) {
             //changed the state to true
             isLoggedIn = true;
-            
+
             if (sb == null) {
                 url = "listadoIncidentes.xhtml";
                 //doRedirect(url);
-                
+
             } else {
                 //doRedirect(sb.toString());
                 url = sb.toString();
@@ -84,7 +85,6 @@ public class LoginBean implements Serializable {
         boolean resultado = false;
         String pass;
 
-
         try {
             Connection connection = dataSource.getConnection();
             if (dataSource == null) {
@@ -96,7 +96,7 @@ public class LoginBean implements Serializable {
             }
 
             PreparedStatement getUsuario = connection.prepareStatement(
-                    "SELECT username, IDCONT, IDUBIC, IDROL FROM usuario WHERE username = ? ");
+                    "SELECT username, IDCONT, IDROL, JURISDICCION_ FROM usuario WHERE username = ? AND USERESTADO='A'");
             getUsuario.setString(1, getUsername());
 
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
@@ -112,9 +112,30 @@ public class LoginBean implements Serializable {
                 if (rowSet2.next()) {
                     pass = rowSet2.getString("P");
                     if (pass.equals(getPassword())) {
-                        setIdUbic(rowSet.getString("IDUBIC"));
                         setIdCont(rowSet.getInt("IDCONT"));
                         setIdRol(rowSet.getInt("IDROL"));
+                        setJurisdiccion(rowSet.getString("JURISDICCION_"));
+                        if ("N".equals(rowSet.getString("JURISDICCION_"))) {
+                            setIdUbic("00");
+                            
+                        } else if ("D".equals(rowSet.getString("JURISDICCION_"))) {
+                            PreparedStatement getUbic = connection.prepareStatement(
+                                    " SELECT SUBSTRING(idubic,0,5) as UBIC from CONTACTOS where IDCONT ="+rowSet.getInt("IDCONT"));
+                           CachedRowSet rowSet3 =  new com.sun.rowset.CachedRowSetImpl();
+                           rowSet3.populate(getUbic.executeQuery());
+                           rowSet3.next();
+                           setIdUbic(rowSet3.getString("UBIC"));
+                        }
+                        
+                        else if ("M".equals(rowSet.getString("JURISDICCION_"))) {
+                            PreparedStatement getUbic = connection.prepareStatement(
+                                    " SELECT SUBSTRING(idubic,0,7) as UBIC from CONTACTOS where IDCONT ="+rowSet.getInt("IDCONT"));
+                           CachedRowSet rowSet3 =  new com.sun.rowset.CachedRowSetImpl();
+                           rowSet3.populate(getUbic.executeQuery());
+                           rowSet3.next();
+                           setIdUbic(rowSet3.getString("UBIC"));
+                        }
+                        
                         resultado = true;
                     } else {
                         resultado = false;
@@ -138,13 +159,17 @@ public class LoginBean implements Serializable {
         httpSession.invalidate();
         httpSession.invalidate();
         return "login";
-        /*FacesContext context = FacesContext.getCurrentInstance();
-         context.getExternalContext().getSessionMap().remove("loginBean");*/
+        /*
+         * FacesContext context = FacesContext.getCurrentInstance();
+         context.getExternalContext().getSessionMap().remove("loginBean");
+         */
 
-        /*FacesContext context = FacesContext.getCurrentInstance();
-         ExternalContext externalContext = context.getExternalContext();
-         Object session = externalContext.getSession(false);
-         HttpSession httpSession = (HttpSession) session;*/
+        /*
+         * FacesContext context = FacesContext.getCurrentInstance();
+         * ExternalContext externalContext = context.getExternalContext();
+         * Object session = externalContext.getSession(false); HttpSession
+         * httpSession = (HttpSession) session;
+         */
 
     }
 
@@ -187,7 +212,7 @@ public class LoginBean implements Serializable {
     public void setIdCont(Integer IdCont) {
         this.IdCont = IdCont;
     }
-    
+
     public String getOpcion() {
         return opcion;
     }
@@ -210,5 +235,13 @@ public class LoginBean implements Serializable {
 
     public void setIsLoggedIn(boolean isLoggedIn) {
         this.isLoggedIn = isLoggedIn;
+    }
+
+    public String getJurisdiccion() {
+        return Jurisdiccion;
+    }
+
+    public void setJurisdiccion(String Jurisdiccion) {
+        this.Jurisdiccion = Jurisdiccion;
     }
 }

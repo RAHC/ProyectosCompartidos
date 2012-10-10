@@ -30,9 +30,11 @@ public class RegistroUsuario implements Serializable {
     private String Alias;
     private String Password;
     private Integer Nivel;
+    private String CodJurisdiccion;
     private String Ubicacion;
     private String CodDepartamento;
     private String CodMunicipio;
+    private String CodCanton;
     private Integer TpInstitucion;
     private Integer Institucion;
     private Integer Contacto;
@@ -50,34 +52,6 @@ public class RegistroUsuario implements Serializable {
     @Resource(name = "jdbc/sise")
     DataSource dataSource;
     FacesContext context = javax.faces.context.FacesContext.getCurrentInstance();
-
-    public List<Departamento> getDepartamentos() throws SQLException {
-        List<Departamento> resultados = new ArrayList<Departamento>();
-        if (dataSource == null) {
-            throw new SQLException("No se pudo tener acceso a la fuente de datos");
-        }
-        Connection connection = dataSource.getConnection();
-
-        if (connection == null) {
-            throw new SQLException("No se pudo conectar a la fuente de datos");
-        }
-        try {
-            PreparedStatement getDepartamento = connection.prepareStatement(
-                    "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE is NULL AND IDUBIC!='00' order by NOMBUBIC");
-            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
-            rowSet.populate(getDepartamento.executeQuery());
-
-            while (rowSet.next()) {
-                resultados.add(new Departamento(rowSet.getString("IDUBIC"),
-                        rowSet.getString("NOMBUBIC"),
-                        rowSet.getFloat("LATITUDUBIC"),
-                        rowSet.getFloat("LONGITUDUBIC")));
-            }
-            return resultados;
-        } finally {
-            connection.close();
-        }
-    }
 
     public List<Municipio> getMunicipios() throws SQLException {
         List<Municipio> resultados = new ArrayList<Municipio>();
@@ -105,13 +79,39 @@ public class RegistroUsuario implements Serializable {
         }
     }
 
+    public List<Canton> getCantones() throws SQLException {
+        List<Canton> resultados = new ArrayList<Canton>();
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+        Connection connection = dataSource.getConnection();
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+        try {
+            String query = "SELECT IDUBIC, NOMBUBIC, LATITUDUBIC, LONGITUDUBIC FROM UBICACION WHERE IDUBIC_PADRE = '" + CodMunicipio + "' order by NOMBUBIC";
+            PreparedStatement getUbicacion = connection.prepareStatement(query);
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getUbicacion.executeQuery());
+            while (rowSet.next()) {
+                resultados.add(new Canton(rowSet.getString("IDUBIC"),
+                        rowSet.getString("NOMBUBIC"),
+                        rowSet.getFloat("LATITUDUBIC"),
+                        rowSet.getFloat("LONGITUDUBIC")));
+            }
+            return resultados;
+        } finally {
+            connection.close();
+        }
+    }
+
     public RegistroUsuario() {
     }
 
     public Integer getContacto() {
         return Contacto;
     }
-    
+
     public List<Institucion> getInstituciones() throws SQLException {
         List<Institucion> resultados = new ArrayList<Institucion>();
         if (dataSource == null) {
@@ -123,15 +123,14 @@ public class RegistroUsuario implements Serializable {
             throw new SQLException("No se pudo conectar a la fuente de datos");
         }
         String filtro = "";
-        if(CodMunicipio!=null){
-            filtro = " AND (IDUBIC LIKE '" + CodMunicipio + "' or IDUBIC LIKE '"+CodDepartamento+"')";
-        }
-        else if((CodDepartamento!=null) && (!"00".equals(CodDepartamento))){
+        if (CodMunicipio != null) {
+            filtro = " AND (IDUBIC LIKE '" + CodMunicipio + "' or IDUBIC LIKE '" + CodDepartamento + "')";
+        } else if ((CodDepartamento != null) && (!"''".equals(CodDepartamento))) {
             filtro += " AND IDUBIC LIKE '" + CodDepartamento + "'";
         }
         try {
             PreparedStatement getInstitucion = connection.prepareStatement(
-                    "SELECT IDINST, NOMBINST FROM INSTITUCION WHERE IDTPINST= " + TpInstitucion + ""+filtro);
+                    "SELECT IDINST, NOMBINST FROM INSTITUCION WHERE IDTPINST= " + TpInstitucion + "" + filtro);
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getInstitucion.executeQuery());
             while (rowSet.next()) {
@@ -148,7 +147,10 @@ public class RegistroUsuario implements Serializable {
         this.Contacto = Contacto;
         if (Contacto > 0) {
             String sql;
-            sql = "SELECT * FROM CONTACTOS WHERE IDCONT=" + Contacto;
+            Integer count;
+            sql = "SELECT IDCONT, IDINST, IDUBIC, NOMBCONT, APELLCONT, TELCONT, CELCONT,"
+                    + " MAILINSTCONT, DIRCONT, CARGOCONT, TELINSTCONT, FAXCONT, MAILPERCONT, RADIOCONT"
+                    + " FROM CONTACTOS WHERE IDCONT=" + Contacto;
             if (dataSource == null) {
                 throw new SQLException("No se pudo tener acceso a la fuente de datos");
             }
@@ -162,6 +164,51 @@ public class RegistroUsuario implements Serializable {
                 CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
                 rowSet.populate(datosContacto.executeQuery());
                 rowSet.next();
+
+                count = rowSet.getString("IDUBIC").length();
+                if (count >= 5) {
+                    this.CodCanton = rowSet.getString("IDUBIC");
+                    sql = "SELECT IDUBIC_PADRE FROM UBICACION WHERE IDUBIC=" + rowSet.getString("IDUBIC");
+                    PreparedStatement datoMunicipio = connection.prepareStatement(sql);
+                    CachedRowSet rowSet2 = new com.sun.rowset.CachedRowSetImpl();
+                    rowSet2.populate(datoMunicipio.executeQuery());
+                    rowSet2.next();
+                    this.CodMunicipio = rowSet2.getString("IDUBIC_PADRE");
+
+                    sql = "SELECT IDUBIC_PADRE FROM UBICACION WHERE IDUBIC=" + rowSet2.getString("IDUBIC_PADRE");
+                    PreparedStatement datoDepartamento = connection.prepareStatement(sql);
+                    CachedRowSet rowSet3 = new com.sun.rowset.CachedRowSetImpl();
+                    rowSet3.populate(datoDepartamento.executeQuery());
+                    rowSet3.next();
+                    this.CodDepartamento = rowSet3.getString("IDUBIC_PADRE");
+                } else if (count >= 3) {
+                    this.CodMunicipio = rowSet.getString("IDUBIC");
+                    sql = "SELECT IDUBIC_PADRE FROM UBICACION WHERE IDUBIC=" + rowSet.getString("IDUBIC");
+                    PreparedStatement datoDepartamento = connection.prepareStatement(sql);
+                    CachedRowSet rowSet2 = new com.sun.rowset.CachedRowSetImpl();
+                    rowSet2.populate(datoDepartamento.executeQuery());
+                    rowSet2.next();
+                    this.CodDepartamento = rowSet2.getString("IDUBIC_PADRE");
+                } else if (count >= 1) {
+                    this.CodDepartamento = rowSet.getString("IDUBIC");
+                }
+
+                this.CodMunicipio = rowSet.getString("IDUBIC");
+                if (rowSet.getString("IDINST") != null) {
+                    this.Institucion = rowSet.getInt("IDINST");
+
+                    sql = "SELECT IDTPINST FROM INSTITUCION WHERE IDINST = " + rowSet.getInt("IDINST");
+                    PreparedStatement datosInstitucion = connection.prepareStatement(sql);
+                    CachedRowSet rowSet4 = new com.sun.rowset.CachedRowSetImpl();
+                    rowSet4.populate(datosInstitucion.executeQuery());
+                    rowSet4.next();
+                    this.TpInstitucion = rowSet4.getInt("IDTPINST");
+
+                } else {
+                    this.Institucion = null;
+                    this.TpInstitucion = null;
+                }
+
                 this.Nombres = rowSet.getString("NOMBCONT");
                 this.Apellidos = rowSet.getString("APELLCONT");
                 this.TelPers = rowSet.getString("TELCONT");
@@ -178,6 +225,24 @@ public class RegistroUsuario implements Serializable {
                 connection.close();
             }
         }
+        else{
+            this.CodDepartamento = null;
+            this.CodMunicipio = null;
+            this.CodCanton = null;
+            this.Institucion = null;
+            this.TpInstitucion = null;
+            this.Nombres = null;
+            this.Apellidos = null;
+            this.TelPers = null;
+            this.Cel = null;
+            this.CorreoInst = null;
+            this.Direccion = null;
+            this.Cargo = null;
+            this.TelInst = null;
+            this.Fax = null;
+            this.CorreoPers = null;
+            this.Radio = null;
+        }
     }
 
     public List<Contacto> getContactos() throws SQLException {
@@ -192,8 +257,7 @@ public class RegistroUsuario implements Serializable {
         }
         try {
             PreparedStatement getContacto = connection.prepareStatement(
-                    "SELECT * FROM CONTACTOS WHERE IDINST =" + Institucion + ""
-                    + " AND IDCONT NOT IN(SELECT IDCONT FROM USUARIO)");
+                    "SELECT * FROM CONTACTOS WHERE IDCONT NOT IN(SELECT IDCONT FROM USUARIO)");
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getContacto.executeQuery());
             while (rowSet.next()) {
@@ -227,18 +291,18 @@ public class RegistroUsuario implements Serializable {
             throw new SQLException("No se pudo conectar a la fuente de datos");
         }
         String Ubic;
-        if(getCodDepartamento()!=null){
+        if (getCodDepartamento() != null) {
             this.Ubicacion = CodDepartamento;
         }
-        if(getCodMunicipio()!=null){
+        if (getCodMunicipio() != null) {
             this.Ubicacion = CodMunicipio;
         }
         if (getUbicacion() == null) {
-            Ubic = "00";
+            Ubic = "''";
         } else {
             Ubic = getUbicacion();
         }
-        
+
         int contact;
         if (getContacto() == null) {
             contact = 0;
@@ -248,42 +312,47 @@ public class RegistroUsuario implements Serializable {
         CallableStatement cs;
         Integer accion;
         
+        int inst;
+        if (getInstitucion() == null) {
+            inst = 0;
+        } else {
+            inst = getInstitucion();
+        }
+
         try {
-            String sql = "{ call USUARIO_Add(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+            String sql = "{ call USUARIO_Add(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 
             cs = connection.prepareCall(sql);
             cs.setString(1, getAlias());
             cs.setString(2, getPassword());
             cs.setInt(3, getNivel());
-            cs.setString(4, Ubic);
-            cs.setInt(5, contact);
-            cs.setInt(6, getInstitucion());
-            cs.setString(7, getNombres());
-            cs.setString(8, getApellidos());
-            cs.setString(9, getTelPers());
-            cs.setString(10, getCel());
-            cs.setString(11, getCorreoInst());
-            cs.setString(12, getDireccion());
-            cs.setString(13, getCargo());
-            cs.setString(14, getTelInst());
-            cs.setString(15, getFax());
-            cs.setString(16, getCorreoPers());
-            cs.setString(17, getRadio());
-            cs.registerOutParameter(18, java.sql.Types.INTEGER);
+            cs.setString(4, getCodJurisdiccion());
+            cs.setString(5, Ubic);
+            cs.setInt(6, contact);
+            cs.setInt(7, inst);
+            cs.setString(8, getNombres());
+            cs.setString(9, getApellidos());
+            cs.setString(10, getTelPers());
+            cs.setString(11, getCel());
+            cs.setString(12, getCorreoInst());
+            cs.setString(13, getDireccion());
+            cs.setString(14, getCargo());
+            cs.setString(15, getTelInst());
+            cs.setString(16, getFax());
+            cs.setString(17, getCorreoPers());
+            cs.setString(18, getRadio());
+            cs.registerOutParameter(19, java.sql.Types.INTEGER);
             cs.execute();
-            accion = cs.getInt(18);
-            if(accion==0){
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error el la ejecuci&oacute;n, el nuevo usuario no pudo ser registrado",null));
-            }
-            else if(accion>0){
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario registrado satisfactotiamente",null));
+            accion = cs.getInt(19);
+            if (accion == 0) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error el la ejecuci&oacute;n, el nuevo usuario no pudo ser registrado", null));
+            } else if (accion > 0) {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario registrado satisfactotiamente", null));
             }
 
         } catch (NumberFormatException ex) {
             System.out.println(ex);
-        }
-
-        finally {
+        } finally {
             connection.close();
         }
         return "listadoIncidentes.xhtml";
@@ -440,5 +509,20 @@ public class RegistroUsuario implements Serializable {
     public void setTpInstitucion(Integer TpInstitucion) {
         this.TpInstitucion = TpInstitucion;
     }
-    
+
+    public String getCodJurisdiccion() {
+        return CodJurisdiccion;
+    }
+
+    public void setCodJurisdiccion(String CodJurisdiccion) {
+        this.CodJurisdiccion = CodJurisdiccion;
+    }
+
+    public String getCodCanton() {
+        return CodCanton;
+    }
+
+    public void setCodCanton(String CodCanton) {
+        this.CodCanton = CodCanton;
+    }
 }

@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./SisePlantilla.xhtml">
+
+            <ui:define name="titles">
+                FILTROS PARA GENERAR REPORTE HISTORICO DE INCIDENTES
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form prependId="false" id="filtros">
+                    <p:panel>
+                        <p:panelGrid class="borderito">
+                            <p:row>
+                                <p:column style="width: 25%; text-align: right">Tipo de Evento: </p:column>
+                                <p:column style="width: 25%">
+                                    <p:selectOneMenu id="lsTpEvento" value="#{historicoIncidente.tpEvento}">
+                                        <f:selectItem itemLabel="[TODOS]" itemValue=""/>
+                                        <f:selectItems value="#{init.tipoEventos}" var="te" itemLabel="#{te.idTpEvento}&nbsp;#{te.nombreTpEvento}" 
+                                                       itemValue="#{te.idTpEvento}" itemDescription="#{te.descripTpEvento}" />
+                                        <p:ajax update="lsEvento"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column style="text-align: right">Evento: </p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="lsEvento" value="#{historicoIncidente.evento}">
+                                        <f:selectItem itemLabel="[TODOS]" itemValue=""/>
+                                        <f:selectItems value="#{init.eventos}" var="ev" itemLabel="#{ev.nombreEvento}" 
+                                                       itemValue="#{ev.idEvento}" itemDescription="#{ev.descripEvento}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column style="text-align: right">Per&iacute;odo de Inicio Desde: </p:column>
+                                <p:column> <p:calendar id="txtFechaIni" effect="slide" showOn="button" navigator="true" pattern="dd/MM/yyyy HH:mm" locale="es" value="#{historicoIncidente.fechaInicial}" /></p:column>
+                                <p:column>Hasta: <p:calendar id="txtFechaFinal" effect="slide" showOn="button" navigator="true" pattern="dd/MM/yyyy HH:mm" locale="es" value="#{historicoIncidente.fechaFinal}" /></p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column style="text-align: right">Tipo de Incidente: </p:column>
+                                <p:column colspan="2">
+                                    <p:pickList id="lsTpIncidente" value="#{init.dualTipoIncidentes}"
+                                                var="tpInc" effect="bounce" itemValue="#{tpInc.idTpIncidente}"
+                                                itemLabel="#{tpInc.nombreTpIncidente}" />
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column style="text-align: right">Departamento</p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="lsDep" value="#{historicoIncidente.codDepartamento}, #{init.codMunicipio}">
+                                        <f:selectItem itemLabel="[TODOS]" itemValue=""/>
+                                        <f:selectItems value="#{init.departamentos}" var="depto" itemValue="#{depto.idDepartamento}"
+                                                       itemLabel="#{depto.nombreDepartamento}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column style="text-align: right">Municipio</p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="lsMunic" value="#{historicoIncidente.codMunicipio}, #{init.codMunicipio}">
+                                        <f:selectItem itemLabel="[TODOS]" itemValue="" />
+                                        <f:selectItems value="#{init.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" 
+                                                       itemValue="#{munic.idMunicipio}" />
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column style="text-align: right">Cant&oacute;n</p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="lsCanton" value="#{historicoIncidente.codCanton}, #{init.codCanton}">
+                                        <f:selectItem itemLabel ="[TODOS]" itemValue=""/>
+                                        <f:selectItems value="#{init.cantones}" var="canton" itemLabel="#{canton.nombreCanton}"
+                                                       itemValue="#{canton.idCanton}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column style="text-align: right">Caser&iacute;o</p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="lsCaserio" value="#{historicoIncidente.codCaserio}">
+                                        <f:selectItem itemLabel="[TODOS]" itemValue=""/>
+                                        <f:selectItems value="#{init.caserios}" var="caserio" itemLabel="#{caserio.nombreCaserio}"
+                                                       itemValue="#{caserio.idCaserio}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:panel>     
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

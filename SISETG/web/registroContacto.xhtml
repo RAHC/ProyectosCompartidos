@@ -19,14 +19,50 @@
                     <p:panel header="Informaci&oacute;n de Contacto" id="lyContacto"> 
                         <p:panelGrid styleClass="innertable">
                             <p:row>
-                                <p:column><h:outputLabel value="Nombres: " for="nombres" /></p:column>
+                                <p:column style="width:30%"><p:outputLabel value="Nombres: " for="nombres" /></p:column>
                                 <p:column colspan="3"><p:inputText id="nombres" size="35" value="#{registroContacto.nombres}" 
                                                        required="true" requiredMessage="Por favor Ingrese los nombres del contacto"/></p:column>
                             </p:row>
                             <p:row>
-                                <p:column><h:outputLabel value="Apellidos: " for="apellidos"/></p:column>
+                                <p:column style="width:30%"><p:outputLabel value="Apellidos: " for="apellidos"/></p:column>
                                 <p:column colspan="3"><p:inputText id="apellidos" size="35" value="#{registroContacto.apellidos}"
                                                        required="true" requiredMessage="Por favor Ingrese los apellidos del contacto"/></p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column style="width:30%"><h:outputLabel value="Ubicaci&oacute;n: "/></p:column>
+                                <p:column style="width:25%"><p:outputLabel value="Departamento: " for="lsDepart"/></p:column>
+                                <p:column colspan="2">
+                                    <p:selectOneMenu id="lsDepart" value="#{registroContacto.codDepartamento}" required="true"
+                                                     requiredMessage="Por favor seleccione el departamento al cual pertenece el contacto">
+                                        <f:selectItem itemLabel="Seleccione un Departamento" itemValue=""/>
+                                        <f:selectItems value="#{init.departamentos}" var="depart" itemLabel="#{depart.nombreDepartamento}" 
+                                                      itemValue="#{depart.idDepartamento}"/>
+                                        <p:ajax update="lsMunic, institucion"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column/>
+                                <p:column><h:outputLabel value="Municipio: " /></p:column>
+                                <p:column colspan="2">
+                                    <p:selectOneMenu id="lsMunic" value="#{registroContacto.codMunicipio}">
+                                        <f:selectItem itemLabel="Seleccione un Municipio" itemValue=""/>
+                                        <f:selectItems value="#{registroContacto.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}"
+                                                       itemValue="#{munic.idMunicipio}"/>
+                                        <p:ajax update="lsCanton"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                             <p:row>
+                                <p:column/>
+                                <p:column><h:outputLabel value="Cant&oacute;n: " /></p:column>
+                                <p:column colspan="2">
+                                    <p:selectOneMenu id="lsCanton" value="#{registroContacto.codCanton}">
+                                        <f:selectItem itemLabel="Seleccione un Cant&oacute;n" itemValue=""/>
+                                        <f:selectItems value="#{registroContacto.cantones}" var="canton" itemLabel="#{canton.nombreCanton}"
+                                                       itemValue="#{canton.idCanton}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
                             </p:row>
                             <p:row>
                                 <p:column colspan="4">
@@ -34,16 +70,16 @@
                                         <p:fieldset legend="Instituci&oacute;n a la que pertenece" style=" font-size: 14px; font-family: calibri" >
                                             <h:panelGrid columns="3">
                                                 <h:outputLabel value="Tipo de Instituci&oacute;n: " for="tpInstitucion" />
-                                                <p:selectOneMenu id="tpInstitucion" label="TpInstitucion" value="#{init.tpInstitucion}" required="true" requiredMessage="Por favor seleccione un tipo de instituci&oacute;n" >
+                                                <p:selectOneMenu id="tpInstitucion" label="TpInstitucion" value="#{registroContacto.tpInstitucion}" >
                                                     <f:selectItem itemLabel="Seleccione un Tipo de Instituci&oacute;n" itemValue="" />
                                                     <f:selectItems value="#{init.tpInstituciones}" var="tpInstitucion" itemLabel="#{tpInstitucion.nombreTpInstitucion}" itemValue="#{tpInstitucion.idTpInstitucion}" />
                                                     <p:ajax update="institucion" />
                                                 </p:selectOneMenu>
                                                 <h:outputLabel />
                                                 <h:outputLabel value="Nombre de Instituci&oacute;n: " for="institucion" />
-                                                <p:selectOneMenu id="institucion" label="Institucion" value="#{registroContacto.institucion}" required="true" requiredMessage="Por favor seleccione una instituci&oacute;n">
-                                                    <f:selectItem itemLabel="Seleccione una Instituci&oacute;n" itemValue="0" />
-                                                    <f:selectItems value="#{init.instituciones}" var="inst" itemLabel="#{inst.nombreInstitucion}" itemValue="#{inst.idInstitucion}" />
+                                                <p:selectOneMenu id="institucion" label="Institucion" value="#{registroContacto.institucion}">
+                                                    <f:selectItem itemLabel="Seleccione una Instituci&oacute;n" itemValue="" />
+                                                    <f:selectItems value="#{registroContacto.instituciones}" var="inst" itemLabel="#{inst.nombreInstitucion}" itemValue="#{inst.idInstitucion}" />
                                                 </p:selectOneMenu>
                                             </h:panelGrid>
                                         </p:fieldset>
@@ -57,17 +93,17 @@
                                             <p:panelGrid styleClass="innertable">
                                                 <p:row>
                                                     <p:column><h:outputLabel value="Telefono institucional: " for="telInst" /></p:column>
-                                                    <p:column><p:inputText id="telInst" size="25" value="#{registroContacto.telInst}"/></p:column>
+                                                    <p:column><p:inputMask id="telInst" size="25" value="#{registroContacto.telInst}" mask="9999-9999" maxlength="9"/></p:column>
                                                     <p:column><h:outputLabel value="Telefono celular: " for="cel" /></p:column>
-                                                    <p:column><p:inputText id="cel" size="25" value="#{registroContacto.cel}" /></p:column>
+                                                    <p:column><p:inputMask id="cel" size="25" value="#{registroContacto.cel}" mask="9999-9999" maxlength="9" /></p:column>
                                                 </p:row>
                                                 <p:row>
                                                     <p:column><h:outputLabel value="Telefono personal: " for="telPers" /></p:column>
-                                                    <p:column><p:inputText id="telPers" size="25" value="#{registroContacto.telPers}" /></p:column>
+                                                    <p:column><p:inputMask id="telPers" size="25" value="#{registroContacto.telPers}" mask="9999-9999" maxlength="9" /></p:column>
                                                 </p:row>
                                                 <p:row>    
                                                     <p:column><h:outputLabel value="Fax: " for="fax"/></p:column>
-                                                    <p:column><p:inputText id="fax" size="25" value="#{registroContacto.fax}" /></p:column>
+                                                    <p:column><p:inputMask id="fax" size="25" value="#{registroContacto.fax}" mask="9999-9999" maxlength="9" /></p:column>
                                                 </p:row>
                                                 <p:row>
                                                     <p:column><h:outputLabel value="Radio: " for="radio" /></p:column>
