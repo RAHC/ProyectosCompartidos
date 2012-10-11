@@ -154,6 +154,28 @@
                                     <h:outputText value="#{lc.nombInst}" />
                                 </f:facet>
                                 <f:facet name="input">
+                                    Departamento: 
+                                    <p:selectOneMenu id="lsDepart" value="#{lc.idDepartamento}" required="true"
+                                                     requiredMessage="Por favor seleccione el departamento al cual pertenece el contacto">
+                                        <f:selectItem itemLabel="Seleccione un Departamento" itemValue=""/>
+                                        <f:selectItems value="#{init.departamentos}" var="depart" itemLabel="#{depart.nombreDepartamento}" 
+                                                       itemValue="#{depart.idDepartamento}"/>
+                                        <p:ajax update="lsMunic"/>
+                                    </p:selectOneMenu><br/>
+                                    Municipio: 
+                                    <p:selectOneMenu id="lsMunic" value="#{lc.idMunicipio}">
+                                        <f:selectItem itemLabel="Seleccione un Municipio" itemValue=""/>
+                                        <f:selectItems value="#{libretaContacto.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}"
+                                                       itemValue="#{munic.idMunicipio}"/>
+                                        <p:ajax update="lsCanton"/>
+                                    </p:selectOneMenu><br/>
+                                    Canton: 
+                                    <p:selectOneMenu id="lsCanton" value="#{lc.idCanton}">
+                                        <f:selectItem itemLabel="Seleccione un Cant&oacute;n" itemValue=""/>
+                                        <f:selectItems value="#{libretaContacto.cantones}" var="canton" itemLabel="#{canton.nombreCanton}"
+                                                       itemValue="#{canton.idCanton}"/>
+                                    </p:selectOneMenu><br/>
+                                    Instituci&oacute;n: 
                                     <p:selectOneMenu value="#{lc.idInst}">
                                         <f:selectItems value="#{libretaContacto.todasInstituciones}" var="inst" itemLabel="#{inst.nombreInstitucion}" itemValue="#{inst.idInstitucion}"/>
                                     </p:selectOneMenu>
@@ -170,7 +192,7 @@
                                 <p:row>
                                     <p:column colspan="6" style="border: 0">
                                         <h:outputText value="Cargo: #{lc.cargoCont}"/>
-                                        <br/><h:outputText value="Ubicaci&oacute;n: #{lc.nombUbic}"/>
+                                        <br/><h:outputText value="Ubicaci&oacute;n: #{lc.nombDepartamento} / #{lc.nombMunicipio} / #{lc.nombCanton}"/>
                                     </p:column>
                                 </p:row>
                                 <p:row>

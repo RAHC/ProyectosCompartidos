@@ -120,7 +120,7 @@ public class LoginBean implements Serializable {
                             
                         } else if ("D".equals(rowSet.getString("JURISDICCION_"))) {
                             PreparedStatement getUbic = connection.prepareStatement(
-                                    " SELECT SUBSTRING(idubic,0,5) as UBIC from CONTACTOS where IDCONT ="+rowSet.getInt("IDCONT"));
+                                    " SELECT SUBSTRING(idubic,0,3) as UBIC from CONTACTOS where IDCONT ="+rowSet.getInt("IDCONT"));
                            CachedRowSet rowSet3 =  new com.sun.rowset.CachedRowSetImpl();
                            rowSet3.populate(getUbic.executeQuery());
                            rowSet3.next();
@@ -129,7 +129,7 @@ public class LoginBean implements Serializable {
                         
                         else if ("M".equals(rowSet.getString("JURISDICCION_"))) {
                             PreparedStatement getUbic = connection.prepareStatement(
-                                    " SELECT SUBSTRING(idubic,0,7) as UBIC from CONTACTOS where IDCONT ="+rowSet.getInt("IDCONT"));
+                                    " SELECT SUBSTRING(idubic,0,5) as UBIC from CONTACTOS where IDCONT ="+rowSet.getInt("IDCONT"));
                            CachedRowSet rowSet3 =  new com.sun.rowset.CachedRowSetImpl();
                            rowSet3.populate(getUbic.executeQuery());
                            rowSet3.next();

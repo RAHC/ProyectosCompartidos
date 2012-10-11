@@ -196,20 +196,36 @@ public class libretaContacto implements Serializable {
             throw new SQLException("No se pudo conectar a la fuente de datos");
         }
         String filtro = " WHERE 1=1";
+        String jointable = "";
+        String select = "";
+        String sql;
+        boolean flag = false;
         if (CodCaserio != null) {
-            filtro += " AND I.IDUBIC LIKE '" + CodCaserio + "'";
+            filtro += " AND C.DUBIC LIKE '" + CodCaserio + "'%";
         } else if (CodCanton != null) {
-            filtro += " AND I.IDUBIC LIKE '" + CodCanton + "'";
+            filtro += " AND C.IDUBIC LIKE '" + CodCanton + "'%";
         } else if (CodMunicipio != null) {
-            filtro += " AND I.IDUBIC LIKE '" + CodMunicipio + "'";
+            filtro += " AND C.IDUBIC LIKE '" + CodMunicipio + "%'";
         } else if (CodDepartamento != null) {
-            filtro += " AND I.IDUBIC LIKE '" + CodDepartamento + "'";
+            filtro += " AND C.IDUBIC LIKE '" + CodDepartamento + "%'";
         }
-        if (TpInstitucion != null) {
-            filtro += " AND TP.IDTPINST=" + TpInstitucion;
+        if (TpInstitucion != null && Institucion == null) {
+            select += ", NOMBINST, I.IDTPINST, NOMBTPINST ";
+            jointable += " INNER JOIN INSTITUCION I ON C.IDINST=I.IDINST INNER JOIN TIPOINSTITUCION TP ON I.IDTPINST=TP.IDTPINST ";
+            filtro += " AND C.IDINST IN (SELECT DISTINCT(IDINST) FROM INSTITUCION WHERE IDTPINST=" + TpInstitucion + ")";
+            flag = true;
         }
-        if (Institucion != null) {
-            filtro += " AND I.IDINST=" + Institucion;
+        if (TpInstitucion != null && Institucion != null) {
+            select += ", NOMBINST, I.IDTPINST, NOMBTPINST ";
+            jointable += " INNER JOIN INSTITUCION I ON C.IDINST=I.IDINST INNER JOIN TIPOINSTITUCION TP ON I.IDTPINST=TP.IDTPINST ";
+            filtro += " AND C.IDINST=" + Institucion + " AND I.IDTPINST=" + TpInstitucion;
+            flag = true;
+        }
+        if (TpInstitucion == null && Institucion != null) {
+            select += ", NOMBINST, I.IDTPINST, NOMBTPINST ";
+            jointable += " INNER JOIN INSTITUCION I ON C.IDINST=I.IDINST INNER JOIN TIPOINSTITUCION TP ON I.IDTPINST=TP.IDTPINST ";
+            filtro += " AND C.IDINST=" + Institucion;
+            flag = true;
         }
         if (NombreContacto != null) {
             filtro += " AND (NOMBCONT LIKE '%" + NombreContacto + "%' or APELLCONT LIKE '%" + NombreContacto + "%')";
@@ -220,14 +236,87 @@ public class libretaContacto implements Serializable {
         try {
             PreparedStatement getContactos = connection.prepareStatement(
                     "SELECT IDCONT, NOMBCONT, APELLCONT, TELCONT, CELCONT, MAILINSTCONT, DIRCONT, "
-                    + "CARGOCONT, S.TELINSTCONT, FAXCONT, MAILPERCONT, RADIOCONT, U.IDUBIC, NOMBUBIC, "
-                    + "I.IDINST, NOMBINST, I.IDTPINST, NOMBTPINST FROM CONTACTOS S INNER JOIN INSTITUCION I "
-                    + "ON S.IDINST=I.IDINST INNER JOIN TIPOINSTITUCION TP ON I.IDTPINST=TP.IDTPINST "
-                    + "INNER JOIN UBICACION U ON U.IDUBIC=I.IDUBIC "
+                    + "CARGOCONT, TELINSTCONT, FAXCONT, MAILPERCONT, RADIOCONT, C.IDUBIC, NOMBUBIC, C.IDINST " + select
+                    + "FROM CONTACTOS C INNER JOIN UBICACION U ON U.IDUBIC=C.IDUBIC " + jointable + " "
                     + filtro + " ORDER BY NOMBCONT");
+
             CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
             rowSet.populate(getContactos.executeQuery());
             while (rowSet.next()) {
+                /*Verifica los datos de la institucion si el contacto pertenece a una institucion*/
+                Integer idInst = 0;
+                String nombInst = "";
+                Integer idTpInst = 0;
+                String NombTpInst = "";
+                if (rowSet.getInt("IDINST") > 0) {
+                    idInst = rowSet.getInt("IDINST");
+                    PreparedStatement getInst = connection.prepareStatement(
+                            "SELECT NOMBINST, I.IDTPINST, NOMBTPINST FROM INSTITUCION I INNER JOIN "
+                            + "TIPOINSTITUCION TP ON I.IDTPINST=TP.IDTPINST WHERE I.IDINST = "+rowSet.getInt("IDINST"));
+                    CachedRowSet rowSet2 = new com.sun.rowset.CachedRowSetImpl();
+                    rowSet2.populate(getInst.executeQuery());
+                    rowSet2.next();
+                    nombInst = rowSet2.getString("NOMBINST");
+                    idTpInst = rowSet2.getInt("IDTPINST");
+                    NombTpInst = rowSet2.getString("NOMBTPINST");
+                }
+                if (flag == true) {
+                    if (rowSet.getString("NOMBINST").length() > 0) {
+                        nombInst = rowSet.getString("NOMBINST");
+                    }
+                    if (rowSet.getInt("IDTPINST") > 0) {
+                        idTpInst = rowSet.getInt("IDTPINST");
+                    }
+                    if (rowSet.getString("NOMBTPINST").length() > 0) {
+                        NombTpInst = rowSet.getString("NOMBTPINST");
+                    }
+                }
+                /*Obtiene nombre y Id de la Ubicacion*/
+                String IdCanton = "";
+                String NombCanton ="";
+                String IdMunicipio ="";
+                String NombMunicipio="";
+                String IdDepartamento="";
+                String NombDepartamento="";
+                Integer count;
+                count = rowSet.getString("IDUBIC").length();
+                if (count >= 5) {
+                    IdCanton = rowSet.getString("IDUBIC");
+                    NombCanton = rowSet.getString("NOMBUBIC");
+                    sql = "SELECT IDUBIC, NOMBUBIC, IDUBIC_PADRE FROM UBICACION WHERE IDUBIC=(SELECT IDUBIC_PADRE FROM "
+                            + "UBICACION I WHERE I.IDUBIC=" + rowSet.getString("IDUBIC")+")";
+                    PreparedStatement datoMunicipio = connection.prepareStatement(sql);
+                    CachedRowSet rowSet3 = new com.sun.rowset.CachedRowSetImpl();
+                    rowSet3.populate(datoMunicipio.executeQuery());
+                    rowSet3.next();
+                    IdMunicipio = rowSet3.getString("IDUBIC");
+                    NombMunicipio = rowSet3.getString("NOMBUBIC");
+
+                    sql = "SELECT IDUBIC, NOMBUBIC FROM UBICACION WHERE IDUBIC=" + rowSet3.getString("IDUBIC_PADRE");
+                    PreparedStatement datoDepartamento = connection.prepareStatement(sql);
+                    CachedRowSet rowSet4 = new com.sun.rowset.CachedRowSetImpl();
+                    rowSet4.populate(datoDepartamento.executeQuery());
+                    rowSet4.next();
+                    IdDepartamento = rowSet4.getString("IDUBIC");
+                    NombDepartamento = rowSet4.getString("NOMBUBIC");
+                } 
+                else if (count >= 3) {
+                    IdMunicipio = rowSet.getString("IDUBIC");
+                    NombMunicipio = rowSet.getString("NOMBUBIC");
+                    sql = "SELECT IDUBIC, NOMBUBIC FROM UBICACION WHERE IDUBIC=(SELECT IDUBIC_PADRE FROM "
+                            + "UBICACION WHERE IDUBIC=" + rowSet.getString("IDUBIC")+")";
+                    PreparedStatement datoDepartamento = connection.prepareStatement(sql);
+                    CachedRowSet rowSet3 = new com.sun.rowset.CachedRowSetImpl();
+                    rowSet3.populate(datoDepartamento.executeQuery());
+                    rowSet3.next();
+                    IdDepartamento = rowSet3.getString("IDUBIC");
+                    NombDepartamento = rowSet3.getString("NOMBUBIC");
+                } 
+                else if (count >= 1) {
+                    IdDepartamento = rowSet.getString("IDUBIC");
+                    NombDepartamento = rowSet.getString("NOMBUBIC");
+                }
+                
                 resultados.add(new DatosContactos(
                         rowSet.getInt("IDCONT"),
                         rowSet.getString("NOMBCONT"),
@@ -241,12 +330,16 @@ public class libretaContacto implements Serializable {
                         rowSet.getString("FAXCONT"),
                         rowSet.getString("MAILPERCONT"),
                         rowSet.getString("RADIOCONT"),
-                        rowSet.getString("IDUBIC"),
-                        rowSet.getString("NOMBUBIC"),
-                        rowSet.getInt("IDINST"),
-                        rowSet.getString("NOMBINST"),
-                        rowSet.getInt("IDTPINST"),
-                        rowSet.getString("NOMBTPINST")));
+                        IdDepartamento,
+                        NombDepartamento,
+                        IdMunicipio,
+                        NombMunicipio,
+                        IdCanton,
+                        NombCanton,
+                        idInst,
+                        nombInst,
+                        idTpInst,
+                        NombTpInst));
             }
             return resultados;
         } finally {
@@ -263,7 +356,7 @@ public class libretaContacto implements Serializable {
         if (connection == null) {
             throw new SQLException("No se pudo conectar a la fuente de datos");
         }
-        
+
         if (event != null) {
             DatosContactos obj = (DatosContactos) event.getObject();
             if (obj == null) {
@@ -293,13 +386,13 @@ public class libretaContacto implements Serializable {
                     cs.execute();
                     accion = cs.getInt(14);
                     cs.close();
-                    if (accion>0) {
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Edición realizada satisfactoriamente"+obj.getIdInst(), null));
+                    if (accion > 0) {
+                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Edición realizada satisfactoriamente" + obj.getIdInst(), null));
                     } else {
                         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Error en la ejecución, intente nuevamente ", null));
                     }
                 } catch (SQLException ex) {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, ex.toString() , null));
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, ex.toString(), null));
                     System.out.println(ex);
                 } finally {
                     connection.close();

@@ -19,8 +19,12 @@ public class DatosContactos implements Serializable{
    private String FaxCont;
    private String MailPerCon;
    private String RadioCont;
-   private String IdUbic;
-   private String NombUbic;
+   private String IdDepartamento;
+   private String NombDepartamento;
+   private String IdMunicipio;
+   private String NombMunicipio;
+   private String IdCanton;
+   private String NombCanton;
    private Integer IdInst;
    private String NombInst;
    private Integer IdTpInst;
@@ -28,7 +32,8 @@ public class DatosContactos implements Serializable{
    
    public DatosContactos(Integer IdCont, String NombCont, String ApellCont, String TelCont, String CelCont, String MailInstCont,
            String DirCont, String CargoCont, String TelInstCont, String FaxCont, String MailPerCon, String RadioCont,
-           String IdUbic, String NombUbic, Integer IdInst, String NombInst, Integer IdTpInst, String NombTpInst){
+           String IdDepartamento, String NombDepartamento, String IdMunicipio, String NombMunicipio, String IdCanton, 
+           String NombCanton, Integer IdInst, String NombInst, Integer IdTpInst, String NombTpInst){
    
        this.IdCont = IdCont;
        this.NombCont = NombCont;
@@ -42,8 +47,12 @@ public class DatosContactos implements Serializable{
        this.FaxCont = FaxCont;
        this.MailPerCon = MailPerCon;
        this.RadioCont = RadioCont;
-       this.IdUbic = IdUbic;
-       this.NombUbic = NombUbic;
+       this.IdDepartamento = IdDepartamento;
+       this.NombDepartamento = NombDepartamento;
+       this.IdMunicipio = IdMunicipio;
+       this.NombMunicipio = NombMunicipio;
+       this.IdCanton = IdCanton;
+       this.NombCanton = NombCanton;
        this.IdInst =IdInst;
        this.NombInst = NombInst;
        this.IdTpInst = IdTpInst;
@@ -113,15 +122,7 @@ public class DatosContactos implements Serializable{
     public void setIdTpInst(Integer IdTpInst) {
         this.IdTpInst = IdTpInst;
     }
-
-    public String getIdUbic() {
-        return IdUbic;
-    }
-
-    public void setIdUbic(String IdUbic) {
-        this.IdUbic = IdUbic;
-    }
-
+    
     public String getMailInstCont() {
         return MailInstCont;
     }
@@ -162,14 +163,6 @@ public class DatosContactos implements Serializable{
         this.NombTpInst = NombTpInst;
     }
 
-    public String getNombUbic() {
-        return NombUbic;
-    }
-
-    public void setNombUbic(String NombUbic) {
-        this.NombUbic = NombUbic;
-    }
-
     public String getRadioCont() {
         return RadioCont;
     }
@@ -192,6 +185,54 @@ public class DatosContactos implements Serializable{
 
     public void setTelInstCont(String TelInstCont) {
         this.TelInstCont = TelInstCont;
+    }
+
+    public String getIdCanton() {
+        return IdCanton;
+    }
+
+    public void setIdCanton(String IdCanton) {
+        this.IdCanton = IdCanton;
+    }
+
+    public String getIdDepartamento() {
+        return IdDepartamento;
+    }
+
+    public void setIdDepartamento(String IdDepartamento) {
+        this.IdDepartamento = IdDepartamento;
+    }
+
+    public String getIdMunicipio() {
+        return IdMunicipio;
+    }
+
+    public void setIdMunicipio(String IdMunicipio) {
+        this.IdMunicipio = IdMunicipio;
+    }
+
+    public String getNombCanton() {
+        return NombCanton;
+    }
+
+    public void setNombCanton(String NombCanton) {
+        this.NombCanton = NombCanton;
+    }
+
+    public String getNombDepartamento() {
+        return NombDepartamento;
+    }
+
+    public void setNombDepartamento(String NombDepartamento) {
+        this.NombDepartamento = NombDepartamento;
+    }
+
+    public String getNombMunicipio() {
+        return NombMunicipio;
+    }
+
+    public void setNombMunicipio(String NombMunicipio) {
+        this.NombMunicipio = NombMunicipio;
     }
    
 }

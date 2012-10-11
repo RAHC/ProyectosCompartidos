@@ -58,7 +58,7 @@ public class ListadoIncidente implements Serializable {
             throw new SQLException("No se pudo conectar a la fuente de datos");
         }
         String Filtro="";
-        if(!"''".equals(nB.getIdUbic())){
+        if(!"00".equals(nB.getIdUbic())){
             String codDep;
             codDep = nB.getIdUbic().substring(0, 2); 
             Filtro += " AND IDUBIC LIKE '"+codDep+"%'";

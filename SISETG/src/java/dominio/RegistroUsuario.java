@@ -193,7 +193,7 @@ public class RegistroUsuario implements Serializable {
                     this.CodDepartamento = rowSet.getString("IDUBIC");
                 }
 
-                this.CodMunicipio = rowSet.getString("IDUBIC");
+                //this.CodMunicipio = rowSet.getString("IDUBIC");
                 if (rowSet.getString("IDINST") != null) {
                     this.Institucion = rowSet.getInt("IDINST");
 
