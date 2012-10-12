@@ -4,8 +4,6 @@ package dominio;
  *
  * @author J@RG
  */
-
-import java.util.Date;
 import java.lang.*;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -14,11 +12,14 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 import org.primefaces.model.DualListModel;
@@ -37,6 +38,7 @@ public class SeguimientoBean {
     private String responsable;
     private String descripcion;
     private DualListModel<Institucion> Instituciones;
+    private String corrInc;
 
     public DualListModel<Institucion> getInstituciones() throws SQLException {
         if (Instituciones == null) {
@@ -70,6 +72,15 @@ public class SeguimientoBean {
         this.Instituciones = Instituciones;
     }
 
+    public String getCorrInc() {
+        return corrInc;
+    }
+
+    public void setCorrInc(String corrInc) {
+        this.corrInc = corrInc;
+    }
+
+    
     public int getEstado() {
         return estado;
     }
@@ -114,6 +125,63 @@ public class SeguimientoBean {
 
         return "index";
     }
+    
+    public List<Acciones> getAccionesRealizadas() throws SQLException {
+
+        List<Acciones> resultados = new ArrayList<Acciones>();
+
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+
+        Connection connection = dataSource.getConnection();
+
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+
+        try {
+            
+             
+            /* String idEv = new String();
+            String corrInc = new String();
+            idEv = "TT1201";
+            corrInc = "0000001";
+            */
+
+            PreparedStatement getAccionesRealizadas = connection.prepareStatement(
+                    "SELECT A.RESPCOORDACC, A.DESCACC, A.FECHORAREALACC,  CONVERT(VARCHAR,A.DURACACC,108) AS DURACION, E.NOMBESTADO "
+                    + "FROM ACCIONES AS A,ESTADO AS E "
+                    + "WHERE A.IDESTADO = E.IDESTADO AND"
+                    + " A.IDEV = ? AND"
+                    + " A.CORRINC = ? AND"
+                    + " A.ESTADOACC = 'H'"
+                    + "ORDER BY IDACC DESC");
+            
+            FacesContext context = javax.faces.context.FacesContext.getCurrentInstance();
+            HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+            LoginBean nB = (LoginBean) session.getAttribute("loginBean");/*para obtener el identificador del usuario*/
+
+            
+            getAccionesRealizadas.setString(1, nB.getIdEvento());
+            getAccionesRealizadas.setString(2, getCorrInc());           
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getAccionesRealizadas.executeQuery());
+
+            while (rowSet.next()) {
+                resultados.add(new Acciones(
+                        rowSet.getString("RESPCOORDACC"),
+                        rowSet.getString("DESCACC"),
+                        rowSet.getDate("FECHORAREALACC"),
+                        rowSet.getString("DURACION"),
+                        rowSet.getString("NOMBESTADO")));
+            }
+            return resultados;
+        } finally {
+            connection.close();
+        }
+
+    }
 
     public String guardar() throws SQLException {
         if (dataSource == null) {
@@ -127,30 +195,37 @@ public class SeguimientoBean {
         }
 
         try {
-            
+
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            String fecha = dateFormat.format(getFechaHora()); 
-            
+            String fecha = dateFormat.format(getFechaHora());
+
             DateFormat dateFormathora = new SimpleDateFormat("HH:mm");
             String horaDuracion = dateFormathora.format(getDuracion());
-            
-            String institucion =new String(); 
-            
+
+            String institucion = new String();
+
             Iterator<Institucion> inst = getInstituciones().getTarget().iterator();
-            while(inst.hasNext()) {
-	            //System.out.println(inst.next());
-                    institucion = institucion + inst.next()+",";
-                    
-	        }
-            
+            while (inst.hasNext()) {
+                //System.out.println(inst.next());
+                institucion = institucion + inst.next() + ",";
+
+            }
+
             //System.out.println("valor :"+institucion);
-                 
+
+            FacesContext context = javax.faces.context.FacesContext.getCurrentInstance();
+            HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+            LoginBean nB = (LoginBean) session.getAttribute("loginBean");/*para obtener el identificador del usuario*/
+
             CallableStatement addAccionSeg;
-            String sql = "{ call SEGUIMIENTOYCONTROL_ADD('TT1201','0000001',?,1,?,?,?,?,?)}";
-            
+            String sql = "{ call SEGUIMIENTOYCONTROL_ADD(?,?,?,?,?,?,?,?,?)}";
+
             addAccionSeg = connection.prepareCall(sql);
             
+            addAccionSeg.setString(1, nB.getIdEvento());
+            addAccionSeg.setString(2, getCorrInc());
             addAccionSeg.setInt(1, getEstado());
+            addAccionSeg.setInt(4, nB.getIdCont());
             addAccionSeg.setString(2, getDescripcion());
             addAccionSeg.setString(3, getResponsable());
             addAccionSeg.setString(4, fecha);
@@ -180,5 +255,4 @@ public class SeguimientoBean {
         }
         return "seguimientoycontrol";
     }
-
 }

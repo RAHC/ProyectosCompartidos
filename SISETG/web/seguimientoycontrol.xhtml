@@ -5,13 +5,15 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui">
-
+    <f:metadata>
+        <f:viewParam name="corrInc" value="#{SeguimientoBean.corrInc}" />
+    </f:metadata>
     <body>
         <!--  -->
         <ui:composition template="./SisePlantilla.xhtml">
 
-            
-            
+
+
             <ui:define name="content">
                 <h:form>
                     <H1><h:outputText value="#{msjs.titulo1}"/></H1> 
@@ -76,7 +78,7 @@
                     <p:fieldset legend="#{msjs.inf2}" toggleable="true" toggleSpeed="500">
                         <p:ajax event="toggle" listener="#{fieldsetBean.handleToggle}" update="growl" />
                         <h:panelGrid columns="2" cellpadding="10">
-                            
+
                             <p:dataTable id="gl" value="#{init.accionesRealizadas}" var="pe" 
                                          paginator="true" rows="10"
                                          paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
@@ -86,7 +88,7 @@
                                     <f:facet name="header">#{msjs.respon}</f:facet>
                                     #{pe.responsableCoord}
                                 </p:column>
-                                
+
                                 <p:column>
                                     <f:facet name="header">#{msjs.acc}</f:facet>
                                     #{pe.descripAccion}
@@ -96,7 +98,7 @@
                                     <f:facet name="header">#{msjs.estadoacc}</f:facet>   
                                     #{pe.nombEstado}
                                 </p:column>
-                                
+
                                 <p:column>
                                     <f:facet name="header">#{msjs.fechayhora1}</f:facet>   
                                     #{pe.fehaHora}
@@ -106,9 +108,9 @@
                                     <f:facet name="header">Duración</f:facet>  
                                     #{pe.duracion}
                                 </p:column>
-                       
+
                             </p:dataTable>
-                        
+
                         </h:panelGrid>
                     </p:fieldset>
 

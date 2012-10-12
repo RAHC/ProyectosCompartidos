@@ -1,0 +1,468 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+        <!--  -->
+        <ui:composition template="./SisePlantilla.xhtml">
+
+            <ui:define name="content">
+
+
+                <h:form prependId="false" id="f1">
+                    <H1><h:outputText value="#{msjs.titalb}"/></H1>
+
+                    <!-- I. Datos generales de albergues identificados. -->
+                    <p:growl id="growl" showDetail="true" />
+                    <p:fieldset legend="#{msjs.titfiealb1}" toggleable="true" toggleSpeed="500">
+                        <p:ajax event="toggle" listener="#{fieldsetBean.handleToggle}" update="growl" />
+
+                        <!-- Nombre del albergue -->
+                        <h:panelGrid columns="2" cellpadding="5">
+                            <h:outputText value="#{msjs.nomalb}" />
+                            <p:inputText id="input" value="#{albergueBean.nombreAlb}"/>
+
+                        </h:panelGrid>
+                        <!-- Localización -->
+                        <p:panel header="#{msjs.titlocalb}"> 
+                            <h:outputText value="#{msjs.localb}" />
+                            <h:panelGrid columns="3">
+                                <h:outputLabel value="Departamento" for="departamento"/>
+                                <p:selectOneMenu id="departamento" label="Departamento" required="true" value="#{init.codDepartamento}">
+                                    <f:selectItem itemLabel="Seleccione un Departamento" itemValue="" />
+                                    <f:selectItems value="#{init.departamentos}" var="dept" itemLabel="#{dept.nombreDepartamento}" itemValue="#{dept.idDepartamento}" />
+                                    <p:ajax update="municipio,m"/>
+                                </p:selectOneMenu>  
+                                <h:message for="departamento"/>
+
+                                <h:outputLabel value="Municipio" for="municipio"/>
+                                <p:selectOneMenu id="municipio" label="Municipio" required="true" value="#{init.codMunicipio}">
+                                    <f:selectItem itemLabel="Seleccione un Municipio" itemValue="" /> 
+                                    <f:selectItems value="#{init.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
+                                    <p:ajax update="canton,m"/>
+                                </p:selectOneMenu>
+                                <h:message for="municipio"/>   
+
+
+                                <h:outputLabel value="Cantón" for="canton" />
+                                <p:selectOneMenu id="canton" label="Canton"  value="#{init.codCanton}" >
+                                    <f:selectItem itemLabel="Seleccione un Cantón" itemValue="" /> 
+                                    <f:selectItems value="#{init.cantones}" var="canton" itemLabel="#{canton.nombreCanton}" itemValue="#{canton.idCanton}" />
+                                    <p:ajax update="caserio,m"/>                                    
+                                </p:selectOneMenu>
+                                <h:message for="canton"/>  
+
+                                <h:outputLabel value="Caserío" for="caserio" />
+                                <p:selectOneMenu id="caserio" label="Caserío"  value="#{init.codCaserio}">
+                                    <f:selectItem itemLabel="Seleccione un Caserío" itemValue="" /> 
+                                    <f:selectItems value="#{init.caserios}" var="caserio" itemLabel="#{caserio.nombreCanserio}" itemValue="#{caserio.idCaserio}" />
+                                    <p:ajax update="m"/>                                       
+                                </p:selectOneMenu>
+                                <h:message for="caserio"/>
+
+                                <h:outputLabel value="Dirección Exacta" for="direccion"/>
+                                <p:inputText id="direccion" label="Dirección Exacta" value="#{albergueBean.direccion}" required="true"/>
+                                <h:message for="direccion"/>   
+
+
+                                <h:outputLabel value="Punto de Referencia" for="punto"/>
+                                <p:inputText id="punto" label="Punto de Referencia" value="#{albergueBean.ptoReferencia}" required="true" />
+                                <h:panelGroup>
+                                    <h:message for="punto"/>   
+
+                                    <p:commandButton type="button" icon="ui-icon-pin-s"  
+                                                     value="Mapear" onclick="dlg1.show()"/>  
+                                </h:panelGroup>
+
+                                <p:dialog widgetVar="dlg1" width="625" height="400" modal="true">  
+                                    <p:gmap id="m" 
+                                            center="#{init.latitud},#{init.longitud}" 
+                                            zoom="#{init.zoomUbic}" 
+                                            type="ROADMAP"  
+                                            style="width:600px;height:400px" widgetVar="map"
+                                            onPointClick="handlePointClick(event);"
+                                            model="#{init.draggableModel}">  
+                                        <p:ajax event="markerDrag" listener="#{init.onMarkerDrag(e)}" update=":f2:groldo"/> 
+                                        <p:ajax event="overlaySelect" listener="#{init.onMarkerSelect(e)}" update=":f2:groldo" />
+                                    </p:gmap>
+                                </p:dialog> 
+
+                            </h:panelGrid>
+
+                        </p:panel>
+
+                        <h:panelGrid columns="2" cellpadding="5">
+                            <h:outputLabel/>
+
+                            <!-- Tipo albergue -->
+                            <h:outputText value="#{msjs.tipalb}"/>
+                            <p:selectOneMenu id="TpAlb" label="TpAlb" value="#{albergueBean.tpAlbergue}">
+                                <f:selectItem itemLabel="Seleccione un tipo" itemValue="" />
+                                <f:selectItems value="#{init.tpAlbergue}" var="tpAlb" itemLabel="#{tpAlb.nombTpAlbergue}" itemValue="#{tpAlb.idTpAlbergue}" />
+                            </p:selectOneMenu>
+
+                            <h:outputLabel/>
+
+                            <!-- Entidad responsable-->
+                            <h:outputText value="#{msjs.entrep}"/>
+                            <p:selectOneMenu id="entiResp" label="EntiResp" value="#{albergueBean.idEntiResp}">
+                                <f:selectItem itemLabel="Seleccione una entidad" itemValue="0" />
+                                <f:selectItems value="#{init.entiResp}" var="entiRes" itemLabel="#{entiRes.nombreEntiResp}" itemValue="#{entiRes.idEntiResp}" />
+                            </p:selectOneMenu>
+
+                        </h:panelGrid>  
+
+                    </p:fieldset>   
+                    <!-- Aspectos de evaluación -->
+                    <p:fieldset legend="#{msjs.titfiealb2}" toggleable="true" toggleSpeed="500">
+                        <p:ajax event="toggle" listener="#{fieldsetBean.handleToggle}" update="growl" />
+
+                        <!-- Capacidad del albergue -->
+                        <p:panel header="#{msjs.titcapalb}"> 
+                            <h:panelGrid columns="4" cellpadding="5">
+
+                                <h:outputText value="#{msjs.aretol}"/>
+                                <p:inputText id="input1" value="#{albergueBean.areaTotalMts}" />
+
+                                <h:outputText value="#{msjs.aretec}"/>
+                                <p:inputText id="input2" value="#{albergueBean.areaTotalTech}" />                                
+
+                                <h:outputText value="#{msjs.capper}"/>
+                                <p:inputText id="input3" value="#{albergueBean.capacidadPers}" />
+
+                            </h:panelGrid>
+                        </p:panel>
+                        <br/>
+                        <!-- Condiciones de acceso -->
+                        <p:panel header="#{msjs.titconacc}"> 
+                            <h:panelGrid columns="2" cellpadding="5">
+
+                                <h:outputLabel/>
+
+                                <!-- Condiciones de acceso -->
+                                <h:outputText value="#{msjs.tipconacc}"/>
+                                <p:selectOneMenu id="tpCondAcc" label="tpCondAcc" value="#{albergueBean.idTpCondAcc}">
+                                    <f:selectItem itemLabel="Seleccione la condición del acceso" itemValue="0" />
+                                    <f:selectItems value="#{init.tpCondAcc}" var="tpCond" itemLabel="#{tpCond.nombCondAcce}" itemValue="#{tpCond.idCondAcce}" />
+                                </p:selectOneMenu>
+
+                                <h:outputText value="#{msjs.hayaccade}"/>
+                                <p:selectOneRadio id="options1" value="#{albergueBean.hayAcceAdecuado}">  
+                                    <f:selectItem itemLabel="#{msjs.si}" itemValue="1" />  
+                                    <f:selectItem itemLabel="#{msjs.no}" itemValue="2" />
+                                </p:selectOneRadio> 
+
+                                <h:outputText value="#{msjs.exphayacc}"/>
+                                <p:inputTextarea value="#{albergueBean.expAccAdecuado}" rows="3" cols="50" maxlength="200"
+                                                 autoResize="false" />
+
+                                <h:outputText value="" /> 
+                                <p:growl id="grow1" showDetail="true" escape="false" />
+                                <h:outputText value="#{msjs.encser}" styleClass="requiredLbl"/>
+                                <p:pickList id="servicios" value="#{albergueBean.servicios}"
+                                            required="true"
+                                            requiredMessage="Seleccione los servicio que se enuentran cerca del albergue."
+                                            var="servicio" effect="bounce" 
+                                            itemValue="#{servicio.idServ}" 
+                                            itemLabel="#{servicio.nombServ}"/>  
+                                <p:message for="servicios"  />
+
+                                <h:outputText value="" />
+                                <h:outputText value="" />
+                                <h:outputText value="#{msjs.ser}"/>
+
+                            </h:panelGrid>
+
+                        </p:panel>
+                        <br/>
+                        <!-- Servicios básicos e Infraestructura -->
+                        <p:fieldset legend="#{msjs.titfiealb3}" toggleable="true" toggleSpeed="500" collapsed="false">
+                            <p:ajax event="toggle" listener="#{fieldsetBean.handleToggle}" update="growl" />
+                            <h:panelGrid columns="4" cellpadding="5">
+
+                                <h:outputText value="#{msjs.eneele}"/>
+                                <p:selectOneRadio id="options2" value="#{albergueBean.servEnerElect}">  
+                                    <f:selectItem itemLabel="#{msjs.si}" itemValue="1" />  
+                                    <f:selectItem itemLabel="#{msjs.no}" itemValue="2" />
+                                </p:selectOneRadio>
+
+                                <h:outputText value="#{msjs.comeneele}"/>
+                                <p:selectOneMenu id="estado3" label="Estado3" value="#{seguimientoBean.estado}">
+                                    <f:selectItem itemLabel="estado actual" itemValue="0" />
+                                    <f:selectItems value="#{init.estados}" var="esta" itemLabel="#{esta.nombreEstado}" itemValue="#{esta.idEstado}" />
+                                </p:selectOneMenu>
+
+                                <h:outputText value="#{msjs.agupot}"/>
+                                <p:selectOneRadio id="options3" value="#{albergueBean.servAguaPot}">  
+                                    <f:selectItem itemLabel="#{msjs.si}" itemValue="1" />  
+                                    <f:selectItem itemLabel="#{msjs.no}" itemValue="2" />
+                                </p:selectOneRadio>
+
+                                <h:outputText value="#{msjs.comeneele}"/>
+                                <p:selectOneMenu id="estado4" label="Estado4" value="#{seguimientoBean.estado}">
+                                    <f:selectItem itemLabel="estado actual" itemValue="0" />
+                                    <f:selectItems value="#{init.estados}" var="esta" itemLabel="#{esta.nombreEstado}" itemValue="#{esta.idEstado}" />
+                                </p:selectOneMenu>
+
+                                <!-- NECESIDADES DE AGUA -->
+                                <h:outputText value="" />
+                                <h:outputText value="" />
+                                <p:growl id="grow2" showDetail="true" escape="false" />
+                                <h:outputText value="#{msjs.otrseragu}" styleClass="requiredLbl"/>
+                                <p:pickList id="necesidadAgua" value="#{albergueBean.otroServicioAguas}"
+                                            required="true"
+                                            requiredMessage="Seleccione las formas que se utilizán para satisfacer la necesidad de agua del albergue."
+                                            var="necesidadesAgua" effect="bounce" 
+                                            itemValue="#{necesidadesAgua.idOtroServicioAgua}" 
+                                            itemLabel="#{necesidadesAgua.nombOtroServicioAgua}"/>  
+                                <p:message for="necesidadAgua"  />
+
+                                <h:outputText value="" />
+                                <h:outputText value="" />
+                                <h:outputText value="#{msjs.formasNeceAgua}"/>
+
+                                <h:outputText value="" />
+                                <h:outputText value="" />
+                                <!-- FIN NECESIDADES DE AGUA -->
+
+                                <!-- TIPOS DE SANITARIOS EXISTENTES -->
+                                <h:outputText value="" />
+                                <h:outputText value="" />
+                                <p:growl id="grow3" showDetail="true" escape="false" />
+                                <h:outputText value="#{msjs.tipsanexi}" styleClass="requiredLbl"/>
+                                <p:pickList id="sanitario" value="#{albergueBean.sanitarios}"
+                                            required="true"
+                                            requiredMessage="Seleccione los tipos de sanitarios que existen en el albergue."
+                                            var="sanitarios" effect="bounce" 
+                                            itemValue="#{sanitarios.idTpSanitario}" 
+                                            itemLabel="#{sanitarios.nombTpSanitario}"/>   
+                                <p:message for="sanitario"  />
+
+                                <h:outputText value="" />
+                                <h:outputText value="" />
+                                <h:outputText value="#{msjs.tipsan}"/>
+
+                                <h:outputText value="" />
+                                <!-- FIN TIPOS DE SANITARIOS EXISTENTES -->
+
+                                <h:outputText value="#{msjs.numsan}"/>
+                                <p:inputText id="imput4" value="#{albergueBean.numSanitario}" />
+
+                                <h:outputLabel/><h:outputLabel/>
+
+                                <h:outputText value="#{msjs.numduc}"/>
+                                <p:inputText id="imput5" value="#{albergueBean.numDucha}" />
+
+                                <h:outputLabel/><h:outputLabel/>
+
+                                <h:outputText value="#{msjs.bodeme}"/>
+                                <p:selectOneRadio id="options4" value="#{albergueBean.bodegaEmer}">  
+                                    <f:selectItem itemLabel="#{msjs.si}" itemValue="1" />  
+                                    <f:selectItem itemLabel="#{msjs.no}" itemValue="2" />
+                                </p:selectOneRadio>
+
+                                <h:outputLabel/><h:outputLabel/>
+
+                                <h:outputText value="#{msjs.arecoc}"/>
+                                <p:selectOneRadio id="options5" value="#{albergueBean.areaCocinar}">  
+                                    <f:selectItem itemLabel="#{msjs.si}" itemValue="1" />  
+                                    <f:selectItem itemLabel="#{msjs.no}" itemValue="2" />
+                                </p:selectOneRadio>
+
+                                <h:outputLabel/><h:outputLabel/>
+
+                                <h:outputText value="#{msjs.sertre}"/>
+                                <p:selectOneRadio id="options6" value="#{albergueBean.servTrenAseo}">  
+                                    <f:selectItem itemLabel="#{msjs.si}" itemValue="1" />  
+                                    <f:selectItem itemLabel="#{msjs.no}" itemValue="2" />
+                                </p:selectOneRadio>
+
+                                <h:panelGrid columns="5" cellpadding="2"> 
+
+                                    <h:outputText value="#{msjs.fretre1}"/>
+                                    <p:inputText id="imput6" value="#{albergueBean.frecuenciaTren}" /><h:outputText value="#{msjs.fretre2}"/>
+                                </h:panelGrid>
+
+                                <h:outputLabel/>
+
+                                <h:outputText value="#{msjs.esparec}"/>
+                                <p:selectOneRadio id="options7" value="#{albergueBean.espacioRecreacion}">  
+                                    <f:selectItem itemLabel="#{msjs.si}" itemValue="1" />  
+                                    <f:selectItem itemLabel="#{msjs.no}" itemValue="2" />
+                                </p:selectOneRadio>
+
+                                <h:outputLabel/><h:outputLabel/>
+
+                                <h:outputText value="#{msjs.vennat}"/>
+                                <p:selectOneRadio id="options8" value="#{albergueBean.ventilacionNat}">  
+                                    <f:selectItem itemLabel="#{msjs.si}" itemValue="1" />  
+                                    <f:selectItem itemLabel="#{msjs.no}" itemValue="2" />
+                                </p:selectOneRadio>
+
+                                <h:outputText value="#{msjs.ilunat}"/>
+                                <p:selectOneRadio id="options9" value="#{albergueBean.iluminacionNat}">  
+                                    <f:selectItem itemLabel="#{msjs.si}" itemValue="1" />  
+                                    <f:selectItem itemLabel="#{msjs.no}" itemValue="2" />
+                                </p:selectOneRadio>
+
+                                <h:outputText value="#{msjs.equnec}"/>
+                                <p:selectOneRadio id="options10" value="#{albergueBean.equipoNecesarioEmer}">  
+                                    <f:selectItem itemLabel="#{msjs.si}" itemValue="1" />  
+                                    <f:selectItem itemLabel="#{msjs.no}" itemValue="2" />
+                                </p:selectOneRadio>
+                            </h:panelGrid>
+                        </p:fieldset>
+
+                        <br/>
+                        <!-- Seguridad -->
+                        <p:fieldset legend="#{msjs.seg}" toggleable="true" toggleSpeed="500" collapsed="false"> 
+                            <p:ajax event="toggle" listener="#{fieldsetBean.handleToggle}" update="growl" />
+                            <h:panelGrid columns="3" cellpadding="7">
+
+                                <!-- AMENAZAS -->
+
+                                <h:outputText value="" />
+                                <p:growl id="grow4" showDetail="true" escape="false" />
+                                <h:outputText value="#{msjs.segame}" styleClass="requiredLbl"/>
+                                <p:pickList id="amenaza" value="#{albergueBean.amenazas}"
+                                            required="true"
+                                            requiredMessage="Seleccione las amenazas, en las cuales el albergue brinda seguridad."
+                                            var="amenazas" effect="bounce" 
+                                            itemValue="#{amenazas.idTipoAmenaza}" 
+                                            itemLabel="#{amenazas.nombTipoAmenaza}"/>  
+                                <p:message for="amenaza"  />
+
+
+                                <h:outputText value="" />
+                                <h:outputText value="#{msjs.tipame}"/>
+
+                                <!-- AMENAZAS -->
+
+                                <h:outputText value="#{msjs.saleva}"/>
+                                <p:selectOneRadio id="options11" value="#{albergueBean.salidaEvacuar}">  
+                                    <f:selectItem itemLabel="#{msjs.si}" itemValue="1" />  
+                                    <f:selectItem itemLabel="#{msjs.no}" itemValue="2" />
+                                </p:selectOneRadio>
+
+                                <h:outputText value="" />
+
+                                <h:outputText value="#{msjs.aretecletilu}"/>
+                                <p:selectOneRadio id="options12" value="#{albergueBean.areaTechadaIlum}">  
+                                    <f:selectItem itemLabel="#{msjs.si}" itemValue="1" />  
+                                    <f:selectItem itemLabel="#{msjs.no}" itemValue="2" />
+                                </p:selectOneRadio>
+
+                                <h:outputText value="" />
+
+                                <h:outputText value="#{msjs.enerelenoc}"/>
+                                <p:selectOneRadio id="options13" value="#{albergueBean.iluminacionNocturna}">  
+                                    <f:selectItem itemLabel="#{msjs.si}" itemValue="1" />  
+                                    <f:selectItem itemLabel="#{msjs.no}" itemValue="2" />
+                                </p:selectOneRadio>
+
+                                <h:outputText value="" />
+
+                                <h:outputText value="#{msjs.cermur}"/>
+                                <p:selectOneRadio id="options14" value="#{albergueBean.muroProteccion}">  
+                                    <f:selectItem itemLabel="#{msjs.si}" itemValue="1" />  
+                                    <f:selectItem itemLabel="#{msjs.no}" itemValue="2" />
+                                </p:selectOneRadio>
+
+                                <h:outputText value="" />
+
+                                <h:outputText value="#{msjs.lugpel}"/>
+                                <p:selectOneRadio id="options15" value="#{albergueBean.espaciosPeligrosos}">  
+                                    <f:selectItem itemLabel="#{msjs.si}" itemValue="1" />  
+                                    <f:selectItem itemLabel="#{msjs.no}" itemValue="2" />
+                                </p:selectOneRadio>
+                            </h:panelGrid>
+                        </p:fieldset>
+
+                        <br/>
+                        <!-- Seguridad -->                        
+                        <p:fieldset legend="#{msjs.sitact}" toggleable="true" toggleSpeed="500" collapsed="false"> 
+                            <p:ajax event="toggle" listener="#{fieldsetBean.handleToggle}" update="growl" />
+                            <h:panelGrid columns="2" cellpadding="7">
+
+                                <h:outputText value="#{msjs.obs}"/>
+                                <p:inputTextarea value="#{albergueBean.observacion}" rows="3" cols="50" maxlength="200"
+                                                  autoResize="false" />
+
+                                <h:outputText value="#{msjs.feceva}"/>
+                                <p:calendar value="#{albergueBean.fechaEva}" locale="es" pattern="dd/MM/yyyy" showButtonPanel="true"/>
+
+                                <br/><h:outputLabel/>
+
+                                <p:inputText id="input4" value="#{albergueBean.nombLleno}"/>
+                                <p:inputMask id="telLleno" 
+                                             mask="(503)-9999-9999" 
+                                             value="#{albergueBean.telLleno}" 
+                                             size="14" styleClass="optionalLbl"/>
+
+                                <h:outputText value="#{msjs.nomllen}"/>
+                                <h:outputText value="#{msjs.telllen}"/>
+
+                                <br/><h:outputLabel/>
+
+                                <p:inputText id="input6" value="#{albergueBean.nombccmp}"/>
+                                <p:inputMask id="telccmp" 
+                                             mask="(503)-9999-9999" 
+                                             value="#{albergueBean.telccmp}"
+                                             size="14" styleClass="optionalLbl"/>
+                                <h:outputText value="#{msjs.nomllen}"/>
+                                <h:outputText value="#{msjs.telccpc}"/>
+
+                                <br/><h:outputLabel/>
+
+                                <p:inputText id="input8" value="#{albergueBean.nombcmpc}"/>
+                                <p:inputMask id="telcmpc" 
+                                             mask="(503)-9999-9999" 
+                                             value="#{albergueBean.telcmpc}"
+                                             size="14" styleClass="optionalLbl"/>
+                                <h:outputText value="#{msjs.nomllen}"/>
+                                <h:outputText value="#{msjs.telcmpc}"/>
+                            </h:panelGrid>
+                        </p:fieldset>
+
+                    </p:fieldset>
+                    <h:panelGroup >
+                        <p:commandButton id="guardar"  value="#{msjs.btguar}" action="#{albergueBean.guardar}" ajax="false" style=" left: 60%" />
+                        <p:commandButton id="cancel" value="#{msjs.btcance}" style=" left: 60%" />
+                    </h:panelGroup>
+
+                </h:form>
+                
+                <h:form id="f2">
+                    <p:dialog  widgetVar="dlg" showEffect="FADE">
+
+                        <p:growl id="groldo" showDetail="true"/>
+
+                        <h:panelGrid columns="3">
+                            <h:outputLabel for="descripcion" value="Descripción:" />
+                            <p:inputText id="desc" value="#{init.title}" required="true"/>
+                            <p:message for="desc"/>
+
+                            <f:facet name="footer">
+                                <p:commandButton value="Agregar" 
+                                                 actionListener="#{init.addMarker(event)}" 
+                                                 update="groldo"
+                                                 oncomplete="markerAddComplete()" />
+                                <p:commandButton value="Cancelar" onclick="return cancel()"/>
+                            </f:facet>
+                        </h:panelGrid>
+
+                        <h:inputHidden id="lat" value="#{init.lat}" />
+                        <h:inputHidden id="lng" value="#{init.lng}" />
+                    </p:dialog>
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

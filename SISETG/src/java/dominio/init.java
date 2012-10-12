@@ -127,6 +127,90 @@ public class init {
             connection.close();
         }
     }
+    
+    public List<TpAlbergue> getTpAlbergue() throws SQLException {
+        List<TpAlbergue> resultados = new ArrayList<TpAlbergue>();
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+        Connection connection = dataSource.getConnection();
+
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+
+        try {
+            PreparedStatement getTpAlbergue = connection.prepareStatement(
+                    "SELECT IDTPALB, NOMBTPALB FROM TIPOALBERGUE");
+
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getTpAlbergue.executeQuery());
+
+            while (rowSet.next()) {
+                resultados.add(new TpAlbergue(rowSet.getString("IDTPALB"),
+                        rowSet.getString("NOMBTPALB")));
+            }
+            return resultados;
+        } finally {
+            connection.close();
+        }
+    }
+
+    public List<EntiResp> getEntiResp() throws SQLException {
+        List<EntiResp> resultados = new ArrayList<EntiResp>();
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+        Connection connection = dataSource.getConnection();
+
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+
+        try {
+            PreparedStatement getEntiResp = connection.prepareStatement(
+                    "SELECT IDENTRESPONS, NOMBREENTRESPONS FROM ENTIDADRESPONSABLE");
+
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getEntiResp.executeQuery());
+
+            while (rowSet.next()) {
+                resultados.add(new EntiResp(rowSet.getInt("IDENTRESPONS"),
+                        rowSet.getString("NOMBREENTRESPONS")));
+            }
+            return resultados;
+        } finally {
+            connection.close();
+        }
+    }
+
+    public List<TpCondAcc> getTpCondAcc() throws SQLException {
+        List<TpCondAcc> resultados = new ArrayList<TpCondAcc>();
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+        Connection connection = dataSource.getConnection();
+
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+
+        try {
+            PreparedStatement getTpCondAcc = connection.prepareStatement(
+                    "SELECT IDCONDACCESO, NOMBCONDACCESO FROM CONDICIONACCESO");
+
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getTpCondAcc.executeQuery());
+
+            while (rowSet.next()) {
+                resultados.add(new TpCondAcc(rowSet.getInt("IDCONDACCESO"),
+                        rowSet.getString("NOMBCONDACCESO")));
+            }
+            return resultados;
+        } finally {
+            connection.close();
+        }
+    }
 
     public String getTipoAfectacion() {
         return tipoAfectacion;
