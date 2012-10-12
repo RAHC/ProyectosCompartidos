@@ -13,9 +13,11 @@ public class Acciones {
     private String DescripAccion;
     private String ResponsableCoord;
     private String FechaRealizacion;
+    private Date fehaHora; /* variable que guarda la fecha y hora para seguiminto y control (tipo DATE) */
     private String Duracion;
     private String FechaAlmacenado;
     private String EstadoAccion;
+    private String nombEstado; /* variable que guarda la descripcion del estado */
     
     public Acciones(Integer IdAcc, String IdEv, String CorrInc, Integer IdEstado, Integer IdContacto, String DescripAccion, String ResponsableCoord, 
             String FechaRealizacion, String Duracion, String FechaAlmacenado, String EstadoAccion) {
@@ -31,7 +33,31 @@ public class Acciones {
         this.FechaAlmacenado = FechaAlmacenado;
         this.EstadoAccion = EstadoAccion;
     }
+    
+    public Acciones(String ResponsableCoord, String DescripAccion, Date fehaHora, String Duracion, String nombEstado) {
+        this.ResponsableCoord = ResponsableCoord;
+        this.DescripAccion = DescripAccion;
+        this.fehaHora = fehaHora;
+        this.Duracion = Duracion;
+        this.nombEstado = nombEstado;
+    }
 
+    public Date getFehaHora() {
+        return fehaHora;
+    }
+
+    public void setFehaHora(Date fehaHora) {
+        this.fehaHora = fehaHora;
+    }
+
+    public String getNombEstado() {
+        return nombEstado;
+    }
+
+    public void setNombEstado(String nombEstado) {
+        this.nombEstado = nombEstado;
+    }
+    
     public Integer getIdAcc() {
         return IdAcc;
     }

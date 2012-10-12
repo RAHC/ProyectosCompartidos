@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+        <!--  -->
+        <ui:composition template="./SisePlantilla.xhtml">
+
+            
+            
+            <ui:define name="content">
+                <h:form>
+                    <H1><h:outputText value="#{msjs.titulo1}"/></H1> 
+                    <p:growl id="growl" showDetail="true" />
+                    <p:fieldset legend="#{msjs.inf}" toggleable="true" toggleSpeed="500">
+                        <p:ajax event="toggle" listener="#{fieldsetBean.handleToggle}" update="growl" />
+                        <h:panelGrid columns="3" cellpadding="5">
+
+                            <h:outputLabel value="#{msjs.respon}" />
+                            <p:inputText id="responsable" value="#{seguimientoBean.responsable}"
+                                         required="true"
+                                         requiredMessage="Debe ingresar el nombre de la persona responsable de la coordinacion de la acción realizada."/>
+                            <p:message for="responsable" />
+
+                            <h:outputText value="#{msjs.descrip}" styleClass="requiredLbl"/>
+                            <p:inputTextarea id="descripcion" value="#{seguimientoBean.descripcion}" rows="3" cols="50" maxlength="200"
+                                             autoResize="false" 
+                                             required="true" 
+                                             requiredMessage="Debe ingresar la descripción de la acción realizada." > 
+                            </p:inputTextarea>
+                            <p:message for="descripcion" />
+
+                            <h:outputText value="#{msjs.fechayhora}" styleClass="optionalLbl"/>
+                            <p:calendar id="fechaHora" value="#{seguimientoBean.fechaHora}"  pattern="dd/MM/yyyy HH:mm:ss" locale="es" />
+                            <p:message for="fechaHora" />
+
+                            <h:outputText value="#{msjs.dur}" styleClass="optionalLbl"/>
+                            <p:calendar id="duracion" value="#{seguimientoBean.duracion}" pattern="HH:mm" locale="es" timeOnly="true"/>
+                            <p:message for="duracion" />
+
+                            <h:outputText value="#{msjs.esta}" styleClass="optionalLbl"/>
+                            <p:selectOneMenu id="estado" label="Estado" value="#{seguimientoBean.estado}" 
+                                             required="true"
+                                             requiredMessage="Debe seleccionar el estado actual del indicente, al momento de realizar el seguimiento y control">
+                                <f:selectItems value="#{init.estadosSeguimiento}" var="esta" itemLabel="#{esta.nombreEstado}" itemValue="#{esta.idEstado}" />
+                            </p:selectOneMenu>
+
+                            <p:growl id="grow1" showDetail="true" escape="false" />
+                            <h:outputText value="#{msjs.aginsti}" styleClass="requiredLbl"/>
+                            <p:pickList id="institucion" value="#{seguimientoBean.instituciones}"
+                                        required="true"
+                                        requiredMessage="Seleccione las instituciones que participarón en la acción realizada."
+                                        var="institucion" effect="bounce" 
+                                        itemValue="#{institucion.idInstitucion}" 
+                                        itemLabel="#{institucion.nombreInstitucion}"/>  
+                            <p:message for="institucion"  />
+
+                            <h:outputText value="" /> 
+                            <h:outputText value="#{msjs.insti}"/>
+                            <!-- h:outputText value="#{msjs.instip}"/ --> 
+
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <br/>
+                    <p:commandButton id="guardar" value="#{msjs.btguar}" action="#{seguimientoBean.guardar}" ajax="false" update="gl"/>
+                    <p:commandButton value="#{msjs.btlim}" type="reset" />
+
+                    <br/>
+                    <br/>
+
+                    <p:fieldset legend="#{msjs.inf2}" toggleable="true" toggleSpeed="500">
+                        <p:ajax event="toggle" listener="#{fieldsetBean.handleToggle}" update="growl" />
+                        <h:panelGrid columns="2" cellpadding="10">
+                            
+                            <p:dataTable id="gl" value="#{init.accionesRealizadas}" var="pe" 
+                                         paginator="true" rows="10"
+                                         paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                                         rowsPerPageTemplate="5,10,15">  
+
+                                <p:column>
+                                    <f:facet name="header">#{msjs.respon}</f:facet>
+                                    #{pe.responsableCoord}
+                                </p:column>
+                                
+                                <p:column>
+                                    <f:facet name="header">#{msjs.acc}</f:facet>
+                                    #{pe.descripAccion}
+                                </p:column>
+
+                                <p:column>
+                                    <f:facet name="header">#{msjs.estadoacc}</f:facet>   
+                                    #{pe.nombEstado}
+                                </p:column>
+                                
+                                <p:column>
+                                    <f:facet name="header">#{msjs.fechayhora1}</f:facet>   
+                                    #{pe.fehaHora}
+                                </p:column>
+
+                                <p:column>
+                                    <f:facet name="header">Duración</f:facet>  
+                                    #{pe.duracion}
+                                </p:column>
+                       
+                            </p:dataTable>
+                        
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

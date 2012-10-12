@@ -58,6 +58,75 @@ public class init {
     public init() {
         draggableModel = new DefaultMapModel();
     }
+    
+    public List<Acciones> getAccionesRealizadas() throws SQLException {
+
+        List<Acciones> resultados = new ArrayList<Acciones>();
+
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+
+        Connection connection = dataSource.getConnection();
+
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+
+        try {
+
+            PreparedStatement getAccionesRealizadas = connection.prepareStatement(
+                    "SELECT A.RESPCOORDACC, A.DESCACC, A.FECHORAREALACC,  CONVERT(VARCHAR,A.DURACACC,108) AS DURACION, E.NOMBESTADO "
+                    + "FROM ACCIONES AS A,ESTADO AS E "
+                    + "WHERE A.IDESTADO = E.IDESTADO AND"
+                    + " A.IDEV = 'TT1201' AND"
+                    + " A.CORRINC = '0000001' AND"
+                    + " A.ESTADOACC = 'H'"
+                    + "ORDER BY IDACC DESC");
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getAccionesRealizadas.executeQuery());
+
+            while (rowSet.next()) {
+                resultados.add(new Acciones(
+                        rowSet.getString("RESPCOORDACC"),
+                        rowSet.getString("DESCACC"),
+                        rowSet.getDate("FECHORAREALACC"),
+                        rowSet.getString("DURACION"),
+                        rowSet.getString("NOMBESTADO")));
+            }
+            return resultados;
+        } finally {
+            connection.close();
+        }
+
+    }
+    
+    public List<Estado> getEstadosSeguimiento() throws SQLException {
+        List<Estado> resultados = new ArrayList<Estado>();
+        if (dataSource == null) {
+            throw new SQLException("No se pudo tener acceso a la fuente de datos");
+        }
+        Connection connection = dataSource.getConnection();
+
+        if (connection == null) {
+            throw new SQLException("No se pudo conectar a la fuente de datos");
+        }
+        try {
+            PreparedStatement getEstado = connection.prepareStatement(
+                    "SELECT IDESTADO, NOMBESTADO,COLORESTADO FROM ESTADO WHERE IDESTADO NOT IN (1,2,3,7,8)");
+            CachedRowSet rowSet = new com.sun.rowset.CachedRowSetImpl();
+            rowSet.populate(getEstado.executeQuery());
+
+            while (rowSet.next()) {
+                resultados.add(new Estado(rowSet.getInt("IDESTADO"),
+                        rowSet.getString("NOMBESTADO"),
+                        rowSet.getString("COLORESTADO")));
+            }
+            return resultados;
+        } finally {
+            connection.close();
+        }
+    }
 
     public String getTipoAfectacion() {
         return tipoAfectacion;

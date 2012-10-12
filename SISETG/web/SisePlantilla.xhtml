@@ -14,14 +14,15 @@
         <script type="text/javascript" src="./resources/javascript/Sise.js"></script>
         <script type="text/javascript" src="./resources/javascript/Locale.js"></script>
         <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <f:loadBundle basename="dominio.mensajes_es" var="msjs"/>
         <title>SISE</title>
 
     </h:head>
 
     <h:body class="body">
         <f:metadata>
-            <f:event listener="#{loginBean.verifyUseLogin}" type="preRenderView">
-            </f:event>
+            <!-- f:event listener="#{loginBean.verifyUseLogin}" type="preRenderView">
+            </f:event -->
         </f:metadata>
 
         <!--<h:panelGrid id="plantilla" columns="1" class="art-sheet-body" width="97%">
