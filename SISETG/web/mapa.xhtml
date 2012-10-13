@@ -37,27 +37,21 @@
                                         <p:ajax update="municipio, vermapa" />
                                     </p:selectOneMenu>
                                     <h:message for="departamento" />
-                                    <h:outputLabel value="municipio: " for="municipio"/>                           
+                                    <h:outputLabel value="Municipio: " for="municipio"/>                           
                                     <p:selectOneMenu id="municipio" label="Municipio" value="#{registrarInstitucion.codMunicipio}" >
                                         <f:selectItem itemLabel="Seleccione un Municipio" itemValue="" /> 
                                         <f:selectItems value="#{registrarInstitucion.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
                                         <p:ajax update="canton, vermapa" />
                                     </p:selectOneMenu>
                                     <h:message for="municipio" />
-                                    <h:outputLabel value="canton: " for="canton"/>
+                                    <h:outputLabel value="Canton: " for="canton"/>
                                     <p:selectOneMenu id="canton" label="canton" value="#{registrarInstitucion.codCanton}" >
                                         <f:selectItem itemLabel="Seleccione un Canton" itemValue="" />
                                         <f:selectItems value="#{registrarInstitucion.cantones}" var="canto" itemLabel="#{canto.nombreCanton}" itemValue="#{canto.idCanton}"/>
                                         <p:ajax update="vermapa" />
                                     </p:selectOneMenu>
                                     <h:message for="canton" />
-                                    <h:outputLabel value="Caserío" for="caserio" />
-                                    <p:selectOneMenu id="caserio" label="Caserío"  value="#{registrarInstitucion.codCaserio}" required="true">
-                                        <f:selectItem itemLabel="Seleccione un Caserío" itemValue=""/> 
-                                        <f:selectItems value="#{registrarInstitucion.caserios}" var="caserio" itemLabel="#{caserio.nombreCanserio}" itemValue="#{caserio.idCaserio}"/>
-                                        <p:ajax update="caserio"/>                                       
-                                    </p:selectOneMenu>
-                                    <h:message for="caserio"/> 
+                                    
                                     <h:outputLabel value="Dirección Exacta" for="direccion"/>
                                     <p:inputText id="direccion" label="Dirección Exacta" value="#{registrarInstitucion.dirInstitucion}" required="true"/>
                                     <br/>

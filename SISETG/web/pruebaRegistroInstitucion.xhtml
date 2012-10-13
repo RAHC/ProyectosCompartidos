@@ -16,7 +16,7 @@
 
             <ui:define name="content">
 
-                <p:dialog header="Agregar Nuevo Tipo de Institución" widgetVar="dlg1" resizable="false" showEffect="fade" hideEffect="explode">
+                <p:dialog header="Agregar Nuevo Tipo de Institución" modal="true" widgetVar="dlg1" resizable="false" showEffect="fade" hideEffect="explode">
                     <h:form prependId="false">
                         <h:panelGrid columns="2" style="margin-bottom:10px">  
                             <h:outputLabel for="Nombre" value="Nombre:" />  
@@ -58,7 +58,9 @@
 
                     </p:fieldset>
 
-                    <p:fieldset legend="Ubicacion" styleClass="borderito">
+                    <p:fieldset legend="Ubicacion">
+                        <p:panelGrid columns="2" styleClass="borderzero">
+                            <p:column>
                         <h:panelGrid columns="3">
                             <h:outputLabel value="Departamento: " for="departamento"/>
                             <p:selectOneMenu id="departamento" label="Departamento" value="#{registrarInstitucion.codDepartamento}" >
@@ -68,7 +70,7 @@
                             </p:selectOneMenu>
                             <h:message for="departamento" />
 
-                            <h:outputLabel value="municipio: " for="municipio"/>                           
+                            <h:outputLabel value="Municipio: " for="municipio"/>                           
                             <p:selectOneMenu id="municipio" label="Municipio" value="#{registrarInstitucion.codMunicipio}" >
                                 <f:selectItem itemLabel="Seleccione un Municipio" itemValue="" /> 
                                 <f:selectItems value="#{registrarInstitucion.municipios}" var="munic" itemLabel="#{munic.nombreMunicipio}" itemValue="#{munic.idMunicipio}" />
@@ -76,7 +78,7 @@
                             </p:selectOneMenu>
                             <h:message for="municipio" />
 
-                            <h:outputLabel value="canton: " for="canton"/>
+                            <h:outputLabel value="Canton: " for="canton"/>
                             <p:selectOneMenu id="canton" label="canton" value="#{registrarInstitucion.codCanton}" >
                                 <f:selectItem itemLabel="Seleccione un Canton" itemValue="" />
                                 <f:selectItems value="#{registrarInstitucion.cantones}" var="canto" itemLabel="#{canto.nombreCanton}" itemValue="#{canto.idCanton}"/>
@@ -84,13 +86,7 @@
                             </p:selectOneMenu>
                             <h:message for="canton" />
 
-                            <h:outputLabel value="Caserío" for="caserio" />
-                            <p:selectOneMenu id="caserio" label="Caserío"  value="#{registrarInstitucion.codCaserio}" required="false">
-                                <f:selectItem itemLabel="Seleccione un Caserío" itemValue=""/> 
-                                <f:selectItems value="#{registrarInstitucion.caserios}" var="caserio" itemLabel="#{caserio.nombreCanserio}" itemValue="#{caserio.idCaserio}"/>
-                                <p:ajax update="caserio"/>                                       
-                            </p:selectOneMenu>
-                            <h:message for="caserio"/> 
+
 
                             <h:outputLabel value="Dirección Exacta" for="direccion"/>
                             <p:inputText id="direccion" label="Dirección Exacta" value="#{registrarInstitucion.dirInstitucion}" required="true"/>
@@ -98,7 +94,10 @@
 
                             <h:outputLabel value="Punto de Referencia" for="punto"/>
                             <p:inputText id="punto" label="Punto de Referencia"  value="#{registrarInstitucion.pnRefInst}" required="true" />
-
+                            </h:panelGrid>
+                            </p:column>
+                            <p:column>
+                                <h:panelGrid columns="3">
                             <p:gmap id="vermapa"
                                     center="#{registrarInstitucion.latitud},#{registrarInstitucion.longitud}" 
                                     zoom="#{registrarInstitucion.zoomUbic}" 
@@ -114,28 +113,13 @@
                             </p:gmap>
 
                         </h:panelGrid>
-
+                            </p:column>
+                        </p:panelGrid>
                     </p:fieldset>
-
-                    <p:commandButton id="guardar" value="Guardar" action="#{registrarInstitucion.guardarInst}" ajax="false" update="mandar" />
-                    <p:commandButton id="cancel" value="Cancelar" />
-                    <p:commandButton id="cleanContent" type="reset" value="Limpiar" />
-
-                    <p:fieldset id="mandar" styleClass="borderito">
-                        <h:outputText value="#{registrarInstitucion.codCanton}"/>,
-                        <h:outputText value="#{registrarInstitucion.tpInstitucion}"/>,
-                        <h:outputText value="#{registrarInstitucion.nombreInstitucion}"/>,
-                        <h:outputText value="#{registrarInstitucion.nombreResponsable}"/>,
-                        <h:outputText value="#{registrarInstitucion.telInstitucion}"/>,
-                        <h:outputText value="#{registrarInstitucion.lat}"/>,
-                        <h:outputText value="#{registrarInstitucion.lng}"/>,
-                        <h:outputText value="#{registrarInstitucion.altu}"/>,
-                        <h:outputText value="#{registrarInstitucion.dirInstitucion}"/>,
-                        <h:outputText value="#{registrarInstitucion.pnRefInst}"/>
-                    </p:fieldset>
-
-
-
+                            <p:commandButton id="guardar" value="Guardar" action="#{registrarInstitucion.guardarInst}" ajax="false" update="mandar" />
+                            <p:commandButton id="cancel" value="Cancelar" />
+                            <p:commandButton id="cleanContent" type="reset" value="Limpiar" />
+                        
                 </h:form>
 
 
